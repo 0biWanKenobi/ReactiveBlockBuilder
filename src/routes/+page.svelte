@@ -5,8 +5,8 @@
   import {
     createSheetExtensions, insertionSamples, allowedNodeTypes,
     initialFields, sampleDocument, defaultCSS, validateId
-  } from '$lib';
-  import type { Sheet, SheetNodeType } from '$lib';
+  } from '$lib/index.js';
+  import type { Sheet, SheetNodeType } from '$lib/index.js';
 
   type SelectedBlock = {
     type: SheetNodeType;
@@ -40,10 +40,10 @@
     const selection = current.state.selection;
     const found = selection instanceof NodeSelection
       ? { node: selection.node, pos: selection.from }
-      : selection.$from.depth > 0
+      : selection.from.depth > 0
         ? {
             node: selection.$from.parent,
-            pos: selection.$from.before(selection.$from.depth)
+            pos: selection.$from.before(selection.from.depth)
           }
         : null;
 
@@ -115,10 +115,10 @@
 
   function selectContainer() {
     if (!editor) return;
-    const { $from } = editor.state.selection;
-    for (let depth = $from.depth; depth > 0; depth--) {
-      if ($from.node(depth).type.name === 'container') {
-        editor.commands.setNodeSelection($from.before(depth));
+    const from = editor.state.selection.$from;
+    for (let depth = from.depth; depth > 0; depth--) {
+      if (from.node(depth).type.name === 'container') {
+        editor.commands.setNodeSelection(from.before(depth));
         return;
       }
     }
