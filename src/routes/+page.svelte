@@ -388,7 +388,7 @@
   .field-list { display: flex; flex-direction: column; gap: 8px; }
   .field-row { display: grid; gap: 4px; }
   .field-row span { color: #746353; font: 700 .67rem ui-monospace, monospace; }
-  input, textarea { width: 100%; min-width: 0; border: 1px solid #d8d2c9; background: #fff; border-radius: 6px; padding: 8px; color: #292723; outline-color: #987451; }
+  input { width: 100%; min-width: 0; border: 1px solid #d8d2c9; background: #fff; border-radius: 6px; padding: 8px; color: #292723; outline-color: #987451; }
   .field-row input, .new-field input { font: .73rem ui-monospace, monospace; }
   .new-field { display: grid; gap: 8px; margin-top: 15px; }
   .new-field button { padding: 8px; border: 1px solid #a57e4f; border-radius: 7px; color: #5b401e; background: #f8e9d0; font-size: .78rem; font-weight: 700; }
@@ -417,7 +417,6 @@
   .source-actions .format-button { border-color: transparent; background: transparent; color: #80776d; font-size: .67rem; padding: 4px 6px; }
   .source-actions .format-button:hover { border-color: #d8c7b4; background: #f7f3ed; color: #564433; }
   .source-actions .format-button:focus-visible { outline: 2px solid #a47a4b; outline-offset: 2px; }
-  textarea { display: block; height: 215px; resize: vertical; border: 0; border-radius: 0; padding: 12px; font: .72rem/1.5 ui-monospace, monospace; }
   .selection-heading { display: flex; justify-content: space-between; gap: 10px; margin: 18px 0; }
   .selection-heading strong { font-size: .85rem; }
   .selection-heading span { color: #8c7f70; font-size: .67rem; }

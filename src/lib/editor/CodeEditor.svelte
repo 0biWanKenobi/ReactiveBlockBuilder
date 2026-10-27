@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { EditorView, EditorState, basicSetup } from 'codemirror';
+  import { EditorView, basicSetup } from 'codemirror';
   import { json } from '@codemirror/lang-json';
   import { css } from '@codemirror/lang-css';
 
@@ -22,9 +22,8 @@
   onMount(() => {
     view = new EditorView({
       parent: target,
-      state: EditorState.create({
-        doc: value,
-        extensions: [
+      doc: value,
+      extensions: [
           basicSetup,
           language === 'css' ? css() : json(),
           EditorView.lineWrapping,
@@ -53,7 +52,6 @@
             }
           })
         ]
-      })
     });
     view.contentDOM.setAttribute('aria-label', label);
 
