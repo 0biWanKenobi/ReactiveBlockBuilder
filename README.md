@@ -1,79 +1,35 @@
-# Svelte library
+# ReactiveBlockBuilder (prototype)
 
-Everything you need to build a Svelte library, powered by [`sv`](https://npmjs.com/package/sv).
+A Svelte 5 + Tiptap experiment for an Obsidian-friendly character-sheet designer.
 
-Read more about creating a library [in the docs](https://svelte.dev/docs/kit/packaging).
+The document schema contains only **container**, **textBlock**, **formula**, and **image** nodes. Layout is ordinary CSS. Formula and image nodes are Svelte components mounted as Tiptap node views.
 
-## Creating a project
-
-If you're seeing this, you've probably already done this step. Congrats!
+## Run
 
 ```sh
-# create a new project in the current directory
-npx sv create
-
-# create a new project in my-app
-npx sv create my-app
-```
-
-To recreate this project with the same configuration:
-
-```sh
-# recreate this project
-bun x sv@1.1.1 create --template library --types ts --add eslint prettier --install bun ./
-```
-
-## Adding features
-
-Add features to your project with `sv add`:
-
-```sh
-npx sv add
-```
-
-For example, to add Tailwind CSS:
-
-```sh
-npx sv add tailwindcss
-```
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```sh
+npm install
 npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-Everything inside `src/lib` is part of your library, everything inside `src/routes` can be used as a showcase or preview app.
-
-## Building
-
-To build your library:
-
-```sh
-npm pack
-```
-
-To create a production version of your showcase app:
-
-```sh
+npm run check
 npm run build
 ```
 
-You can preview the production build with `npm run preview`.
+Open the demo, add blocks, edit text directly, select a block to edit its classes/attributes, change formulas and CSS, then export/import the document JSON.
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+## Architecture
 
-## Publishing
+- `src/lib/editor/nodes.ts`: Tiptap schema, dynamic Svelte node views.
+- `src/lib/blocks/`: live Svelte formula and image components.
+- `src/lib/formula/engine.ts`: copied from [ts_reactive_character_sheet_test](https://github.com/0biWanKenobi/ts_reactive_character_sheet_test), including math.js AST caching, recursive resolution, boolean comparisons, dice, dl and kh.
+- `src/lib/sample.ts`: sample document, character fields and default scoped CSS.
+- `src/routes/+page.svelte`: demo WYSIWYG editor, properties panel, JSON and CSS source panels.
 
-Go into the `package.json` and give your package the desired name through the `"name"` option. Also consider adding a `"license"` field and point it to a `LICENSE` file which you can create from a template (one popular option is the [MIT license](https://opensource.org/license/mit/)).
+The editor uses document JSON as its source of truth; the field values/formulas are a **separate shared reactive object**. Multiple formula nodes may reference the same field. Dice are only rolled on explicit action.
 
-To publish your library to [npm](https://www.npmjs.com):
+## Current limitations
 
-```sh
-npm publish
-```
+- This is a browser/SvelteKit spike, not an Obsidian plugin yet.
+- Drag-and-drop is ProseMirror's *document reordering*, not two-dimensional snap-to-grid placement or resizing.
+- Only built-in registered block types are supported; custom reusable template definitions come later.
+- The design/play toggle makes the same Tiptap document read-only. A lightweight standalone runtime renderer comes later.
+- CSS is intentionally editable and injected into the demo page. The defaults are scoped to `.sheet-content`, but arbitrary user CSS is **not yet sandboxed**; untrusted styles must be isolated before enabling sharing.
+- The demo keeps exported JSON/CSS in textareas; vault persistence, migrations, and asset resolution are future Obsidian integration work.
