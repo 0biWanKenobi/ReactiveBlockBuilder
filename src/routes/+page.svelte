@@ -5,8 +5,8 @@
   import {
     createSheetExtensions, insertionSamples, allowedNodeTypes,
     initialFields, sampleDocument, defaultCSS, validateId
-  } from '$lib/index.js';
-  import type { Sheet, SheetNodeType } from '$lib/index.js';
+  } from '../lib/index.js';
+  import type { Sheet, SheetNodeType } from '../lib/index.js';
 
   type SelectedBlock = {
     type: SheetNodeType;
@@ -40,10 +40,10 @@
     const selection = current.state.selection;
     const found = selection instanceof NodeSelection
       ? { node: selection.node, pos: selection.from }
-      : selection.from.depth > 0
+      : selection.$from.depth > 0
         ? {
             node: selection.$from.parent,
-            pos: selection.$from.before(selection.from.depth)
+            pos: selection.$from.before(selection.$from.depth)
           }
         : null;
 
