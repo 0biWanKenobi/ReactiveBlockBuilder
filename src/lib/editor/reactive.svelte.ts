@@ -1,4 +1,5 @@
-/** The shared character values live outside ProseMirror's document model. */
+/** Create reactive node attributes for Svelte-backed Tiptap node views. */
 export function reactiveNodeAttrs<T extends object>(value: T): T {
-  return $state(value);
+  const attrs = $state(value);
+  return attrs;
 }
