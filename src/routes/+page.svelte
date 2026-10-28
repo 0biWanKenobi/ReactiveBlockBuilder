@@ -179,9 +179,14 @@
 
   async function saveDefinition(definition: CustomBlockDefinition, blockStyle: string) {
     try {
+      // Capture changes against the old definition before it is replaced.
+      const compact = editor ? collapseDocument(editor.getJSON(), library) : null;
       await repository.save(definition);
       await repository.writeBlockCSS(definition.typeId, blockStyle);
       library.upsert(definition);
+      if (editor && compact) {
+        editor.commands.setContent(expandDocument(compact, library));
+      }
       await reloadBlockStyles();
       editedBlock = null;
       if (pendingConversion !== null) {
@@ -451,7 +456,7 @@
         {/if}
       </div>
       <div class="sheet-frame" class:playing={mode === 'play'}>
-        <div class="sheet-content" oncontextmenu={contextMenu}>
+        <div class="sheet-content" role="group" aria-label="Sheet canvas" oncontextmenu={contextMenu}>
           <div bind:this={canvas}></div>
           {#if contextPosition !== null}
             <div class="context-action">
@@ -605,12 +610,12 @@
   .confirmation-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
   .confirmation-actions button { padding: 9px; border: 1px solid #d4c7b7; background: #f6e7cf; border-radius: 7px; cursor: pointer; }
   select { width: 100%; padding: 8px; border: 1px solid #d8d2c9; border-radius: 6px; background: white; }
-  .palette { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-  .palette button { display: flex; align-items: center; flex-direction: column; gap: 7px; padding: 13px 5px; border: 1px solid #ded6cb; background: white; border-radius: 9px; color: #4d463e; font-weight: 650; font-size: .75rem; }
-  .palette button:hover { border-color: #a9773c; }
-  .palette button[draggable="true"] { cursor: grab; }
-  .palette button[draggable="true"]:active { cursor: grabbing; }
-  .palette span { font-family: Georgia,serif; font-size: 1.5rem; color: #936a3e; }
+
+
+
+
+
+
   .separator { height: 1px; background: #e8e2db; margin: 21px 0; }
   .field-list { display: flex; flex-direction: column; gap: 8px; }
   .field-row { display: grid; gap: 4px; }

@@ -175,7 +175,7 @@
       </aside>
       <section class="preview-pane">
         <div class="section-title">Live preview</div>
-        <div class="preview" bind:this={canvas}></div>
+        <div class="preview sheet-content" bind:this={canvas}></div>
       </section>
       <section class="source-pane">
         {#if tab === 'structure'}
