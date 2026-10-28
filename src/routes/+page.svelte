@@ -482,8 +482,9 @@
         <div class="sheet-content" role="group" aria-label="Sheet canvas" oncontextmenu={contextMenu}>
           <div bind:this={canvas}></div>
           {#if contextPosition !== null}
+            {@const position = contextPosition}
             <div class="context-action">
-              <button onclick={() => { if (contextPosition !== null) startNewDefinition(contextPosition); contextPosition = null; }}>Save as custom block</button>
+              <button onclick={() => { startNewDefinition(position); contextPosition = null; }}>Save as custom block</button>
               <button onclick={() => contextPosition = null} aria-label="Close context menu">✕</button>
             </div>
           {/if}
