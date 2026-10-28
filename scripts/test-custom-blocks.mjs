@@ -9,7 +9,21 @@ try {
 
   const header = page.locator('.sheet-content .sheet-header').first();
   await header.click({ button: 'right' });
-  await page.getByRole('button', { name: 'Save as custom block' }).evaluate((button) => button.click());
+  await page.evaluate(() => {
+    window.__trace = [];
+    document.addEventListener('click', (event) => {
+      window.__trace.push('capture:' + event.target?.outerHTML?.slice(0, 140));
+    }, true);
+    document.addEventListener('click', (event) => {
+      window.__trace.push('bubble:' + event.target?.outerHTML?.slice(0, 140));
+    });
+    window.addEventListener('beforeunload', () => console.log('BEFORE UNLOAD'), { once:true });
+  });
+  console.log('Menu before click', await page.getByRole('button', { name: 'Save as custom block' }).evaluate(el => el.outerHTML));
+  await page.getByRole('button', { name: 'Save as custom block' }).click();
+  console.log('Trace', await page.evaluate(() => window.__trace));
+  console.log('URL', page.url());
+  console.log('Body status', (await page.locator('body').innerText()).slice(0,600));
   const modal = page.getByRole('dialog', { name: 'Custom block definition editor' });
   console.log('After creation:', {
     dialogs: await page.locator('[role="dialog"]').count(),
