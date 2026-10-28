@@ -44,6 +44,8 @@
   let savedCSS = $state(defaultCSS);
   let blockCSS = $state<Record<string, string>>({});
   let editedBlock = $state<CustomBlockDefinition | null>(null);
+  let editedCSS = $state<string | null>(null);
+  let definitionTrail = $state<{ definition: CustomBlockDefinition; css: string }[]>([]);
   let pendingConversion = $state<number | null>(null);
   let pendingOriginalValues = $state<Record<string, string | { src: string; alt: string }>>({});
   let contextPosition = $state<number | null>(null);
@@ -148,16 +150,16 @@
   }
 
   function startNewDefinition(pos: number) {
-    message = `startNewDefinition called at ${pos}`;
-    if (!editor) { message = 'No editor'; return; }
+    if (!editor) return;
     const node = editor.state.doc.nodeAt(pos);
-    if (!node || node.type.name !== 'container' || !node.childCount) { message = `Invalid candidate: ${node?.type.name} children=${node?.childCount}`; return; }
+    if (!node || node.type.name !== 'container' || !node.childCount) return;
     const name = String(node.attrs.class ?? '').trim().split(/\s+/)[0] || 'Custom block';
     try {
+      definitionTrail = [];
+      editedCSS = null;
       editedBlock = createDefinition(name, node.toJSON(), library);
       pendingOriginalValues = captureInitialValues(editedBlock.structure, node.toJSON());
       pendingConversion = pos;
-      message = `Created draft ${editedBlock.typeId}`;
     } catch (error) {
       message = `Custom block creation failed: ${error instanceof Error ? error.message : String(error)}`;
     }
@@ -188,6 +190,28 @@
     editor.view.dispatch(editor.state.tr.replaceWith(pos, pos + original.nodeSize, replacement));
   }
 
+  async function openNestedDefinition(typeId: string, current: CustomBlockDefinition, draftCSS: string) {
+    const target = library.get(typeId);
+    if (!target) { message = `Missing custom block definition: ${typeId}`; return; }
+    definitionTrail = [...definitionTrail, { definition: current, css: draftCSS }];
+    editedBlock = target;
+    editedCSS = null;
+  }
+
+  function closeDefinition() {
+    const previous = definitionTrail.at(-1);
+    if (previous) {
+      definitionTrail = definitionTrail.slice(0, -1);
+      editedBlock = previous.definition;
+      editedCSS = previous.css;
+    } else {
+      editedBlock = null;
+      editedCSS = null;
+      pendingConversion = null;
+      pendingOriginalValues = {};
+    }
+  }
+
   async function deleteDefinition(definition: CustomBlockDefinition) {
     if (!window.confirm(`Delete "${definition.name}"? Sheets and custom blocks that reference it will fail to import.`)) return;
     try {
@@ -211,8 +235,16 @@
         editor.commands.setContent(expandDocument(compact, library));
       }
       await reloadBlockStyles();
-      editedBlock = null;
-      if (pendingConversion !== null) {
+      if (definitionTrail.length) {
+        const previous = definitionTrail.at(-1)!;
+        definitionTrail = definitionTrail.slice(0, -1);
+        editedBlock = previous.definition;
+        editedCSS = previous.css;
+      } else {
+        editedBlock = null;
+        editedCSS = null;
+      }
+      if (pendingConversion !== null && !definitionTrail.length && !editedBlock) {
         if (saveBehavior === 'ask') {
           conversionPrompt = { pos: pendingConversion, typeId: definition.typeId };
         } else if (saveBehavior === 'replace') {
@@ -441,7 +473,12 @@
       <BlockPalette customBlocks={library.definitions}
         draggable={mode === 'design' && designTool === 'drag'} onInsert={insert}
         onDragStart={dragPaletteBlock} onDragEnd={finishPaletteDrag}
-        onEdit={(block) => { editedBlock = block; pendingConversion = null; }}
+        onEdit={(block) => {
+          editedCSS = null;
+          definitionTrail = [];
+          editedBlock = block;
+          pendingConversion = null;
+        }}
         onDelete={deleteDefinition} />
       <div class="separator"></div>
       <div class="panel-heading">Formula fields</div>
@@ -573,10 +610,12 @@
 {#if editedBlock}
   <CustomBlockEditorModal
     initial={editedBlock}
-    initialCSS={blockCSS[editedBlock.typeId] ?? ''}
+    initialCSS={editedCSS ?? blockCSS[editedBlock.typeId] ?? ''}
     {library} {fields}
     onSave={saveDefinition}
-    onClose={() => { editedBlock = null; pendingConversion = null; pendingOriginalValues = {}; }}
+    onNavigate={openNestedDefinition}
+    onClose={closeDefinition}
+    breadcrumbs={definitionTrail.map((frame) => frame.definition.name)}
   />
 {/if}
 {#if conversionPrompt}
