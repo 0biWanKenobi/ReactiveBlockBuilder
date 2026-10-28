@@ -151,8 +151,12 @@
     if (!node || node.type.name !== 'container' || !node.childCount) return;
     const name = window.prompt('Name this custom block', 'New custom block');
     if (!name?.trim()) return;
-    editedBlock = createDefinition(name.trim(), node.toJSON(), library);
-    pendingConversion = pos;
+    try {
+      editedBlock = createDefinition(name.trim(), node.toJSON(), library);
+      pendingConversion = pos;
+    } catch (error) {
+      message = `Custom block creation failed: ${error instanceof Error ? error.message : String(error)}`;
+    }
   }
 
   function conversionChoice(replace: boolean) {

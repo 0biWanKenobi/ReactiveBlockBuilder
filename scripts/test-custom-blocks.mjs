@@ -9,10 +9,18 @@ try {
 
   const header = page.locator('.sheet-content .sheet-header').first();
   await header.click({ button: 'right' });
-  page.once('dialog', (dialog) => dialog.accept('Test Header'));
+  page.once('dialog', async (dialog) => {
+    console.log('Custom block dialog:', dialog.type(), dialog.message());
+    await dialog.accept('Test Header');
+  });
   await page.getByRole('button', { name: 'Save as custom block' }).click();
   const modal = page.getByRole('dialog', { name: 'Custom block definition editor' });
-  await modal.waitFor();
+  console.log('After creation:', {
+    dialogs: await page.locator('[role="dialog"]').count(),
+    status: await page.locator('[role="status"]').allTextContents(),
+    contextActions: await page.getByRole('button', { name: 'Save as custom block' }).count()
+  });
+  await modal.waitFor({ timeout: 5000 });
   assert.equal(await modal.getByLabel('Custom block name').inputValue(), 'Test Header');
   await modal.getByRole('button', { name: 'Save definition' }).click();
   const confirm = page.getByRole('dialog', { name: 'Saved custom block' });
