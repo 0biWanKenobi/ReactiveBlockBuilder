@@ -23,7 +23,7 @@ try {
   assert.equal(await sidebar.isVisible(), true);
   assert.equal(await sources.isVisible(), true);
 
-  await page.getByRole('button', { name: 'Play', exact: true }).click();
+  await page.locator('.mode-switch button').nth(1).click();
   await page.waitForTimeout(650);
   assert.equal(await header.isVisible(), true);
   assert.equal(await title.isVisible(), true);
@@ -37,7 +37,7 @@ try {
   assert.equal(await title.innerText(), originalText);
   assert.equal(await page.locator('.sheet-content .tiptap').getAttribute('contenteditable'), 'false');
 
-  await page.getByRole('button', { name: 'Design', exact: true }).click();
+  await page.locator('.mode-switch button').nth(0).click();
   await page.waitForTimeout(650);
   assert.equal(await sidebar.isVisible(), true);
   assert.equal(await inspector.isVisible(), true);
