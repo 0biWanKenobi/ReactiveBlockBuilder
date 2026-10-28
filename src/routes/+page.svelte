@@ -6,7 +6,7 @@
   import { CustomBlockLibrary } from '../lib/custom-blocks/library.svelte.js';
   import { CustomBlockRepository, DEFAULT_THEME } from '../lib/custom-blocks/repository.js';
   import { LocalStorageAdapter } from '../lib/storage/StorageAdapter.js';
-  import { createDefinition, makeInstance, expandDocument, collapseDocument } from '../lib/custom-blocks/model.js';
+  import { createDefinition, makeInstance, expandDocument, collapseDocument, captureInitialValues } from '../lib/custom-blocks/model.js';
   import type { CustomBlockDefinition } from '../lib/custom-blocks/types.js';
   import { blockBoundary } from '../lib/editor/blockInteraction.js';
   import { Editor, type JSONContent } from '@tiptap/core';
@@ -45,6 +45,7 @@
   let blockCSS = $state<Record<string, string>>({});
   let editedBlock = $state<CustomBlockDefinition | null>(null);
   let pendingConversion = $state<number | null>(null);
+  let pendingOriginalValues = $state<Record<string, string | { src: string; alt: string }>>({});
   let contextPosition = $state<number | null>(null);
   let saveBehavior = $state<'ask' | 'replace' | 'keep'>('ask');
   let conversionPrompt = $state<{ pos: number; typeId: string } | null>(null);
@@ -153,6 +154,7 @@
     if (!name?.trim()) return;
     try {
       editedBlock = createDefinition(name.trim(), node.toJSON(), library);
+      pendingOriginalValues = captureInitialValues(editedBlock.structure, node.toJSON());
       pendingConversion = pos;
     } catch (error) {
       message = `Custom block creation failed: ${error instanceof Error ? error.message : String(error)}`;
@@ -164,6 +166,7 @@
     if (rememberChoice) saveBehavior = replace ? 'replace' : 'keep';
     if (replace) replaceOriginal(conversionPrompt.pos, conversionPrompt.typeId);
     conversionPrompt = null;
+    pendingOriginalValues = {};
     rememberChoice = false;
   }
 
@@ -173,8 +176,10 @@
     if (!definition) return;
     const original = editor.state.doc.nodeAt(pos);
     if (!original || original.type.name !== 'container') return;
+    const compact = makeInstance(definition);
+    compact.attrs = { ...compact.attrs, values: pendingOriginalValues };
     const expanded = expandDocument({
-      type: 'doc', content: [makeInstance(definition)]
+      type: 'doc', content: [compact]
     }, library).content?.[0];
     if (!expanded) return;
     const replacement = editor.state.schema.nodeFromJSON(expanded);
@@ -553,7 +558,7 @@
     initialCSS={blockCSS[editedBlock.typeId] ?? ''}
     {library} {fields}
     onSave={saveDefinition}
-    onClose={() => { editedBlock = null; pendingConversion = null; }}
+    onClose={() => { editedBlock = null; pendingConversion = null; pendingOriginalValues = {}; }}
   />
 {/if}
 {#if conversionPrompt}

@@ -183,6 +183,24 @@ export function collapseDocument(node: JSONContent, library: BlockLibrary): JSON
   return visit(clone(node));
 }
 
+/** Capture the original instance's leaf values before the user resets definition defaults. */
+export function captureInitialValues(template: JSONContent, source: JSONContent): BlockValues {
+  const values: BlockValues = {};
+  const visit = (reference: JSONContent, actual: JSONContent, prefix = '') => {
+    const nodeId = String(reference.attrs?.nodeId ?? '');
+    const key = nodeId ? (prefix ? `${prefix}/${nodeId}` : nodeId) : prefix;
+    const value = valueOf(actual);
+    if (value !== undefined && reference.type === actual.type) values[key] = value;
+    for (let i = 0; i < (reference.content?.length ?? 0); i++) {
+      const child = reference.content?.[i];
+      const corresponding = actual.content?.[i];
+      if (child && corresponding) visit(child, corresponding, key);
+    }
+  };
+  visit(template, source);
+  return values;
+}
+
 export function createDefinition(
   name: string,
   structure: JSONContent,
@@ -195,7 +213,7 @@ export function createDefinition(
     typeId: generateTypeId(name, library.list().map((block) => block.typeId)),
     name,
     rootClass: '',
-    structure: ensureNodeIds(structure)
+    structure: ensureNodeIds(collapseDocument({ type: 'doc', content: [structure] }, library).content?.[0] ?? structure)
   };
 }
 
