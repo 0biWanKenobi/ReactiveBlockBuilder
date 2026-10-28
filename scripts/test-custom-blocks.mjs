@@ -9,10 +9,7 @@ try {
 
   const header = page.locator('.sheet-content .sheet-header').first();
   await header.click({ button: 'right' });
-  page.once('dialog', async (dialog) => {
-    console.log('Custom block dialog:', dialog.type(), dialog.message());
-    await dialog.accept('Test Header');
-  });
+  await page.evaluate(() => { window.prompt = () => 'Test Header'; });
   await page.getByRole('button', { name: 'Save as custom block' }).click();
   const modal = page.getByRole('dialog', { name: 'Custom block definition editor' });
   console.log('After creation:', {
