@@ -150,10 +150,9 @@
     if (!editor) return;
     const node = editor.state.doc.nodeAt(pos);
     if (!node || node.type.name !== 'container' || !node.childCount) return;
-    const name = window.prompt('Name this custom block', 'New custom block');
-    if (!name?.trim()) return;
+    const name = String(node.attrs.class ?? '').trim().split(/\s+/)[0] || 'Custom block';
     try {
-      editedBlock = createDefinition(name.trim(), node.toJSON(), library);
+      editedBlock = createDefinition(name, node.toJSON(), library);
       pendingOriginalValues = captureInitialValues(editedBlock.structure, node.toJSON());
       pendingConversion = pos;
     } catch (error) {
