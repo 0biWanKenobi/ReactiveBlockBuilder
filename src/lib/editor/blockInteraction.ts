@@ -3,8 +3,8 @@ import { NodeSelection, Plugin, PluginKey, type EditorState } from '@tiptap/pm/s
 import { Decoration, DecorationSet, type EditorView } from '@tiptap/pm/view';
 
 export const blockSelector =
-  'section[data-sheet-container], p[data-sheet-text], [data-sheet-block]';
-export const blockTypes = new Set(['container', 'textBlock', 'formula', 'image']);
+  'section[data-custom-block-type], section[data-sheet-container], p[data-sheet-text], [data-sheet-block]';
+export const blockTypes = new Set(['container', 'textBlock', 'formula', 'image', 'customBlock']);
 const dragModeKey = new PluginKey<boolean>('rbbBlockDragMode');
 
 export function isBlockDragMode(state: EditorState): boolean {
@@ -39,6 +39,17 @@ export function blockBoundary(view: EditorView, element: Element): { from: numbe
   }
 }
 
+/** A custom block is indivisible in the sheet's drag mode. */
+export function outermostCustomBlock(view: EditorView, target: Element): Element | null {
+  let outermost: Element | null = null;
+  let current: Element | null = target;
+  while (current && current !== view.dom) {
+    if (current.matches('section[data-custom-block-type]')) outermost = current;
+    current = current.parentElement;
+  }
+  return outermost;
+}
+
 /** Disable native content editing while keeping block drag events available. */
 export const BlockInteraction = Extension.create({
   name: 'blockInteraction',
@@ -58,7 +69,7 @@ export const BlockInteraction = Extension.create({
         handleDOMEvents: {
           mousedown(view, event) {
             if (!isBlockDragMode(view.state) || !canDragBlocks(view) || event.button !== 0) return false;
-            const block = event.target instanceof Element ? event.target.closest(blockSelector) : null;
+            const block = event.target instanceof Element ? outermostCustomBlock(view, event.target) ?? event.target.closest(blockSelector) : null;
             const boundary = block ? blockBoundary(view, block) : null;
             if (boundary) {
               view.dispatch(view.state.tr.setSelection(NodeSelection.create(view.state.doc, boundary.from)));
@@ -70,9 +81,10 @@ export const BlockInteraction = Extension.create({
           if (!isBlockDragMode(state)) return DecorationSet.empty;
           const decorations: Decoration[] = [];
           state.doc.descendants((node, pos) => {
-            if (blockTypes.has(node.type.name)) {
-              decorations.push(Decoration.node(pos, pos + node.nodeSize, { draggable: 'true' }));
-            }
+            if (!blockTypes.has(node.type.name)) return;
+            decorations.push(Decoration.node(pos, pos + node.nodeSize, { draggable: 'true' }));
+            // A custom block's descendants are never individual drag targets.
+            if (node.type.name === 'customBlock') return false;
           });
           return DecorationSet.create(state.doc, decorations);
         }

@@ -3,7 +3,7 @@ import { DOMSerializer, Fragment, Slice, type Node as ProseMirrorNode } from '@t
 import { Plugin, PluginKey, NodeSelection } from '@tiptap/pm/state';
 import { dropPoint } from '@tiptap/pm/transform';
 import { Decoration, DecorationSet, type EditorView } from '@tiptap/pm/view';
-import { blockSelector, blockTypes, blockBoundary, canDragBlocks, isBlockDragMode } from './blockInteraction.js';
+import { blockSelector, blockTypes, blockBoundary, canDragBlocks, isBlockDragMode, outermostCustomBlock } from './blockInteraction.js';
 
 /**
  * A temporary, layout-participating drop placeholder. Unlike a thin drop
@@ -105,7 +105,7 @@ function targetPosition(view: EditorView, event: DragEvent): number | null {
     : event.target instanceof Node
       ? event.target.parentElement
       : null;
-  let block = rawTarget?.closest(blockSelector) ?? null;
+  let block = rawTarget ? outermostCustomBlock(view, rawTarget) ?? rawTarget.closest(blockSelector) : null;
   if (block && !view.dom.contains(block)) block = null;
 
   const container = rawTarget === view.dom
