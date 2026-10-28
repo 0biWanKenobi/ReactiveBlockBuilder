@@ -6,7 +6,7 @@
   import { CustomBlockLibrary } from '../lib/custom-blocks/library.svelte.js';
   import { CustomBlockRepository, DEFAULT_THEME } from '../lib/custom-blocks/repository.js';
   import { LocalStorageAdapter } from '../lib/storage/StorageAdapter.js';
-  import { createDefinition, makeInstance, expandDocument, collapseDocument, captureInitialValues } from '../lib/custom-blocks/model.js';
+  import { createDefinition, makeInstance, expandDocument, collapseDocument, captureInitialValues, validateDefinition } from '../lib/custom-blocks/model.js';
   import type { CustomBlockDefinition } from '../lib/custom-blocks/types.js';
   import { blockBoundary } from '../lib/editor/blockInteraction.js';
   import { Editor, type JSONContent } from '@tiptap/core';
@@ -104,7 +104,7 @@
 
     const instance = new Editor({
       element: canvas,
-      extensions: createSheetExtensions(fields),
+      extensions: createSheetExtensions(fields, { protectCustomBlocks: true }),
       content: sampleDocument,
       editable: true,
       autofocus: false,
@@ -228,11 +228,12 @@
     try {
       // Capture changes against the old definition before it is replaced.
       const compact = editor ? collapseDocument(editor.getJSON(), library) : null;
+      validateDefinition(definition, library);
       await repository.save(definition);
       await repository.writeBlockCSS(definition.typeId, blockStyle);
       library.upsert(definition);
       if (editor && compact) {
-        editor.commands.setContent(expandDocument(compact, library));
+        editor.chain().setMeta('rbb:definition-reconcile', true).setContent(expandDocument(compact, library)).run();
       }
       await reloadBlockStyles();
       if (definitionTrail.length) {
@@ -431,7 +432,7 @@
         }
         fields[key] = { id: key, formula: value.formula };
       }
-      editor.commands.setContent(expanded);
+      editor.chain().setMeta('rbb:definition-reconcile', true).setContent(expanded).run();
       message = 'Sheet loaded';
     } catch (error) {
       message = `Import failed: ${error instanceof Error ? error.message : String(error)}`;
@@ -608,6 +609,7 @@
   </div>
 {/if}
 {#if editedBlock}
+  {#key editedBlock.typeId}
   <CustomBlockEditorModal
     initial={editedBlock}
     initialCSS={editedCSS ?? blockCSS[editedBlock.typeId] ?? ''}
@@ -617,6 +619,7 @@
     onClose={closeDefinition}
     breadcrumbs={definitionTrail.map((frame) => frame.definition.name)}
   />
+  {/key}
 {/if}
 {#if conversionPrompt}
   <div class="confirmation-backdrop">

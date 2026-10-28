@@ -218,6 +218,19 @@ export function createDefinition(
   };
 }
 
+/** Validate the candidate against its dependencies before publishing it. */
+export function validateDefinition(definition: CustomBlockDefinition, library: BlockLibrary): void {
+  if (definition.structure.type !== 'container' || !definition.structure.content?.length) {
+    throw new Error('A custom block must contain a non-empty root container');
+  }
+  const candidate: BlockLibrary = {
+    get: (typeId) => typeId === definition.typeId ? definition : library.get(typeId),
+    list: () => [...library.list().filter((item) => item.typeId !== definition.typeId), definition]
+  };
+  // Expansion checks both missing dependencies and recursive type references.
+  expandDocument({ type: 'doc', content: [makeInstance(definition)] }, candidate);
+}
+
 export function makeInstance(definition: CustomBlockDefinition): JSONContent {
   return { type: 'customBlock', attrs: { typeId: definition.typeId, instanceId: id(), values: {} } };
 }

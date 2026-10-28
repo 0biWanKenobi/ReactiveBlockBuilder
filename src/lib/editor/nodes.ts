@@ -2,6 +2,7 @@ import { Node, mergeAttributes, type Extensions, type JSONContent } from '@tipta
 import { BlockDragPreview } from './blockDragPreview.js';
 import { BlockInteraction } from './blockInteraction.js';
 import { BlockDragHandle } from './blockDragHandle.js';
+import { CustomBlockProtection } from './customBlockProtection.js';
 import Document from '@tiptap/extension-document';
 import Text from '@tiptap/extension-text';
 import { mount, unmount } from 'svelte';
@@ -22,7 +23,7 @@ const classes = (defaultClass: string) => ({
  * Creates the intentionally small sheet schema. The custom atom nodes mount Svelte 5
  * components directly, avoiding both runtime compilation and a third-party bridge.
  */
-export function createSheetExtensions(fields: Sheet): Extensions {
+export function createSheetExtensions(fields: Sheet, options: { protectCustomBlocks?: boolean } = {}): Extensions {
   const Container = Node.create({
     name: 'container',
     group: 'block',
@@ -143,7 +144,8 @@ export function createSheetExtensions(fields: Sheet): Extensions {
   });
 
   return [Document, Text, Container, CustomBlock, TextBlock, Formula, ImageNode,
-    BlockInteraction, BlockDragPreview, BlockDragHandle];
+    BlockInteraction, BlockDragPreview, BlockDragHandle,
+    ...(options.protectCustomBlocks ? [CustomBlockProtection] : [])];
 }
 
 export const insertionSamples: Record<SheetNodeType, JSONContent> = {

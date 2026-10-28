@@ -37,6 +37,8 @@
   let tab = $state<'structure' | 'css'>('structure');
   let tool = $state<'edit' | 'drag'>('edit');
   let selected = $state<{ pos: number; type: string; attrs: Record<string, unknown> } | null>(null);
+  type NestedValue = { pos: number; type: string; label: string; value: string; alt?: string };
+  let nestedValues = $state<NestedValue[]>([]);
   let error = $state('');
   let canvas: HTMLDivElement;
   let editor: Editor | null = null;
@@ -50,6 +52,23 @@
         ? { pos: selection.$from.before(selection.$from.depth), node: selection.$from.parent }
         : null;
     selected = node ? { pos: node.pos, type: node.node.type.name, attrs: { ...node.node.attrs } } : null;
+    nestedValues = [];
+    if (node?.node.type.name === 'customBlock') {
+      node.node.descendants((child, offset) => {
+        if (!['textBlock', 'formula', 'image'].includes(child.type.name)) return true;
+        const type = child.type.name;
+        nestedValues.push({
+          pos: node.pos + 1 + offset,
+          type,
+          label: String(child.attrs.class ?? type) || type,
+          value: type === 'textBlock'
+            ? child.textContent
+            : String(child.attrs[type === 'formula' ? 'field' : 'src'] ?? ''),
+          alt: type === 'image' ? String(child.attrs.alt ?? '') : undefined
+        });
+        return false;
+      });
+    }
   }
 
   function currentStructure(): JSONContent {
@@ -111,6 +130,23 @@
     const node = editor.state.doc.nodeAt(selected.pos);
     if (!node) return;
     editor.view.dispatch(editor.state.tr.setNodeMarkup(selected.pos, undefined, { ...node.attrs, [attribute]: value }));
+    syncStructure();
+  }
+
+  function updateNestedValue(leaf: NestedValue, value: string, property: 'value' | 'alt' = 'value') {
+    if (!editor) return;
+    const node = editor.state.doc.nodeAt(leaf.pos);
+    if (!node || node.type.name !== leaf.type) return;
+    const transaction = editor.state.tr;
+    if (leaf.type === 'textBlock') {
+      const content = value ? editor.state.schema.text(value) : undefined;
+      transaction.replaceWith(leaf.pos, leaf.pos + node.nodeSize,
+        node.type.create(node.attrs, content));
+    } else {
+      const key = property === 'alt' ? 'alt' : leaf.type === 'formula' ? 'field' : 'src';
+      transaction.setNodeMarkup(leaf.pos, undefined, { ...node.attrs, [key]: value });
+    }
+    editor.view.dispatch(transaction);
     syncStructure();
   }
 
@@ -213,13 +249,28 @@
           <div class="section-title">Selected: {selected.type}</div>
           {#if selected.type === 'customBlock'}
             <p class="hint">Nested block: {String(selected.attrs.typeId ?? '')}</p>
+            <p class="hint">Values here override defaults only within this parent definition.</p>
+            {#each nestedValues as leaf (leaf.pos)}
+              <label>{leaf.label} ({leaf.type})
+                <input aria-label={`Nested ${leaf.label} value`} value={leaf.value}
+                  oninput={(event) => updateNestedValue(leaf, event.currentTarget.value)} />
+              </label>
+              {#if leaf.type === 'image'}
+                <label>Image description
+                  <input aria-label={`Nested ${leaf.label} alt`} value={leaf.alt ?? ''}
+                    oninput={(event) => updateNestedValue(leaf, event.currentTarget.value, 'alt')} />
+                </label>
+              {/if}
+            {/each}
             <button onclick={openNested}>Edit definition</button>
           {:else if selected.type === 'formula'}
             <label>Field <input value={String(selected.attrs.field ?? '')} oninput={(e) => updateAttr('field', e.currentTarget.value)}/></label>
           {:else if selected.type === 'image'}
             <label>Source <input value={String(selected.attrs.src ?? '')} oninput={(e) => updateAttr('src', e.currentTarget.value)}/></label>
           {/if}
-          <label>Classes <input value={String(selected.attrs.class ?? '')} oninput={(e) => updateAttr('class', e.currentTarget.value)} /></label>
+          {#if selected.type !== 'customBlock'}
+            <label>Classes <input value={String(selected.attrs.class ?? '')} oninput={(e) => updateAttr('class', e.currentTarget.value)} /></label>
+          {/if}
           <button onclick={() => { if (selected && editor) { const n = editor.state.doc.nodeAt(selected.pos); if (n) editor.commands.deleteRange({ from: selected.pos, to: selected.pos + n.nodeSize }); syncStructure(); } }}>Delete selected</button>
         {/if}
       </aside>

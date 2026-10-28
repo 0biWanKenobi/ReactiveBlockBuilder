@@ -51,6 +51,19 @@ try {
   await page.keyboard.insertText('!');
   assert.match(await title.innerText(), /!/);
 
+  // Custom block structure is protected in the sheet, but leaf values are editable.
+  const beforeChildren = await instance.locator('[data-sheet-text], [data-sheet-block]').count();
+  await title.click();
+  await page.keyboard.press('ControlOrMeta+A');
+  await page.keyboard.press('Backspace');
+  const afterChildren = await instance.locator('[data-sheet-text], [data-sheet-block]').count();
+  assert.equal(afterChildren, beforeChildren, 'Cannot delete custom block descendants individually');
+  // Restore the typed override for the export/import assertion.
+  await title.click();
+  await page.keyboard.press('End');
+  await page.keyboard.insertText('!');
+  assert.match(await title.innerText(), /!/);
+
   const source = page.locator('.source-panel').first().locator('.cm-content');
   await page.getByRole('button', { name: 'Export', exact: true }).click();
   await source.click();

@@ -1,7 +1,7 @@
 import { test, expect } from 'bun:test';
 import {
   createDefinition, makeInstance, expandDocument, collapseDocument,
-  resetLeafDefaults
+  resetLeafDefaults, validateDefinition
 } from '../src/lib/custom-blocks/model.js';
 import type { CustomBlockDefinition } from '../src/lib/custom-blocks/types.js';
 
@@ -80,4 +80,25 @@ test('reset type defaults leaves structure and ids in place', () => {
   expect(reset.content?.[0].content?.[0].text).toBe('...');
   expect(reset.content?.[1].attrs?.field).toBe('');
   expect(reset.content?.[2].attrs?.src).toBe('');
+});
+
+test('definition validator rejects missing and cyclic dependencies', () => {
+  const registry = library();
+  const child = createDefinition('Child', {
+    type: 'container', content: [{ type: 'textBlock', content: [{ type: 'text', text: 'Child' }] }]
+  }, registry);
+  const parent = createDefinition('Parent', {
+    type: 'container', content: [{ type: 'customBlock', attrs: { typeId: child.typeId, instanceId: 'nested-1' } }]
+  }, library(child));
+  expect(() => validateDefinition(parent, library(child))).not.toThrow();
+  expect(() => validateDefinition(parent, registry)).toThrow(/Missing custom block definition/);
+  const recursive = {
+    ...child,
+    structure: {
+      ...child.structure, content: [
+        { type: 'customBlock', attrs: { typeId: parent.typeId, instanceId: 'nested-2' } }
+      ]
+    }
+  };
+  expect(() => validateDefinition(recursive, library(child, parent))).toThrow(/Circular custom block reference/);
 });
