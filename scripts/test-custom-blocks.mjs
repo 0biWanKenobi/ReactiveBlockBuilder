@@ -5,6 +5,8 @@ const browser = await chromium.launch({ headless: true });
 try {
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
   page.on('pageerror', (error) => console.error('BROWSER ERROR:', error.stack ?? error.message));
+  page.on('console', msg => { if(msg.type() !== 'log') console.error('BROWSER CONSOLE', msg.type(), msg.text()); });
+  page.on('response', response => { if(response.status() >= 400) console.error('BROWSER RESPONSE', response.status(), response.url()); });
   await page.goto('http://127.0.0.1:5189/', { waitUntil: 'networkidle' });
 
   const header = page.locator('.sheet-content .sheet-header').first();
