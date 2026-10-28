@@ -565,8 +565,8 @@
 
 {#if contextPosition !== null}
   {@const position = contextPosition}
-  <div class="context-action" role="menu" style:left={`${contextCoords.x}px`} style:top={`${contextCoords.y}px`}>
-    <button role="menuitem" onclick={() => { startNewDefinition(position); contextPosition = null; }}>Save as custom block</button>
+  <div class="context-action" style:left={`${contextCoords.x}px`} style:top={`${contextCoords.y}px`}>
+    <button onclick={() => { startNewDefinition(position); contextPosition = null; }}>Save as custom block</button>
     <button onclick={() => contextPosition = null} aria-label="Close context menu">✕</button>
   </div>
 {/if}
