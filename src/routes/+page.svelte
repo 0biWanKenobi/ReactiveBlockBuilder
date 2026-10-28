@@ -185,6 +185,18 @@
     editor.view.dispatch(editor.state.tr.replaceWith(pos, pos + original.nodeSize, replacement));
   }
 
+  async function deleteDefinition(definition: CustomBlockDefinition) {
+    if (!window.confirm(`Delete "${definition.name}"? Sheets and custom blocks that reference it will fail to import.`)) return;
+    try {
+      await repository.delete(definition.typeId);
+      library.remove(definition.typeId);
+      await reloadBlockStyles();
+      message = `Deleted custom block: ${definition.name}`;
+    } catch (error) {
+      message = `Delete failed: ${error instanceof Error ? error.message : String(error)}`;
+    }
+  }
+
   async function saveDefinition(definition: CustomBlockDefinition, blockStyle: string) {
     try {
       // Capture changes against the old definition before it is replaced.
@@ -425,7 +437,8 @@
       <BlockPalette customBlocks={library.definitions}
         draggable={mode === 'design' && designTool === 'drag'} onInsert={insert}
         onDragStart={dragPaletteBlock} onDragEnd={finishPaletteDrag}
-        onEdit={(block) => { editedBlock = block; pendingConversion = null; }} />
+        onEdit={(block) => { editedBlock = block; pendingConversion = null; }}
+        onDelete={deleteDefinition} />
       <div class="separator"></div>
       <div class="panel-heading">Formula fields</div>
       <p class="muted">Modify STR to watch STR_MOD, ATTACK and the stat blocks update.</p>

@@ -9,7 +9,8 @@
     onInsert,
     onDragStart,
     onDragEnd,
-    onEdit
+    onEdit,
+    onDelete
   }: {
     customBlocks?: CustomBlockDefinition[];
     draggable?: boolean;
@@ -17,6 +18,7 @@
     onDragStart: (event: DragEvent, block: JSONContent) => void;
     onDragEnd: () => void;
     onEdit?: (block: CustomBlockDefinition) => void;
+    onDelete?: (block: CustomBlockDefinition) => void;
   } = $props();
 
   const stock = [
@@ -61,6 +63,10 @@
           <button class="edit" aria-label={`Edit ${definition.name}`}
             title={`Edit ${definition.name}`} onclick={() => onEdit?.(definition)}>✎</button>
         {/if}
+        {#if onDelete}
+          <button class="delete" aria-label={`Delete ${definition.name}`}
+            title={`Delete ${definition.name}`} onclick={() => onDelete?.(definition)}>×</button>
+        {/if}
       </div>
     {/each}
   </div>
@@ -76,4 +82,6 @@
   .custom-tile { position: relative; min-width: 0; }
   .edit { position: absolute; right: 5px; top: 5px; border: 0; border-radius: 5px; color: #71543a; background: #f6e7cf; padding: 3px 6px; opacity: 0; cursor: pointer; }
   .custom-tile:hover .edit, .edit:focus-visible { opacity: 1; }
+  .delete { position: absolute; right: 5px; bottom: 5px; border: 0; border-radius: 5px; color: #963d32; background: #fae4dd; padding: 2px 7px; opacity: 0; cursor: pointer; }
+  .custom-tile:hover .delete, .delete:focus-visible { opacity: 1; }
 </style>

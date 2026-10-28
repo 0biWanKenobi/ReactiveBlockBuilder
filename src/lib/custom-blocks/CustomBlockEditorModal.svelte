@@ -24,7 +24,13 @@
 
   let name = $state(initial.name);
   let rootClass = $state(initial.rootClass);
-  let css = $state(initialCSS);
+  let css = $state(initialCSS || `/*
+ * Fill this with your styles as needed, or leave it empty.
+ *
+ * .custom-class {
+ *
+ * }
+ */`);
   let structure = $state(JSON.stringify(initial.structure, null, 2));
   let tab = $state<'structure' | 'css'>('structure');
   let tool = $state<'edit' | 'drag'>('edit');
