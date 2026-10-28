@@ -52,7 +52,9 @@ try {
 
   const source = page.locator('.source-panel').first().locator('.cm-content');
   await page.getByRole('button', { name: 'Export', exact: true }).click();
-  const serialized = JSON.parse(await source.innerText());
+  const serialized = JSON.parse(await source.evaluate(el =>
+    [...el.querySelectorAll('.cm-line')].map(line => line.textContent).join('\n')
+  ));
   assert.equal(serialized.themeId, 'default');
   assert.equal('css' in serialized, false);
   const compact = serialized.document.content[0];
