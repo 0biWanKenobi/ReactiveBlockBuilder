@@ -29,7 +29,6 @@
           EditorView.lineWrapping,
           EditorView.theme({
             '&': {
-              height: '250px',
               fontSize: '12px',
               backgroundColor: '#ffffff'
             },
@@ -76,6 +75,7 @@
 <div class="code-editor" bind:this={target}></div>
 
 <style>
-  .code-editor { min-width: 0; }
-  .code-editor :global(.cm-editor) { max-width: 100%; }
+  /* Let the panel size the editor instead of the document's line count. */
+  .code-editor { display: flex; flex: 1; min-width: 0; min-height: 0; contain: size; }
+  .code-editor :global(.cm-editor) { flex: 1; min-width: 0; min-height: 0; max-width: 100%; }
 </style>

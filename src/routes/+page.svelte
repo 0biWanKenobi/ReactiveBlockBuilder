@@ -367,7 +367,7 @@
   :global(body) { margin: 0; background: #f2f1ee; color: #312d2a; font-family: Inter, system-ui, -apple-system, sans-serif; }
   :global(button), :global(input), :global(textarea) { font: inherit; }
   button { cursor: pointer; }
-  .workspace { min-height: 100vh; }
+  .workspace { display: flex; flex-direction: column; min-height: 100dvh; }
   .topbar { display: flex; justify-content: space-between; gap: 20px; align-items: center; padding: 24px 30px; background: #23282c; color: #faf8f5; }
   .eyebrow { color: #c9a274; font-size: .67rem; font-weight: 800; letter-spacing: .15em; }
   h1 { margin: 5px 0 3px; font-size: 1.7rem; }
@@ -375,8 +375,8 @@
   .mode-switch { display: flex; gap: 4px; background: #161c1f; padding: 5px; border-radius: 10px; }
   .mode-switch button { background: transparent; border: 0; color: #c5c8ca; border-radius: 7px; padding: 9px 15px; font-size: .83rem; }
   .mode-switch button.active { background: #ddbd8c; color: #242526; font-weight: 800; }
-  .editor-layout { display: grid; grid-template-columns: 240px minmax(0, 1fr) 230px; align-items: start; min-height: calc(100vh - 109px); }
-  .sidebar { padding: 22px 16px; background: #fbfaf8; min-height: calc(100vh - 109px); border-right: 1px solid #dedad4; }
+  .editor-layout { display: grid; flex: 1; grid-template-columns: 240px minmax(0, 1fr) 230px; align-items: stretch; min-height: 0; }
+  .sidebar { padding: 22px 16px; background: #fbfaf8; min-height: 0; border-right: 1px solid #dedad4; }
   .inspector { border-right: 0; border-left: 1px solid #dedad4; }
   .panel-heading { color: #4c4034; text-transform: uppercase; letter-spacing: .09em; font-weight: 800; font-size: .72rem; }
   .muted { font-size: .76rem; line-height: 1.55; color: #8b8178; margin: 9px 0 16px; }
@@ -393,7 +393,8 @@
   .new-field { display: grid; gap: 8px; margin-top: 15px; }
   .new-field button { padding: 8px; border: 1px solid #a57e4f; border-radius: 7px; color: #5b401e; background: #f8e9d0; font-size: .78rem; font-weight: 700; }
   .error { color: #b34536; font-size: .73rem; }
-  .main-pane { padding: 23px; min-width: 0; }
+  .main-pane { display: flex; flex-direction: column; padding: 23px; min-width: 0; }
+  .pane-title, .sheet-frame, .status { flex-shrink: 0; }
   .pane-title { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 15px; }
   .pane-title strong { display: block; font-size: .89rem; }
   .pane-title span { display: block; color: #8e867d; font-size: .76rem; margin-top: 4px; }
@@ -408,9 +409,9 @@
   .sheet-content :global(.tiptap[contenteditable="true"] section:hover) { outline-color: #b48348; }
   .playing .sheet-content :global(.tiptap section) { outline: none; }
   .status { font-size: .73rem; color: #816544; margin: 12px 0; min-height: 18px; }
-  .source-panels { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 25px; }
-  .source-panel { min-width: 0; background: #fff; border: 1px solid #e4ded5; border-radius: 10px; overflow: hidden; }
-  .source-heading { display: flex; align-items: center; justify-content: space-between; padding: 11px 13px; border-bottom: 1px solid #eee9e2; font-size: .76rem; }
+  .source-panels { display: grid; flex: 1; min-height: 0; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 25px; }
+  .source-panel { display: flex; flex-direction: column; min-width: 0; background: #fff; border: 1px solid #e4ded5; border-radius: 10px; overflow: hidden; }
+  .source-heading { display: flex; flex-shrink: 0; align-items: center; justify-content: space-between; padding: 11px 13px; border-bottom: 1px solid #eee9e2; font-size: .76rem; }
   .source-heading span { color: #8a806f; }
   .source-actions { display: flex; gap: 6px; align-items: center; }
   .source-actions button { border: 1px solid #d8c7b4; border-radius: 5px; background: #faf6ef; padding: 5px 9px; font-size: .7rem; }
@@ -434,6 +435,7 @@
     .topbar { flex-direction: column; align-items: flex-start; }
     .editor-layout { display: flex; flex-direction: column; }
     .sidebar, .main-pane { width: 100%; }
+    .source-panels { min-height: 100dvh; }
     .sheet-content { padding: 15px; }
   }
 </style>
