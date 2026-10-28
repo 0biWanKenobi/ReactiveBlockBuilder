@@ -13,6 +13,7 @@ jobs:
           node-version: '22'
       - uses: oven-sh/setup-bun@v2
       - run: bun install --frozen-lockfile
+      - run: bun test scripts/custom-model.test.ts
       - run: npm run check
       - run: npm run build
       - name: Smoke test dev server
