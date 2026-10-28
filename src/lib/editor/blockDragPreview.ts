@@ -248,7 +248,9 @@ export const BlockDragPreview = Extension.create({
         key: previewKey,
         state: {
           init: () => null,
-          apply(transaction, current) {
+          apply(transaction, current, _oldState, newState) {
+            // Mode changes must clear any stale placeholder immediately.
+            if (!isBlockDragMode(newState)) return null;
             const meta = transaction.getMeta(previewKey) as DragPreview | null | undefined;
             if (meta !== undefined) return meta;
             return transaction.docChanged ? null : current;

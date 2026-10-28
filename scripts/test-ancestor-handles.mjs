@@ -9,14 +9,45 @@ try {
   const response = await page.goto('http://127.0.0.1:5189/', { waitUntil: 'networkidle' });
   assert.equal(response?.status(), 200);
   assert.equal(await page.locator('.sheet-content .tiptap').count(), 1);
-  const title = page.locator('.sheet-content .sheet-title').first();
-  await title.waitFor({ state: 'visible', timeout: 10000 }).catch(async (error) => {
-    console.error('TITLE NOT FOUND. BODY:', (await page.locator('body').innerText()).slice(0, 3000));
-    console.error('HTML:', (await page.content()).slice(0, 3000));
-    throw error;
-  });
-  await title.hover();
+  await page.locator('.sheet-content .sheet-title').first().waitFor({ state: 'visible', timeout: 10000 });
+  const canvas = page.locator('.sheet-content .tiptap');
+  const palette = page.locator('.palette button').first();
   const rail = page.locator('.rbb-block-drag-rail');
+
+  // Design/Edit is the default: text remains editable, but neither the
+  // palette nor document nodes should start a block drag.
+  const title = page.locator('.sheet-content .sheet-title').first();
+  await title.hover();
+  assert.equal(await canvas.getAttribute('contenteditable'), 'true');
+  assert.equal(await canvas.getAttribute('data-rbb-drag-mode'), 'false');
+  assert.equal(await rail.isVisible(), false);
+  assert.equal(await rail.locator('button').count(), 0);
+  assert.notEqual(await title.getAttribute('draggable'), 'true');
+  assert.notEqual(await palette.getAttribute('draggable'), 'true');
+
+  await page.getByRole('button', { name: 'Drag', exact: true }).click();
+  assert.equal(await canvas.getAttribute('contenteditable'), 'false');
+  assert.equal(await canvas.getAttribute('data-rbb-drag-mode'), 'true');
+  assert.equal(await palette.getAttribute('draggable'), 'true');
+  assert.equal(await title.getAttribute('draggable'), 'true');
+
+  await title.hover();
+  await rail.locator('button').first().waitFor({ state: 'visible' });
+  assert.equal(await rail.locator('button').count(), 2);
+
+  // Toggle while handles are visible: no stale handles or drop affordances.
+  await page.getByRole('button', { name: 'Edit', exact: true }).click();
+  assert.equal(await canvas.getAttribute('contenteditable'), 'true');
+  assert.equal(await canvas.getAttribute('data-rbb-drag-mode'), 'false');
+  assert.equal(await rail.isVisible(), false);
+  assert.equal(await rail.locator('button').count(), 0);
+  assert.notEqual(await title.getAttribute('draggable'), 'true');
+  assert.notEqual(await palette.getAttribute('draggable'), 'true');
+  assert.equal(await page.locator('.rbb-drop-placeholder').count(), 0);
+
+  await page.getByRole('button', { name: 'Drag', exact: true }).click();
+  await title.hover();
+
   const handles = rail.locator('button');
   await handles.first().waitFor({ state: 'visible' });
   assert.equal(await handles.count(), 2, 'header and title must have separate handles');

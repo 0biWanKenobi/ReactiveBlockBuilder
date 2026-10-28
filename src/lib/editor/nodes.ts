@@ -27,7 +27,6 @@ export function createSheetExtensions(fields: Sheet): Extensions {
     group: 'block',
     content: 'block+',
     defining: true,
-    draggable: true,
     addAttributes: () => classes('sheet-container'),
     parseHTML: () => [{ tag: 'section[data-sheet-container]' }],
     renderHTML: ({ HTMLAttributes }) => [
@@ -40,7 +39,6 @@ export function createSheetExtensions(fields: Sheet): Extensions {
     group: 'block',
     content: 'text*',
     defining: true,
-    draggable: true,
     addAttributes: () => classes('sheet-text'),
     parseHTML: () => [{ tag: 'p[data-sheet-text]' }],
     renderHTML: ({ HTMLAttributes }) => [
@@ -52,7 +50,6 @@ export function createSheetExtensions(fields: Sheet): Extensions {
     name: 'formula',
     group: 'block',
     atom: true,
-    draggable: true,
     selectable: true,
     addAttributes: () => ({
       ...classes('sheet-formula'),
@@ -89,7 +86,6 @@ export function createSheetExtensions(fields: Sheet): Extensions {
     name: 'image',
     group: 'block',
     atom: true,
-    draggable: true,
     selectable: true,
     addAttributes: () => ({
       ...classes('sheet-image'),

@@ -110,7 +110,7 @@
   }
 
   function dragPaletteBlock(event: DragEvent, type: SheetNodeType) {
-    if (!editor || mode !== 'design') {
+    if (!editor || mode !== 'design' || designTool !== 'drag') {
       event.preventDefault();
       return;
     }
@@ -265,13 +265,13 @@
       <div class="panel-heading">Block palette</div>
       <p class="muted">Drag blocks onto the sheet, inside containers or between blocks. Use the canvas gutters for top-level placement. Click to insert at the cursor.</p>
       <div class="palette">
-        <button draggable={mode === 'design'} ondragstart={(event) => dragPaletteBlock(event, 'container')}
+        <button draggable={mode === 'design' && designTool === 'drag'} ondragstart={(event) => dragPaletteBlock(event, 'container')}
           ondragend={finishPaletteDrag} onclick={() => insert('container')}><span>▦</span> Container</button>
-        <button draggable={mode === 'design'} ondragstart={(event) => dragPaletteBlock(event, 'textBlock')}
+        <button draggable={mode === 'design' && designTool === 'drag'} ondragstart={(event) => dragPaletteBlock(event, 'textBlock')}
           ondragend={finishPaletteDrag} onclick={() => insert('textBlock')}><span>¶</span> Text</button>
-        <button draggable={mode === 'design'} ondragstart={(event) => dragPaletteBlock(event, 'formula')}
+        <button draggable={mode === 'design' && designTool === 'drag'} ondragstart={(event) => dragPaletteBlock(event, 'formula')}
           ondragend={finishPaletteDrag} onclick={() => insert('formula')}><span>ƒ</span> Formula</button>
-        <button draggable={mode === 'design'} ondragstart={(event) => dragPaletteBlock(event, 'image')}
+        <button draggable={mode === 'design' && designTool === 'drag'} ondragstart={(event) => dragPaletteBlock(event, 'image')}
           ondragend={finishPaletteDrag} onclick={() => insert('image')}><span>▧</span> Image</button>
       </div>
       <div class="separator"></div>
@@ -297,7 +297,7 @@
       <div class="pane-title">
         <div>
           <strong>Sheet canvas</strong>
-          <span>{mode === 'play' ? 'Read-only layout · live formulas and rolls' : designTool === 'drag' ? 'Drag blocks or their handles to move them · text editing is disabled' : 'Edit content directly · hover a block for its drag handle'}</span>
+          <span>{mode === 'play' ? 'Read-only layout · live formulas and rolls' : designTool === 'drag' ? 'Drag blocks or their handles to move them · text editing is disabled' : 'Edit content directly · block dragging disabled'}</span>
         </div>
         {#if mode === 'design'}
           <div class="canvas-actions">

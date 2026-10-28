@@ -12,8 +12,9 @@ export function isBlockDragMode(state: EditorState): boolean {
 }
 
 export function canDragBlocks(view: EditorView): boolean {
-  return view.editable ||
-    (isBlockDragMode(view.state) && view.props.editable?.(view.state) !== false);
+  // Tiptap remains editable in Design/Edit mode, but block dragging is
+  // intentionally enabled only by the dedicated Drag tool.
+  return isBlockDragMode(view.state);
 }
 
 export function setBlockDragMode(view: EditorView, enabled: boolean): void {
