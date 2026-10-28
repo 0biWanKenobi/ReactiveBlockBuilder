@@ -9,7 +9,7 @@ try {
 
   const header = page.locator('.sheet-content .sheet-header').first();
   await header.click({ button: 'right' });
-  await page.getByRole('button', { name: 'Save as custom block' }).click();
+  await page.getByRole('button', { name: 'Save as custom block' }).evaluate((button) => button.click());
   const modal = page.getByRole('dialog', { name: 'Custom block definition editor' });
   console.log('After creation:', {
     dialogs: await page.locator('[role="dialog"]').count(),
