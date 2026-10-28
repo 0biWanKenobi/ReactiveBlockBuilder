@@ -400,16 +400,19 @@
     <aside class="sidebar" inert={mode === 'play'}>
       <div class="panel-heading">Block palette</div>
       <p class="muted">Drag blocks onto the sheet, inside containers or between blocks. Use the canvas gutters for top-level placement. Click to insert at the cursor.</p>
-      <div class="palette">
-        <button draggable={mode === 'design' && designTool === 'drag'} ondragstart={(event) => dragPaletteBlock(event, 'container')}
-          ondragend={finishPaletteDrag} onclick={() => insert('container')}><span>▦</span> Container</button>
-        <button draggable={mode === 'design' && designTool === 'drag'} ondragstart={(event) => dragPaletteBlock(event, 'textBlock')}
-          ondragend={finishPaletteDrag} onclick={() => insert('textBlock')}><span>¶</span> Text</button>
-        <button draggable={mode === 'design' && designTool === 'drag'} ondragstart={(event) => dragPaletteBlock(event, 'formula')}
-          ondragend={finishPaletteDrag} onclick={() => insert('formula')}><span>ƒ</span> Formula</button>
-        <button draggable={mode === 'design' && designTool === 'drag'} ondragstart={(event) => dragPaletteBlock(event, 'image')}
-          ondragend={finishPaletteDrag} onclick={() => insert('image')}><span>▧</span> Image</button>
-      </div>
+      <div class="panel-heading">Stock blocks</div>
+      <label class="property">
+        <span>After saving a custom block</span>
+        <select aria-label="After saving a custom block" bind:value={saveBehavior}>
+          <option value="ask">Ask every time</option>
+          <option value="replace">Replace original with custom block</option>
+          <option value="keep">Keep original unchanged</option>
+        </select>
+      </label>
+      <BlockPalette customBlocks={library.definitions}
+        draggable={mode === 'design' && designTool === 'drag'} onInsert={insert}
+        onDragStart={dragPaletteBlock} onDragEnd={finishPaletteDrag}
+        onEdit={(block) => { editedBlock = block; pendingConversion = null; }} />
       <div class="separator"></div>
       <div class="panel-heading">Formula fields</div>
       <p class="muted">Modify STR to watch STR_MOD, ATTACK and the stat blocks update.</p>
@@ -448,8 +451,14 @@
         {/if}
       </div>
       <div class="sheet-frame" class:playing={mode === 'play'}>
-        <div class="sheet-content">
+        <div class="sheet-content" oncontextmenu={contextMenu}>
           <div bind:this={canvas}></div>
+          {#if contextPosition !== null}
+            <div class="context-action">
+              <button onclick={() => { if (contextPosition !== null) startNewDefinition(contextPosition); contextPosition = null; }}>Save as custom block</button>
+              <button onclick={() => contextPosition = null} aria-label="Close context menu">✕</button>
+            </div>
+          {/if}
         </div>
       </div>
       {#if message}<div class="status" role="status" inert={mode === 'play'}>{message}</div>{/if}
@@ -468,13 +477,15 @@
         </section>
         <section class="source-panel">
           <div class="source-heading">
-            <strong>Custom CSS</strong>
+            <strong>Theme CSS</strong>
             <div class="source-actions">
-              <span>Live</span>
+              <span>Live preview · draft</span>
+              <button onclick={saveThemeCSS}>Save</button>
+              <button onclick={discardThemeCSS}>Discard</button>
               <button class="format-button" title="Format CSS" aria-label="Format CSS" onclick={formatCSS}>Format</button>
             </div>
           </div>
-          <CodeEditor language="css" label="Custom sheet CSS" value={css} onChange={(next) => css = next} />
+          <CodeEditor language="css" label="Theme CSS" value={css} onChange={(next) => css = next} />
         </section>
       </div>
     </main>
@@ -485,14 +496,14 @@
         <p class="muted">Switch to Design to modify nodes.</p>
       {:else if selected}
         <div class="selection-heading"><strong>{selected.type}</strong><span>node at {selected.pos}</span></div>
-        <label class="property">
+        {#if !selectedIsInsideCustomBlock()}<label class="property">
           <span>CSS classes</span>
           <input
             aria-label="Selected block CSS classes"
             value={String(selected.attrs.class ?? '')}
             oninput={(event) => editAttribute('class', event.currentTarget.value)}
           />
-        </label>
+        </label>{/if}
         {#if selected.type === 'formula'}
           <label class="property">
             <span>Field ID</span>
@@ -515,7 +526,7 @@
         {:else}
           <p class="muted">The container can hold other blocks. Select its inner blocks or edit its CSS layout rules.</p>
         {/if}
-        <button class="danger-button" onclick={removeSelected}>Delete selected block</button>
+        {#if !selectedIsInsideCustomBlock()}<button class="danger-button" onclick={removeSelected}>Delete selected block</button>{/if}
       {:else}
         <p class="muted">Select a text, formula, image or container block to edit its properties.</p>
       {/if}
@@ -526,6 +537,29 @@
     </aside>
   </div>
 </div>
+
+{#if editedBlock}
+  <CustomBlockEditorModal
+    initial={editedBlock}
+    initialCSS={blockCSS[editedBlock.typeId] ?? ''}
+    {library} {fields}
+    onSave={saveDefinition}
+    onClose={() => { editedBlock = null; pendingConversion = null; }}
+  />
+{/if}
+{#if conversionPrompt}
+  <div class="confirmation-backdrop">
+    <div class="confirmation" role="dialog" aria-modal="true" aria-label="Saved custom block">
+      <h2>Custom block saved</h2>
+      <p>Replace the original container with an instance of the new custom block?</p>
+      <label><input type="checkbox" bind:checked={rememberChoice}/> Remember for this session</label>
+      <div class="confirmation-actions">
+        <button onclick={() => conversionChoice(false)}>Keep original</button>
+        <button onclick={() => conversionChoice(true)}>Replace original</button>
+      </div>
+    </div>
+  </div>
+{/if}
 
 <style>
   :global(*) { box-sizing: border-box; }
@@ -561,6 +595,16 @@
   .inspector { border-right: 0; border-left: 1px solid #dedad4; }
   .panel-heading { color: #4c4034; text-transform: uppercase; letter-spacing: .09em; font-weight: 800; font-size: .72rem; }
   .muted { font-size: .76rem; line-height: 1.55; color: #8b8178; margin: 9px 0 16px; }
+  .context-action { display: flex; gap: 6px; padding: 10px; background: #fff7e9; border: 1px solid #c7ab83; border-radius: 8px; margin: 8px; }
+  .context-action button { border: 1px solid #d4c7b7; border-radius: 6px; padding: 7px; background: white; cursor: pointer; }
+  .confirmation-backdrop { position: fixed; inset: 0; z-index: 120; background: #0008; display: grid; place-items: center; }
+  .confirmation { background: #fffaf3; padding: 24px; border-radius: 12px; width: min(420px, 90vw); box-shadow: 0 20px 50px #0004; }
+  .confirmation h2 { font-size: 1.1rem; }
+  .confirmation label { display: flex; gap: 8px; align-items: center; font-size: .85rem; }
+  .confirmation label input { width: auto; min-width: 0; }
+  .confirmation-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+  .confirmation-actions button { padding: 9px; border: 1px solid #d4c7b7; background: #f6e7cf; border-radius: 7px; cursor: pointer; }
+  select { width: 100%; padding: 8px; border: 1px solid #d8d2c9; border-radius: 6px; background: white; }
   .palette { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
   .palette button { display: flex; align-items: center; flex-direction: column; gap: 7px; padding: 13px 5px; border: 1px solid #ded6cb; background: white; border-radius: 9px; color: #4d463e; font-weight: 650; font-size: .75rem; }
   .palette button:hover { border-color: #a9773c; }
