@@ -147,14 +147,16 @@
   }
 
   function startNewDefinition(pos: number) {
-    if (!editor) return;
+    message = `startNewDefinition called at ${pos}`;
+    if (!editor) { message = 'No editor'; return; }
     const node = editor.state.doc.nodeAt(pos);
-    if (!node || node.type.name !== 'container' || !node.childCount) return;
+    if (!node || node.type.name !== 'container' || !node.childCount) { message = `Invalid candidate: ${node?.type.name} children=${node?.childCount}`; return; }
     const name = String(node.attrs.class ?? '').trim().split(/\s+/)[0] || 'Custom block';
     try {
       editedBlock = createDefinition(name, node.toJSON(), library);
       pendingOriginalValues = captureInitialValues(editedBlock.structure, node.toJSON());
       pendingConversion = pos;
+      message = `Created draft ${editedBlock.typeId}`;
     } catch (error) {
       message = `Custom block creation failed: ${error instanceof Error ? error.message : String(error)}`;
     }
