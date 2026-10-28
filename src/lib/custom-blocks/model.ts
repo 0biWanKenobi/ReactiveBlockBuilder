@@ -2,7 +2,8 @@ import type { JSONContent } from '@tiptap/core';
 import type { BlockLibrary, BlockValues, CustomBlockDefinition, LeafValue } from './types.js';
 
 function clone<T>(value: T): T {
-  return structuredClone(value);
+  // JSON definitions may be Svelte $state proxies, which structuredClone rejects.
+  return JSON.parse(JSON.stringify(value)) as T;
 }
 
 function id(): string {
