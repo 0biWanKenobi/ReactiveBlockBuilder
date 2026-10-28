@@ -38,6 +38,7 @@
   let error = $state('');
   let canvas: HTMLDivElement;
   let editor: Editor | null = null;
+  let previewStyle: HTMLStyleElement | null = null;
 
   function synchronizeSelection(instance: Editor) {
     const selection = instance.state.selection;
@@ -65,18 +66,27 @@
   }
 
   onMount(() => {
+    previewStyle = document.createElement('style');
+    previewStyle.dataset.customBlockDraft = initial.typeId;
+    document.head.appendChild(previewStyle);
+    previewStyle.textContent = css;
     editor = new Editor({
       element: canvas,
       extensions: createSheetExtensions(fields),
       content: expandDocument({ type: 'doc', content: [initial.structure] }, library),
       onSelectionUpdate: ({ editor }) => synchronizeSelection(editor),
-      onTransaction: ({ editor }) => synchronizeSelection(editor)
+      onTransaction: ({ editor }) => synchronizeSelection(editor),
+      onUpdate: () => syncStructure()
     });
-    return () => { editor?.destroy(); editor = null; };
+    return () => { editor?.destroy(); editor = null; previewStyle?.remove(); previewStyle = null; };
   });
 
   $effect(() => {
     if (editor) setBlockDragMode(editor.view, tool === 'drag');
+  });
+
+  $effect(() => {
+    if (previewStyle) previewStyle.textContent = css;
   });
 
   function insert(block: JSONContent) {
