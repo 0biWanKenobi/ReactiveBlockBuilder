@@ -484,7 +484,7 @@
           {#if contextPosition !== null}
             {@const position = contextPosition}
             <div class="context-action">
-              <button onclick={() => { startNewDefinition(position); contextPosition = null; }}>Save as custom block</button>
+              <button onpointerdown={(event) => { event.stopPropagation(); event.preventDefault(); startNewDefinition(position); contextPosition = null; }}>Save as custom block</button>
               <button onclick={() => contextPosition = null} aria-label="Close context menu">✕</button>
             </div>
           {/if}
