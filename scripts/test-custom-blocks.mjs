@@ -3,7 +3,8 @@ import { chromium } from 'playwright';
 
 const browser = await chromium.launch({ headless: true });
 try {
-  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  const context = await browser.newContext({ viewport: { width: 1440, height: 900 }, permissions: ['clipboard-read', 'clipboard-write'] });
+  const page = await context.newPage();
   page.on('pageerror', (error) => console.error('BROWSER ERROR:', error.stack ?? error.message));
   page.on('console', msg => { if(msg.type() !== 'log') console.error('BROWSER CONSOLE', msg.type(), msg.text()); });
   page.on('response', response => { if(response.status() >= 400) console.error('BROWSER RESPONSE', response.status(), response.url()); });
@@ -52,9 +53,10 @@ try {
 
   const source = page.locator('.source-panel').first().locator('.cm-content');
   await page.getByRole('button', { name: 'Export', exact: true }).click();
-  const serialized = JSON.parse(await source.evaluate(el =>
-    [...el.querySelectorAll('.cm-line')].map(line => line.textContent).join('\n')
-  ));
+  await source.click();
+  await page.keyboard.press('ControlOrMeta+A');
+  await page.keyboard.press('ControlOrMeta+C');
+  const serialized = JSON.parse(await page.evaluate(() => navigator.clipboard.readText()));
   assert.equal(serialized.themeId, 'default');
   assert.equal('css' in serialized, false);
   const compact = serialized.document.content[0];
