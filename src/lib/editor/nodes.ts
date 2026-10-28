@@ -1,4 +1,7 @@
 import { Node, mergeAttributes, type Extensions, type JSONContent } from '@tiptap/core';
+import { BlockDragPreview } from './blockDragPreview.js';
+import { BlockInteraction } from './blockInteraction.js';
+import { BlockDragHandle } from './blockDragHandle.js';
 import Document from '@tiptap/extension-document';
 import Text from '@tiptap/extension-text';
 import { mount, unmount } from 'svelte';
@@ -121,7 +124,8 @@ export function createSheetExtensions(fields: Sheet): Extensions {
     }
   });
 
-  return [Document, Text, Container, TextBlock, Formula, ImageNode];
+  return [Document, Text, Container, TextBlock, Formula, ImageNode,
+    BlockInteraction, BlockDragPreview, BlockDragHandle];
 }
 
 export const insertionSamples: Record<SheetNodeType, JSONContent> = {

@@ -3,6 +3,8 @@
   import CodeEditor from '../lib/editor/CodeEditor.svelte';
   import { Editor, type JSONContent } from '@tiptap/core';
   import { NodeSelection } from '@tiptap/pm/state';
+  import { startPaletteDrag, endPaletteDrag } from '../lib/editor/blockDragPreview.js';
+  import { setBlockDragMode } from '../lib/editor/blockInteraction.js';
   import {
     createSheetExtensions, insertionSamples, allowedNodeTypes,
     initialFields, sampleDocument, defaultCSS, validateId
@@ -26,6 +28,7 @@
   let editor = $state<Editor | null>(null);
   let selected = $state<SelectedBlock | null>(null);
   let mode = $state<'design' | 'play'>('design');
+  let designTool = $state<'edit' | 'drag'>('edit');
   let fields = $state<Sheet>(structuredClone(initialFields));
   let css = $state(defaultCSS);
   let jsonSource = $state(JSON.stringify({
@@ -93,7 +96,9 @@
   });
 
   $effect(() => {
-    editor?.setEditable(mode === 'design');
+    if (!editor) return;
+    setBlockDragMode(editor.view, mode === 'design' && designTool === 'drag');
+    editor.setEditable(mode === 'design');
   });
 
   function insert(type: SheetNodeType) {
@@ -102,6 +107,18 @@
     // Use a fresh node object; Tiptap may normalize its content.
     editor.chain().focus().insertContent(structuredClone(insertionSamples[type])).run();
     message = `Added ${type} block`;
+  }
+
+  function dragPaletteBlock(event: DragEvent, type: SheetNodeType) {
+    if (!editor || mode !== 'design') {
+      event.preventDefault();
+      return;
+    }
+    startPaletteDrag(editor.view, event, insertionSamples[type]);
+  }
+
+  function finishPaletteDrag() {
+    if (editor) endPaletteDrag(editor.view);
   }
 
   function editAttribute(attribute: string, value: string) {
@@ -246,12 +263,16 @@
   <div class="editor-layout">
     <aside class="sidebar">
       <div class="panel-heading">Block palette</div>
-      <p class="muted">Insert into the current document position. Select inside a container to insert nested blocks.</p>
+      <p class="muted">Drag blocks onto the sheet, inside containers or between blocks. Use the canvas gutters for top-level placement. Click to insert at the cursor.</p>
       <div class="palette">
-        <button onclick={() => insert('container')}><span>▦</span> Container</button>
-        <button onclick={() => insert('textBlock')}><span>¶</span> Text</button>
-        <button onclick={() => insert('formula')}><span>ƒ</span> Formula</button>
-        <button onclick={() => insert('image')}><span>▧</span> Image</button>
+        <button draggable={mode === 'design'} ondragstart={(event) => dragPaletteBlock(event, 'container')}
+          ondragend={finishPaletteDrag} onclick={() => insert('container')}><span>▦</span> Container</button>
+        <button draggable={mode === 'design'} ondragstart={(event) => dragPaletteBlock(event, 'textBlock')}
+          ondragend={finishPaletteDrag} onclick={() => insert('textBlock')}><span>¶</span> Text</button>
+        <button draggable={mode === 'design'} ondragstart={(event) => dragPaletteBlock(event, 'formula')}
+          ondragend={finishPaletteDrag} onclick={() => insert('formula')}><span>ƒ</span> Formula</button>
+        <button draggable={mode === 'design'} ondragstart={(event) => dragPaletteBlock(event, 'image')}
+          ondragend={finishPaletteDrag} onclick={() => insert('image')}><span>▧</span> Image</button>
       </div>
       <div class="separator"></div>
       <div class="panel-heading">Formula fields</div>
@@ -276,10 +297,18 @@
       <div class="pane-title">
         <div>
           <strong>Sheet canvas</strong>
-          <span>{mode === 'design' ? 'Click or type into blocks; drag a node to reorder it' : 'Read-only layout · live formulas and rolls'}</span>
+          <span>{mode === 'play' ? 'Read-only layout · live formulas and rolls' : designTool === 'drag' ? 'Drag blocks or their handles to move them · text editing is disabled' : 'Edit content directly · hover a block for its drag handle'}</span>
         </div>
         {#if mode === 'design'}
-          <button class="subtle-button" onclick={selectContainer}>Select parent container</button>
+          <div class="canvas-actions">
+            <div class="design-tools" role="group" aria-label="Design tool">
+              <button class:active={designTool === 'edit'} aria-pressed={designTool === 'edit'}
+                onclick={() => designTool = 'edit'}>Edit</button>
+              <button class:active={designTool === 'drag'} aria-pressed={designTool === 'drag'}
+                onclick={() => designTool = 'drag'}>Drag</button>
+            </div>
+            <button class="subtle-button" onclick={selectContainer}>Select parent container</button>
+          </div>
         {/if}
       </div>
       <div class="sheet-frame" class:playing={mode === 'play'}>
@@ -357,7 +386,7 @@
       <div class="separator"></div>
       <div class="panel-heading">Notes</div>
       <p class="muted">The editor uses only our registered nodes. The formulas are shared reactive state, not copied into Tiptap nodes.</p>
-      <p class="muted">Layouts use normal CSS (including grid and flex). Two-dimensional snap-to-grid dragging and isolated CSS are not part of this first draft.</p>
+      <p class="muted">Nested blocks show a space-occupying drop preview while dragging, including in grid and flex layouts. Freeform grid snapping and isolated CSS remain future work.</p>
     </aside>
   </div>
 </div>
@@ -383,6 +412,8 @@
   .palette { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
   .palette button { display: flex; align-items: center; flex-direction: column; gap: 7px; padding: 13px 5px; border: 1px solid #ded6cb; background: white; border-radius: 9px; color: #4d463e; font-weight: 650; font-size: .75rem; }
   .palette button:hover { border-color: #a9773c; }
+  .palette button[draggable="true"] { cursor: grab; }
+  .palette button[draggable="true"]:active { cursor: grabbing; }
   .palette span { font-family: Georgia,serif; font-size: 1.5rem; color: #936a3e; }
   .separator { height: 1px; background: #e8e2db; margin: 21px 0; }
   .field-list { display: flex; flex-direction: column; gap: 8px; }
@@ -399,15 +430,75 @@
   .pane-title strong { display: block; font-size: .89rem; }
   .pane-title span { display: block; color: #8e867d; font-size: .76rem; margin-top: 4px; }
   .subtle-button { border: 1px solid #d4c7b7; color: #766149; background: #faf7f3; border-radius: 8px; padding: 9px; font-size: .72rem; }
+  .canvas-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+  .design-tools { display: flex; gap: 3px; padding: 3px; border: 1px solid #d4c7b7; border-radius: 8px; background: #faf7f3; }
+  .design-tools button { border: 0; border-radius: 5px; background: transparent; color: #766149; padding: 6px 10px; font-size: .72rem; }
+  .design-tools button.active { background: #e8d5b7; color: #4d3923; font-weight: 700; }
   .sheet-frame { background: #fdfaf4; border: 1px solid #ded3c5; border-radius: 14px; box-shadow: 0 10px 30px #332c2410; }
-  .sheet-content { padding: 28px; min-height: 310px; }
-  .sheet-content :global(.tiptap) { outline: none; min-height: 250px; }
+  .sheet-content { min-height: 310px; }
+  /* Keep the canvas gutters inside the editor so they receive drag events. */
+  .sheet-content :global(.tiptap) { outline: none; padding: 28px; min-height: 310px; }
   .sheet-content :global(.tiptap > *) { margin-top: 0; }
   .sheet-content :global(.tiptap p) { margin: 0; }
   .sheet-content :global(.tiptap .ProseMirror-selectednode) { outline: 2px solid #c68b3c !important; outline-offset: 3px; }
-  .sheet-content :global(.tiptap[contenteditable="true"] section) { outline: 1px dashed #d9c9b1; outline-offset: 2px; }
-  .sheet-content :global(.tiptap[contenteditable="true"] section:hover) { outline-color: #b48348; }
+  .sheet-content :global(.tiptap:is([contenteditable="true"], [data-rbb-drag-mode="true"]) section) { outline: 1px dashed #d9c9b1; outline-offset: 2px; }
+  .sheet-content :global(.tiptap:is([contenteditable="true"], [data-rbb-drag-mode="true"]) section:hover) { outline-color: #b48348; }
   .playing .sheet-content :global(.tiptap section) { outline: none; }
+  .sheet-content :global(.tiptap[data-rbb-drag-mode="true"]) { user-select: none; caret-color: transparent; cursor: grab; }
+  .sheet-content :global(.tiptap[data-rbb-drag-mode="true"] [draggable="true"]) { cursor: grab; }
+  .sheet-content :global(.rbb-block-drag-rail) {
+    position: fixed;
+    z-index: 20;
+    display: flex;
+    gap: 4px;
+    align-items: flex-start;
+    padding-right: 6px;
+    pointer-events: auto;
+  }
+  .sheet-content :global(.rbb-block-drag-rail[hidden]) { display: none; }
+  .sheet-content :global(.rbb-block-drag-handle) {
+    flex: 0 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 24px;
+    padding: 0;
+    border: 1px solid #d4c7b7;
+    border-radius: 5px;
+    background: #fdfaf4;
+    color: #907b61;
+    box-shadow: 0 1px 4px #332c2414;
+    cursor: grab;
+    user-select: none;
+  }
+  .sheet-content :global(.rbb-block-drag-handle[hidden]) { display: none; }
+  .sheet-content :global(.rbb-block-drag-handle:hover) { border-color: #b48348; color: #684a28; background: #fff4df; }
+  .sheet-content :global(.rbb-block-drag-handle:active) { cursor: grabbing; }
+  .sheet-content :global(.rbb-block-drag-handle:focus-visible) { outline: 2px solid #a47a4b; outline-offset: 2px; }
+  .sheet-content :global(.rbb-block-highlight-overlay) {
+    position: fixed;
+    z-index: 19;
+    pointer-events: none;
+    box-sizing: border-box;
+    border: 2px solid #b48348;
+    border-radius: 3px;
+    outline: 1px solid #fff8ed;
+    outline-offset: 1px;
+  }
+  .sheet-content :global(.rbb-block-highlight-overlay[hidden]) { display: none; }
+  .sheet-content :global(.rbb-drop-placeholder) {
+    box-sizing: border-box;
+    display: block;
+    min-width: 0;
+    max-width: 100%;
+    border: 2px dashed #b9874c;
+    background: repeating-linear-gradient(-45deg, #e9d7b94d 0 9px, #dcb98b33 9px 18px);
+    border-radius: 9px;
+    pointer-events: none;
+    align-self: stretch;
+  }
+  .sheet-content :global(.rbb-drag-origin) { opacity: .4; }
   .status { font-size: .73rem; color: #816544; margin: 12px 0; min-height: 18px; }
   .source-panels { display: grid; flex: 1; min-height: 0; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 25px; }
   .source-panel { display: flex; flex-direction: column; min-width: 0; background: #fff; border: 1px solid #e4ded5; border-radius: 10px; overflow: hidden; }
@@ -436,6 +527,6 @@
     .editor-layout { display: flex; flex-direction: column; }
     .sidebar, .main-pane { width: 100%; }
     .source-panels { min-height: 100dvh; }
-    .sheet-content { padding: 15px; }
+    .sheet-content :global(.tiptap) { padding: 15px; }
   }
 </style>
