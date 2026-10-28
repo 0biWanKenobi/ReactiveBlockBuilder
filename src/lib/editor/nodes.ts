@@ -14,7 +14,8 @@ export type SheetNodeType = 'container' | 'textBlock' | 'formula' | 'image' | 'c
 export const allowedNodeTypes: SheetNodeType[] = ['container', 'textBlock', 'formula', 'image', 'customBlock'];
 
 const classes = (defaultClass: string) => ({
-  class: { default: defaultClass }
+  class: { default: defaultClass },
+  nodeId: { default: '' }
 });
 
 /**
