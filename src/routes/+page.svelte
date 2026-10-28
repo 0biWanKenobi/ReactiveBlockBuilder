@@ -47,6 +47,7 @@
   let pendingConversion = $state<number | null>(null);
   let pendingOriginalValues = $state<Record<string, string | { src: string; alt: string }>>({});
   let contextPosition = $state<number | null>(null);
+  let contextCoords = $state({x: 0, y: 0});
   let saveBehavior = $state<'ask' | 'replace' | 'keep'>('ask');
   let conversionPrompt = $state<{ pos: number; typeId: string } | null>(null);
   let rememberChoice = $state(false);
@@ -235,6 +236,7 @@
     if (!boundary || !node?.childCount) return;
     event.preventDefault();
     contextPosition = boundary.from;
+    contextCoords = { x: event.clientX, y: event.clientY };
   }
 
   $effect(() => {
@@ -481,13 +483,7 @@
       <div class="sheet-frame" class:playing={mode === 'play'}>
         <div class="sheet-content" role="group" aria-label="Sheet canvas" oncontextmenu={contextMenu}>
           <div bind:this={canvas}></div>
-          {#if contextPosition !== null}
-            {@const position = contextPosition}
-            <div class="context-action">
-              <button onpointerdown={(event) => { event.stopPropagation(); event.preventDefault(); startNewDefinition(position); contextPosition = null; }}>Save as custom block</button>
-              <button onclick={() => contextPosition = null} aria-label="Close context menu">✕</button>
-            </div>
-          {/if}
+
         </div>
       </div>
       {#if message}<div class="status" role="status" inert={mode === 'play'}>{message}</div>{/if}
@@ -567,6 +563,13 @@
   </div>
 </div>
 
+{#if contextPosition !== null}
+  {@const position = contextPosition}
+  <div class="context-action" role="menu" style:left={`${contextCoords.x}px`} style:top={`${contextCoords.y}px`}>
+    <button role="menuitem" onclick={() => { startNewDefinition(position); contextPosition = null; }}>Save as custom block</button>
+    <button onclick={() => contextPosition = null} aria-label="Close context menu">✕</button>
+  </div>
+{/if}
 {#if editedBlock}
   <CustomBlockEditorModal
     initial={editedBlock}
@@ -624,7 +627,7 @@
   .inspector { border-right: 0; border-left: 1px solid #dedad4; }
   .panel-heading { color: #4c4034; text-transform: uppercase; letter-spacing: .09em; font-weight: 800; font-size: .72rem; }
   .muted { font-size: .76rem; line-height: 1.55; color: #8b8178; margin: 9px 0 16px; }
-  .context-action { display: flex; gap: 6px; padding: 10px; background: #fff7e9; border: 1px solid #c7ab83; border-radius: 8px; margin: 8px; }
+  .context-action { position: fixed; z-index: 50; display: flex; gap: 6px; padding: 10px; background: #fff7e9; border: 1px solid #c7ab83; border-radius: 8px; margin: 8px; }
   .context-action button { border: 1px solid #d4c7b7; border-radius: 6px; padding: 7px; background: white; cursor: pointer; }
   .confirmation-backdrop { position: fixed; inset: 0; z-index: 120; background: #0008; display: grid; place-items: center; }
   .confirmation { background: #fffaf3; padding: 24px; border-radius: 12px; width: min(420px, 90vw); box-shadow: 0 20px 50px #0004; }
