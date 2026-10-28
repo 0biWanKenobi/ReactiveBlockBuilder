@@ -1,12 +1,20 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import CodeEditor from '../lib/editor/CodeEditor.svelte';
+  import BlockPalette from '../lib/editor/BlockPalette.svelte';
+  import CustomBlockEditorModal from '../lib/custom-blocks/CustomBlockEditorModal.svelte';
+  import { CustomBlockLibrary } from '../lib/custom-blocks/library.svelte.js';
+  import { CustomBlockRepository, DEFAULT_THEME } from '../lib/custom-blocks/repository.js';
+  import { LocalStorageAdapter } from '../lib/storage/StorageAdapter.js';
+  import { createDefinition, makeInstance, expandDocument, collapseDocument } from '../lib/custom-blocks/model.js';
+  import type { CustomBlockDefinition } from '../lib/custom-blocks/types.js';
+  import { blockBoundary } from '../lib/editor/blockInteraction.js';
   import { Editor, type JSONContent } from '@tiptap/core';
   import { NodeSelection } from '@tiptap/pm/state';
   import { startPaletteDrag, endPaletteDrag } from '../lib/editor/blockDragPreview.js';
   import { setBlockDragMode } from '../lib/editor/blockInteraction.js';
   import {
-    createSheetExtensions, insertionSamples, allowedNodeTypes,
+    createSheetExtensions, allowedNodeTypes,
     initialFields, sampleDocument, defaultCSS, validateId
   } from '../lib/index.js';
   import type { Sheet, SheetNodeType } from '../lib/index.js';
@@ -20,7 +28,7 @@
   type SavedSheet = {
     version: 1;
     document: JSONContent;
-    css: string;
+    themeId: string;
     fields: Sheet;
   };
 
@@ -30,9 +38,19 @@
   let mode = $state<'design' | 'play'>('design');
   let designTool = $state<'edit' | 'drag'>('edit');
   let fields = $state<Sheet>(structuredClone(initialFields));
+  const library = new CustomBlockLibrary();
+  const repository = new CustomBlockRepository(new LocalStorageAdapter());
   let css = $state(defaultCSS);
+  let savedCSS = $state(defaultCSS);
+  let blockCSS = $state<Record<string, string>>({});
+  let editedBlock = $state<CustomBlockDefinition | null>(null);
+  let pendingConversion = $state<number | null>(null);
+  let contextPosition = $state<number | null>(null);
+  let saveBehavior = $state<'ask' | 'replace' | 'keep'>('ask');
+  let conversionPrompt = $state<{ pos: number; typeId: string } | null>(null);
+  let rememberChoice = $state(false);
   let jsonSource = $state(JSON.stringify({
-    version: 1, document: sampleDocument, css: defaultCSS, fields: initialFields
+    version: 1, themeId: DEFAULT_THEME, document: sampleDocument, fields: initialFields
   }, null, 2));
   let message = $state('');
   let newField = $state('');
@@ -68,6 +86,18 @@
     styleElement.textContent = css;
     document.head.appendChild(styleElement);
 
+    void (async () => {
+      try {
+        library.replace(await repository.list());
+        const stored = await repository.readBaseCSS();
+        if (stored !== null) { css = stored; savedCSS = stored; }
+        else await repository.writeBaseCSS(defaultCSS);
+        await reloadBlockStyles();
+      } catch (error) {
+        message = `Storage initialization failed: ${error instanceof Error ? error.message : String(error)}`;
+      }
+    })();
+
     const instance = new Editor({
       element: canvas,
       extensions: createSheetExtensions(fields),
@@ -92,8 +122,93 @@
   });
 
   $effect(() => {
-    if (styleElement) styleElement.textContent = css;
+    if (styleElement) styleElement.textContent = css + '\n' +
+      Object.values(blockCSS).join('\n');
   });
+
+  async function reloadBlockStyles() {
+    const styles: Record<string, string> = {};
+    for (const definition of library.list()) {
+      styles[definition.typeId] = await repository.readBlockCSS(definition.typeId);
+    }
+    blockCSS = styles;
+  }
+
+  async function saveThemeCSS() {
+    await repository.writeBaseCSS(css);
+    savedCSS = css;
+    message = 'Theme CSS saved';
+  }
+
+  function discardThemeCSS() {
+    css = savedCSS;
+    message = 'Theme CSS discarded';
+  }
+
+  function startNewDefinition(pos: number) {
+    if (!editor) return;
+    const node = editor.state.doc.nodeAt(pos);
+    if (!node || node.type.name !== 'container' || !node.childCount) return;
+    const name = window.prompt('Name this custom block', 'New custom block');
+    if (!name?.trim()) return;
+    editedBlock = createDefinition(name.trim(), node.toJSON(), library);
+    pendingConversion = pos;
+  }
+
+  function conversionChoice(replace: boolean) {
+    if (!conversionPrompt) return;
+    if (rememberChoice) saveBehavior = replace ? 'replace' : 'keep';
+    if (replace) replaceOriginal(conversionPrompt.pos, conversionPrompt.typeId);
+    conversionPrompt = null;
+    rememberChoice = false;
+  }
+
+  function replaceOriginal(pos: number, typeId: string) {
+    if (!editor) return;
+    const definition = library.get(typeId);
+    if (!definition) return;
+    const original = editor.state.doc.nodeAt(pos);
+    if (!original || original.type.name !== 'container') return;
+    const expanded = expandDocument({
+      type: 'doc', content: [makeInstance(definition)]
+    }, library).content?.[0];
+    if (!expanded) return;
+    const replacement = editor.state.schema.nodeFromJSON(expanded);
+    editor.view.dispatch(editor.state.tr.replaceWith(pos, pos + original.nodeSize, replacement));
+  }
+
+  async function saveDefinition(definition: CustomBlockDefinition, blockStyle: string) {
+    try {
+      await repository.save(definition);
+      await repository.writeBlockCSS(definition.typeId, blockStyle);
+      library.upsert(definition);
+      await reloadBlockStyles();
+      editedBlock = null;
+      if (pendingConversion !== null) {
+        if (saveBehavior === 'ask') {
+          conversionPrompt = { pos: pendingConversion, typeId: definition.typeId };
+        } else if (saveBehavior === 'replace') {
+          replaceOriginal(pendingConversion, definition.typeId);
+        }
+        pendingConversion = null;
+      }
+      message = `Saved custom block: ${definition.name}`;
+    } catch (error) {
+      message = `Save failed: ${error instanceof Error ? error.message : String(error)}`;
+    }
+  }
+
+  function contextMenu(event: MouseEvent) {
+    if (!editor || mode !== 'design') return;
+    const target = event.target instanceof Element
+      ? event.target.closest('section[data-sheet-container]') : null;
+    if (!target) { contextPosition = null; return; }
+    const boundary = blockBoundary(editor.view, target);
+    const node = boundary && editor.state.doc.nodeAt(boundary.from);
+    if (!boundary || !node?.childCount) return;
+    event.preventDefault();
+    contextPosition = boundary.from;
+  }
 
   $effect(() => {
     if (!editor) return;
@@ -101,20 +216,31 @@
     editor.setEditable(mode === 'design');
   });
 
-  function insert(type: SheetNodeType) {
+  function insert(block: JSONContent) {
     if (!editor) return;
     mode = 'design';
-    // Use a fresh node object; Tiptap may normalize its content.
-    editor.chain().focus().insertContent(structuredClone(insertionSamples[type])).run();
-    message = `Added ${type} block`;
+    try {
+      const expanded = expandDocument({ type: 'doc', content: [block] }, library).content?.[0];
+      if (!expanded) return;
+      editor.chain().focus().insertContent(expanded).run();
+      message = `Added ${block.type} block`;
+    } catch (error) {
+      message = `Cannot insert block: ${error instanceof Error ? error.message : String(error)}`;
+    }
   }
 
-  function dragPaletteBlock(event: DragEvent, type: SheetNodeType) {
+  function dragPaletteBlock(event: DragEvent, block: JSONContent) {
     if (!editor || mode !== 'design' || designTool !== 'drag') {
       event.preventDefault();
       return;
     }
-    startPaletteDrag(editor.view, event, insertionSamples[type]);
+    try {
+      const expanded = expandDocument({ type: 'doc', content: [block] }, library).content?.[0];
+      if (expanded) startPaletteDrag(editor.view, event, expanded);
+    } catch (error) {
+      event.preventDefault();
+      message = `Cannot drag block: ${error instanceof Error ? error.message : String(error)}`;
+    }
   }
 
   function finishPaletteDrag() {
@@ -125,10 +251,20 @@
     if (!editor || !selected) return;
     const node = editor.state.doc.nodeAt(selected.pos);
     if (!node || node.type.name !== selected.type) return;
+    if (attribute === 'class' && selectedIsInsideCustomBlock()) return;
     // Do not call editor.focus(): doing so would steal focus from the property input.
     editor.view.dispatch(editor.state.tr.setNodeMarkup(
       selected.pos, undefined, { ...node.attrs, [attribute]: value }
     ));
+  }
+
+  function selectedIsInsideCustomBlock() {
+    if (!editor || !selected) return false;
+    const resolved = editor.state.doc.resolve(selected.pos);
+    for (let depth = 1; depth <= resolved.depth; depth++) {
+      if (resolved.node(depth).type.name === 'customBlock') return true;
+    }
+    return editor.state.doc.nodeAt(selected.pos)?.type.name === 'customBlock';
   }
 
   function selectContainer() {
@@ -193,8 +329,8 @@
     if (!editor) return;
     const saved: SavedSheet = {
       version: 1,
-      document: editor.getJSON(),
-      css,
+      themeId: DEFAULT_THEME,
+      document: collapseDocument(editor.getJSON(), library),
       fields: structuredClone($state.snapshot(fields))
     };
     jsonSource = JSON.stringify(saved, null, 2);
@@ -220,11 +356,12 @@
     try {
       const imported: SavedSheet = JSON.parse(jsonSource);
       if (imported.version !== 1 || imported.document?.type !== 'doc' ||
-          typeof imported.css !== 'string' ||
+          imported.themeId !== DEFAULT_THEME ||
           !imported.fields || typeof imported.fields !== 'object' || Array.isArray(imported.fields)) {
-        throw new Error('Expected version 1 sheet with document, css and fields');
+        throw new Error('Expected version 1 sheet with document, fields and default themeId');
       }
       validateNode(imported.document);
+      const expanded = expandDocument(imported.document, library);
       // Preserve the reactive proxy: existing node views hold a reference to it.
       for (const key of Object.keys(fields)) delete fields[key];
       for (const [key, value] of Object.entries(imported.fields)) {
@@ -233,8 +370,7 @@
         }
         fields[key] = { id: key, formula: value.formula };
       }
-      css = imported.css;
-      editor.commands.setContent(imported.document);
+      editor.commands.setContent(expanded);
       message = 'Sheet loaded';
     } catch (error) {
       message = `Import failed: ${error instanceof Error ? error.message : String(error)}`;
