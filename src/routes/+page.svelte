@@ -6,7 +6,7 @@
   import { CustomBlockLibrary } from '../lib/custom-blocks/library.svelte.js';
   import { CustomBlockRepository, DEFAULT_THEME } from '../lib/custom-blocks/repository.js';
   import { LocalStorageAdapter } from '../lib/storage/StorageAdapter.js';
-  import { createDefinition, makeInstance, expandDocument, collapseDocument } from '../lib/custom-blocks/model.js';
+  import { createDefinition, makeInstance, expandDocument, collapseDocument, captureInitialValues } from '../lib/custom-blocks/model.js';
   import type { CustomBlockDefinition } from '../lib/custom-blocks/types.js';
   import { blockBoundary } from '../lib/editor/blockInteraction.js';
   import { Editor, type JSONContent } from '@tiptap/core';
@@ -45,6 +45,7 @@
   let blockCSS = $state<Record<string, string>>({});
   let editedBlock = $state<CustomBlockDefinition | null>(null);
   let pendingConversion = $state<number | null>(null);
+  let pendingOriginalValues = $state<Record<string, string | { src: string; alt: string }>>({});
   let contextPosition = $state<number | null>(null);
   let saveBehavior = $state<'ask' | 'replace' | 'keep'>('ask');
   let conversionPrompt = $state<{ pos: number; typeId: string } | null>(null);
@@ -149,10 +150,14 @@
     if (!editor) return;
     const node = editor.state.doc.nodeAt(pos);
     if (!node || node.type.name !== 'container' || !node.childCount) return;
-    const name = window.prompt('Name this custom block', 'New custom block');
-    if (!name?.trim()) return;
-    editedBlock = createDefinition(name.trim(), node.toJSON(), library);
-    pendingConversion = pos;
+    const name = String(node.attrs.class ?? '').trim().split(/\s+/)[0] || 'Custom block';
+    try {
+      editedBlock = createDefinition(name, node.toJSON(), library);
+      pendingOriginalValues = captureInitialValues(editedBlock.structure, node.toJSON());
+      pendingConversion = pos;
+    } catch (error) {
+      message = `Custom block creation failed: ${error instanceof Error ? error.message : String(error)}`;
+    }
   }
 
   function conversionChoice(replace: boolean) {
@@ -160,6 +165,7 @@
     if (rememberChoice) saveBehavior = replace ? 'replace' : 'keep';
     if (replace) replaceOriginal(conversionPrompt.pos, conversionPrompt.typeId);
     conversionPrompt = null;
+    pendingOriginalValues = {};
     rememberChoice = false;
   }
 
@@ -169,19 +175,38 @@
     if (!definition) return;
     const original = editor.state.doc.nodeAt(pos);
     if (!original || original.type.name !== 'container') return;
+    const compact = makeInstance(definition);
+    compact.attrs = { ...compact.attrs, values: pendingOriginalValues };
     const expanded = expandDocument({
-      type: 'doc', content: [makeInstance(definition)]
+      type: 'doc', content: [compact]
     }, library).content?.[0];
     if (!expanded) return;
     const replacement = editor.state.schema.nodeFromJSON(expanded);
     editor.view.dispatch(editor.state.tr.replaceWith(pos, pos + original.nodeSize, replacement));
   }
 
+  async function deleteDefinition(definition: CustomBlockDefinition) {
+    if (!window.confirm(`Delete "${definition.name}"? Sheets and custom blocks that reference it will fail to import.`)) return;
+    try {
+      await repository.delete(definition.typeId);
+      library.remove(definition.typeId);
+      await reloadBlockStyles();
+      message = `Deleted custom block: ${definition.name}`;
+    } catch (error) {
+      message = `Delete failed: ${error instanceof Error ? error.message : String(error)}`;
+    }
+  }
+
   async function saveDefinition(definition: CustomBlockDefinition, blockStyle: string) {
     try {
+      // Capture changes against the old definition before it is replaced.
+      const compact = editor ? collapseDocument(editor.getJSON(), library) : null;
       await repository.save(definition);
       await repository.writeBlockCSS(definition.typeId, blockStyle);
       library.upsert(definition);
+      if (editor && compact) {
+        editor.commands.setContent(expandDocument(compact, library));
+      }
       await reloadBlockStyles();
       editedBlock = null;
       if (pendingConversion !== null) {
@@ -412,7 +437,8 @@
       <BlockPalette customBlocks={library.definitions}
         draggable={mode === 'design' && designTool === 'drag'} onInsert={insert}
         onDragStart={dragPaletteBlock} onDragEnd={finishPaletteDrag}
-        onEdit={(block) => { editedBlock = block; pendingConversion = null; }} />
+        onEdit={(block) => { editedBlock = block; pendingConversion = null; }}
+        onDelete={deleteDefinition} />
       <div class="separator"></div>
       <div class="panel-heading">Formula fields</div>
       <p class="muted">Modify STR to watch STR_MOD, ATTACK and the stat blocks update.</p>
@@ -451,7 +477,7 @@
         {/if}
       </div>
       <div class="sheet-frame" class:playing={mode === 'play'}>
-        <div class="sheet-content" oncontextmenu={contextMenu}>
+        <div class="sheet-content" role="group" aria-label="Sheet canvas" oncontextmenu={contextMenu}>
           <div bind:this={canvas}></div>
           {#if contextPosition !== null}
             <div class="context-action">
@@ -544,7 +570,7 @@
     initialCSS={blockCSS[editedBlock.typeId] ?? ''}
     {library} {fields}
     onSave={saveDefinition}
-    onClose={() => { editedBlock = null; pendingConversion = null; }}
+    onClose={() => { editedBlock = null; pendingConversion = null; pendingOriginalValues = {}; }}
   />
 {/if}
 {#if conversionPrompt}
@@ -605,12 +631,12 @@
   .confirmation-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
   .confirmation-actions button { padding: 9px; border: 1px solid #d4c7b7; background: #f6e7cf; border-radius: 7px; cursor: pointer; }
   select { width: 100%; padding: 8px; border: 1px solid #d8d2c9; border-radius: 6px; background: white; }
-  .palette { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-  .palette button { display: flex; align-items: center; flex-direction: column; gap: 7px; padding: 13px 5px; border: 1px solid #ded6cb; background: white; border-radius: 9px; color: #4d463e; font-weight: 650; font-size: .75rem; }
-  .palette button:hover { border-color: #a9773c; }
-  .palette button[draggable="true"] { cursor: grab; }
-  .palette button[draggable="true"]:active { cursor: grabbing; }
-  .palette span { font-family: Georgia,serif; font-size: 1.5rem; color: #936a3e; }
+
+
+
+
+
+
   .separator { height: 1px; background: #e8e2db; margin: 21px 0; }
   .field-list { display: flex; flex-direction: column; gap: 8px; }
   .field-row { display: grid; gap: 4px; }

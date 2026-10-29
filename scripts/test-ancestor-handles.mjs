@@ -118,7 +118,7 @@ try {
         }]
       }]
     },
-    css: '.sheet-content .sheet-header { padding-bottom: 18px; } .sheet-content .sheet-title { font-size: 1.45rem; }',
+    themeId: 'default',
     fields: { STR: { id: 'STR', formula: '16' } }
   };
   await source.click();

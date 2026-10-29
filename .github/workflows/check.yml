@@ -44,6 +44,7 @@ jobs:
             sleep 1
           done
           node scripts/test-play-mode.mjs
+          node scripts/test-custom-blocks.mjs
           node scripts/test-ancestor-handles.mjs || {
             cat /tmp/rbb-browser.log
             exit 1

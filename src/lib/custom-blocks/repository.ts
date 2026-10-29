@@ -25,6 +25,7 @@ export class CustomBlockRepository {
 
   async delete(typeId: string): Promise<void> {
     await this.storage.delete(blockPath(typeId));
+    await this.storage.delete(stylePath(DEFAULT_THEME, typeId));
   }
 
   async readBaseCSS(theme = DEFAULT_THEME): Promise<string | null> {
