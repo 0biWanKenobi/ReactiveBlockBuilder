@@ -18,6 +18,7 @@
     initialFields, sampleDocument, defaultCSS, validateId
   } from '../lib/index.js';
   import type { Sheet, SheetNodeType } from '../lib/index.js';
+	import { clickOutside } from '#lib/directives/clickOutside.js';
 
   type SelectedBlock = {
     type: SheetNodeType;
@@ -582,16 +583,15 @@
       <div class="separator"></div>
       <div class="panel-heading">Notes</div>
       <p class="muted">The editor uses only our registered nodes. The formulas are shared reactive state, not copied into Tiptap nodes.</p>
-      <p class="muted">Nested blocks show a space-occupying drop preview while dragging, including in grid and flex layouts. Freeform grid snapping and isolated CSS remain future work.</p>
     </aside>
   </div>
 </div>
 
 {#if contextPosition !== null}
   {@const position = contextPosition}
-  <div class="context-action" style:left={`${contextCoords.x}px`} style:top={`${contextCoords.y}px`}>
+  <div class="context-action" use:clickOutside={() => { contextPosition = null; }}
+    style:left={`${contextCoords.x}px`} style:top={`${contextCoords.y}px`}>
     <button onclick={() => { startNewDefinition(position); contextPosition = null; }}>Save as custom block</button>
-    <button onclick={() => contextPosition = null} aria-label="Close context menu">✕</button>
   </div>
 {/if}
 {#if editedBlock}

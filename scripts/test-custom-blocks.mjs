@@ -12,6 +12,14 @@ try {
 
   const header = page.locator('.sheet-content .sheet-header').first();
   await header.click({ button: 'right' });
+  const contextAction = page.locator('.context-action');
+  await contextAction.waitFor({ state: 'visible' });
+  // Clicking elsewhere dismisses the menu without consuming the click.
+  await page.locator('.topbar h1').click();
+  await contextAction.waitFor({ state: 'hidden' });
+  // Opening the menu again must still allow its own action to run.
+  await header.click({ button: 'right' });
+  await contextAction.waitFor({ state: 'visible' });
   await page.evaluate(() => {
     window.__trace = [];
     document.addEventListener('click', (event) => {
