@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { chromium } from 'playwright';
+import { testContainerContextMenu } from './test-container-context-menu.mjs';
 
 const browser = await chromium.launch({ headless: true });
 try {
@@ -9,6 +10,8 @@ try {
   page.on('console', msg => { if(msg.type() !== 'log') console.error('BROWSER CONSOLE', msg.type(), msg.text()); });
   page.on('response', response => { if(response.status() >= 400) console.error('BROWSER RESPONSE', response.status(), response.url()); });
   await page.goto('http://127.0.0.1:5189/', { waitUntil: 'networkidle' });
+
+  await testContainerContextMenu(page);
 
   const header = page.locator('.sheet-content .sheet-header').first();
   await header.click({ button: 'right' });
@@ -73,7 +76,7 @@ try {
   assert.match(await title.innerText(), /!/);
 
   const source = page.locator('.source-panel').first().locator('.cm-content');
-  await page.getByRole('button', { name: 'Export', exact: true }).click();
+  await page.locator('#sync-sheet-json').click();
   await source.click();
   await page.keyboard.press('ControlOrMeta+A');
   await page.keyboard.press('ControlOrMeta+C');
@@ -92,7 +95,7 @@ try {
   await importSource.click();
   await page.keyboard.press('ControlOrMeta+A');
   await page.keyboard.insertText(JSON.stringify(serialized));
-  await page.getByRole('button', { name: 'Import', exact: true }).click();
+  await page.locator('#apply-sheet-json').click();
   assert.match(await page.locator('.sheet-content [data-custom-block-type="sheet-header"] .sheet-title').first().innerText(), /!/);
 
   const missing = structuredClone(serialized);
@@ -100,7 +103,7 @@ try {
   await importSource.click();
   await page.keyboard.press('ControlOrMeta+A');
   await page.keyboard.insertText(JSON.stringify(missing));
-  await page.getByRole('button', { name: 'Import', exact: true }).click();
+  await page.locator('#apply-sheet-json').click();
   assert.match(await page.locator('[role="status"]').innerText(), /Import failed: Missing custom block definition: not-installed/);
   assert.equal(await page.locator('.sheet-content [data-custom-block-type="sheet-header"]').count(), 1);
   // A rejected import must leave BOTH the sheet and reactive fields unchanged.
@@ -109,9 +112,9 @@ try {
   await importSource.click();
   await page.keyboard.press('ControlOrMeta+A');
   await page.keyboard.insertText(JSON.stringify(invalid));
-  await page.getByRole('button', { name: 'Import', exact: true }).click();
+  await page.locator('#apply-sheet-json').click();
   assert.match(await page.locator('[role="status"]').innerText(), /Import failed: Invalid formula field/);
-  await page.getByRole('button', { name: 'Export', exact: true }).click();
+  await page.locator('#sync-sheet-json').click();
   await importSource.click();
   await page.keyboard.press('ControlOrMeta+A');
   await page.keyboard.press('ControlOrMeta+C');
@@ -179,7 +182,7 @@ try {
   await nestedSource.click();
   await page.keyboard.press('ControlOrMeta+A');
   await page.keyboard.insertText(JSON.stringify(nestedSheet));
-  await page.getByRole('button', { name: 'Import', exact: true }).click();
+  await page.locator('#apply-sheet-json').click();
   assert.equal(await page.locator('.sheet-content .parent-root .child-label').first().innerText(), 'Global child default');
   // Dragging a nested component on the sheet must expose only the outer
   // custom-block handle, not the child definition's internal structure.

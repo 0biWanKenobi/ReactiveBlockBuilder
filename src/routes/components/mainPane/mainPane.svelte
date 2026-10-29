@@ -68,6 +68,11 @@
 		const node = boundary && editor.state.doc.nodeAt(boundary.from);
 		if (!boundary || !node?.childCount) return;
 		event.preventDefault();
+		// A native right-click can place the caret in a nearby child even when
+		// the pointer is on container padding or a layout gap. Keep the editor
+		// selection and the context action on the same container.
+		editor.commands.setNodeSelection(boundary.from);
+		editor.view.focus();
 		contextPosition = boundary.from;
 		contextCoords = { x: event.clientX, y: event.clientY };
 	}

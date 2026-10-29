@@ -191,7 +191,7 @@ try {
   await source.click();
   await page.keyboard.press('ControlOrMeta+A');
   await page.keyboard.insertText(JSON.stringify(original));
-  await page.getByRole('button', { name: 'Import', exact: true }).click();
+  await page.locator('#apply-sheet-json').click();
   const rootTitle = page.locator('.sheet-content .sheet-title').first();
   const subtitle = page.locator('.sheet-content .sheet-subtitle').first();
   const headerElement = page.locator('.sheet-content .sheet-header').first();
