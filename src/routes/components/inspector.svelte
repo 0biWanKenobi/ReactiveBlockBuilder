@@ -37,28 +37,36 @@
 		};
 	});
 
-	function selectedIsInsideCustomBlock() {
-		if (!editor || !selected) return false;
+	function selectedCustomBlockPosition() {
+		if (!editor || !selected) return null;
 		const resolved = editor.state.doc.resolve(selected.pos);
 		for (let depth = 1; depth <= resolved.depth; depth++) {
-			if (resolved.node(depth).type.name === 'customBlock') return true;
+			if (resolved.node(depth).type.name === 'customBlock') return resolved.before(depth);
 		}
-		return editor.state.doc.nodeAt(selected.pos)?.type.name === 'customBlock';
+		return selected.type === 'customBlock' ? selected.pos : null;
+	}
+
+	function selectedIsInsideCustomBlock() {
+		const position = selectedCustomBlockPosition();
+		return position !== null && position !== selected?.pos;
 	}
 
 	function editAttribute(attribute: string, value: string) {
 		if (!editor || !selected) return;
 		const node = editor.state.doc.nodeAt(selected.pos);
 		if (!node || node.type.name !== selected.type) return;
-		if (attribute === 'class' && selectedIsInsideCustomBlock()) return;
+		if (attribute === 'class' && (selected.type === 'customBlock' || selectedIsInsideCustomBlock()))
+			return;
 		updateBlockAttribute(editor, selected.pos, attribute, value);
 	}
 
 	function removeSelected() {
 		if (!editor || !selected) return;
-		const node = editor.state.doc.nodeAt(selected.pos);
+		// Descendants belong to the definition; delete their whole sheet instance.
+		const position = selectedCustomBlockPosition() ?? selected.pos;
+		const node = editor.state.doc.nodeAt(position);
 		if (!node) return;
-		editor.commands.deleteRange({ from: selected.pos, to: selected.pos + node.nodeSize });
+		editor.commands.deleteRange({ from: position, to: position + node.nodeSize });
 		selected = null;
 	}
 </script>
@@ -71,7 +79,7 @@
 		<div class="selection-heading">
 			<strong>{selected.type}</strong><span>node at {selected.pos}</span>
 		</div>
-		{#if !selectedIsInsideCustomBlock()}
+		{#if selected.type !== 'customBlock' && !selectedIsInsideCustomBlock()}
 			<label class="property">
 				<span>CSS classes</span>
 				<input
@@ -114,9 +122,9 @@
 				The container can hold other blocks. Select its inner blocks or edit its CSS layout rules.
 			</p>
 		{/if}
-		{#if !selectedIsInsideCustomBlock()}
-			<button class="danger-button" onclick={removeSelected}>Delete selected block</button>
-		{/if}
+		<button class="danger-button" onclick={removeSelected}>
+			{selectedIsInsideCustomBlock() ? 'Delete custom block' : 'Delete selected block'}
+		</button>
 	{:else}
 		<p class="muted">Select a text, formula, image or container block to edit its properties.</p>
 	{/if}

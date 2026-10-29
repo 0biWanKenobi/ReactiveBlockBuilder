@@ -89,6 +89,32 @@ try {
   assert.equal(compact.content, undefined);
   assert(Object.keys(compact.attrs.values).length > 0, 'Edited child must create an instance override');
 
+  // Delete works in both tools, including from a child caret in Edit mode.
+  for (const tool of ['Edit', 'Drag']) {
+    await page.getByRole('button', { name: tool, exact: true }).click();
+    await title.click();
+    const deleteSelected = page.getByRole('button', { name: 'Delete selected block', exact: true });
+    const deleteCustom = page.getByRole('button', { name: 'Delete custom block', exact: true });
+    if (tool === 'Edit') {
+      assert.equal(await deleteSelected.count(), 0, 'Internal blocks cannot be deleted individually');
+      assert.equal(await deleteCustom.isVisible(), true, 'Edit mode can delete the enclosing instance');
+    } else {
+      assert.equal(await page.locator('.selection-heading strong').innerText(), 'customBlock');
+      assert.equal(await deleteSelected.isVisible(), true, 'Drag mode can delete the selected instance');
+    }
+    assert.equal(await page.getByLabel('Selected block CSS classes').count(), 0,
+      'Custom block classes remain definition-owned');
+    await (tool === 'Edit' ? deleteCustom : deleteSelected).click();
+    assert.equal(await instance.count(), 0, `${tool}: Delete removes the whole custom block instance`);
+    assert.equal(await page.getByRole('button', { name: 'Edit Test Header', exact: true }).count(), 1,
+      'Deleting an instance keeps its library definition');
+    await source.click();
+    await page.keyboard.press('ControlOrMeta+A');
+    await page.keyboard.insertText(JSON.stringify(serialized));
+    await page.locator('#apply-sheet-json').click();
+    await instance.waitFor({ state: 'visible' });
+  }
+
   await page.reload({ waitUntil: 'networkidle' });
   await page.getByRole('button', { name: 'Edit Test Header' }).waitFor();
   const importSource = page.locator('.source-panel').first().locator('.cm-content');
