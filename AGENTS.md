@@ -1,0 +1,3 @@
+- if a behavior test is needed, use the embedded browser and the available browser MCP on port 7345. Check if app already running on localhost:5173
+- code changes must pass existing tests
+- use bun, not npm
