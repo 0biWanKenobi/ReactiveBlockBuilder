@@ -1,4 +1,5 @@
 <script lang="ts">
+	import '../../styles/shared.css';
 	import { validateId, type Sheet } from '#lib';
 	import type { CustomBlockLibrary } from '#lib/custom-blocks/library.svelte.ts';
 	import { expandDocument } from '#lib/custom-blocks/model.ts';
@@ -156,39 +157,6 @@
 </aside>
 
 <style>
-	.sidebar {
-		min-width: 0;
-		min-height: 0;
-		padding: 22px 16px;
-		overflow: hidden;
-		background: #fbfaf8;
-	}
-
-	.panel-heading {
-		color: #4c4034;
-		text-transform: uppercase;
-		letter-spacing: 0.09em;
-		font-weight: 800;
-		font-size: 0.72rem;
-	}
-
-	.muted {
-		font-size: 0.76rem;
-		line-height: 1.55;
-		color: #8b8178;
-		margin: 9px 0 16px;
-	}
-
-	button {
-		cursor: pointer;
-	}
-
-	.separator {
-		height: 1px;
-		background: #e8e2db;
-		margin: 21px 0;
-	}
-
 	.field-list {
 		display: flex;
 		flex-direction: column;
@@ -226,29 +194,6 @@
 	.error {
 		color: #b34536;
 		font-size: 0.73rem;
-	}
-
-	.property {
-		display: grid;
-		gap: 7px;
-		margin: 0 0 14px;
-	}
-
-	.property span {
-		font-size: 0.75rem;
-		color: #6d6155;
-		font-weight: 700;
-	}
-
-	input {
-		width: 100%;
-		min-width: 0;
-		border: 1px solid #d8d2c9;
-		background: #fff;
-		border-radius: 6px;
-		padding: 8px;
-		color: #292723;
-		outline-color: #987451;
 	}
 
 	.field-row input,

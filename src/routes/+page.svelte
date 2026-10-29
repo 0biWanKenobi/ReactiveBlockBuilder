@@ -13,7 +13,7 @@
   import LeftSidebar from './components/leftSidebar.svelte';
   import MainPane from './components/mainPane/mainPane.svelte';
   import Inspector from './components/inspector.svelte';
-  import SidePane from './components/sidePane.svelte';
+  import SidePane from './components/sidePane/sidePane.svelte';
 
   let editor = $state<Editor | null>(null);
   let mode = $state<'design' | 'play'>('design');

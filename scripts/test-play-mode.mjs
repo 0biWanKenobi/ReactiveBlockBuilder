@@ -11,8 +11,8 @@ try {
   const workspace = page.locator('.workspace');
   const header = page.locator('.topbar');
   const canvas = page.locator('.sheet-frame');
-  const sidebar = page.locator('.sidebar').first();
-  const inspector = page.locator('.inspector');
+  const sidebar = page.locator('#block-palette-pane aside');
+  const inspector = page.locator('#inspector-pane aside');
   const tools = page.locator('.pane-title');
   const sources = page.locator('.source-panels');
   const title = page.locator('.sheet-title').first();

@@ -63,7 +63,7 @@
 	}
 </script>
 
-<aside class="sidebar inspector" inert={mode === 'play'}>
+<aside class="sidebar" inert={mode === 'play'}>
 	<div class="panel-heading">Properties</div>
 	{#if mode !== 'design'}
 		<p class="muted">Switch to Design to modify nodes.</p>
@@ -129,31 +129,6 @@
 </aside>
 
 <style>
-	.inspector {
-		min-width: 0;
-		min-height: 0;
-		padding: 22px 16px;
-		overflow: hidden;
-		background: #fbfaf8;
-	}
-	.panel-heading {
-		color: #4c4034;
-		text-transform: uppercase;
-		letter-spacing: 0.09em;
-		font-weight: 800;
-		font-size: 0.72rem;
-	}
-	.muted {
-		font-size: 0.76rem;
-		line-height: 1.55;
-		color: #8b8178;
-		margin: 9px 0 16px;
-	}
-	.separator {
-		height: 1px;
-		background: #e8e2db;
-		margin: 21px 0;
-	}
 	.selection-heading {
 		display: flex;
 		justify-content: space-between;
@@ -166,16 +141,6 @@
 	.selection-heading span {
 		color: #8c7f70;
 		font-size: 0.67rem;
-	}
-	.property {
-		display: grid;
-		gap: 7px;
-		margin: 0 0 14px;
-	}
-	.property span {
-		font-size: 0.75rem;
-		color: #6d6155;
-		font-weight: 700;
 	}
 	.property input {
 		font-size: 0.77rem;

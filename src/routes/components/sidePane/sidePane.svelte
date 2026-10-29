@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import type { EditorMode } from './leftSidebar.svelte';
+	import type { EditorMode } from '../leftSidebar.svelte';
+	import './style.css';
 
 	let {
 		id,

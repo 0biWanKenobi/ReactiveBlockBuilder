@@ -28,7 +28,7 @@ try {
 				.getAttribute('aria-expanded'),
 			'false'
 		);
-		assert.equal(await page.locator('.inspector').isVisible(), true);
+		assert.equal(await page.locator('#inspector-pane aside').isVisible(), true);
 		if (width > 620) assert.equal(Math.round((await left.boundingBox()).width), 0);
 		if (width > 1000) assert((await canvas.boundingBox()).width > initialWidth + 150);
 
