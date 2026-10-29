@@ -29,7 +29,7 @@ try {
 			'false'
 		);
 		assert.equal(await page.locator('.inspector').isVisible(), true);
-		if (width > 620) assert.equal(Math.round((await left.boundingBox()).width), 44);
+		if (width > 620) assert.equal(Math.round((await left.boundingBox()).width), 0);
 		if (width > 1000) assert((await canvas.boundingBox()).width > initialWidth + 150);
 
 		await page.getByRole('button', { name: 'Hide inspector', exact: true }).click();
@@ -39,9 +39,31 @@ try {
 			await page.getByRole('button', { name: 'Show inspector', exact: true }).isVisible(),
 			true
 		);
-		if (width > 1000) assert.equal(Math.round((await right.boundingBox()).width), 44);
-		if (width <= 1000) assert.equal(Math.round((await right.boundingBox()).height), 45);
-		if (width <= 620) assert.equal(Math.round((await left.boundingBox()).height), 44);
+		if (width > 1000) {
+			assert.equal(Math.round((await right.boundingBox()).width), 0);
+			assert.equal(
+				Math.round((await canvas.boundingBox()).width),
+				width - 46,
+				'Canvas uses both collapsed columns'
+			);
+		}
+		if (width <= 1000) assert.equal(Math.round((await right.boundingBox()).height), 0);
+		if (width <= 620) assert.equal(Math.round((await left.boundingBox()).height), 0);
+		const leftTab = await page
+			.getByRole('button', { name: 'Show block palette', exact: true })
+			.boundingBox();
+		const rightTab = await page
+			.getByRole('button', { name: 'Show inspector', exact: true })
+			.boundingBox();
+		assert.equal(leftTab.x, 11.5);
+		assert.equal(rightTab.x + rightTab.width, width - 11.5);
+		assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), width);
+		if (width > 1000) {
+			await page.evaluate(() => window.scrollTo(0, 220));
+			for (const toolbar of await page.locator('.pane-toolbar').all()) {
+				assert.equal(Math.round((await toolbar.boundingBox()).y), 0, 'Collapsed tabs stay sticky');
+			}
+		}
 
 		await page.getByRole('button', { name: 'Show block palette', exact: true }).click();
 		await page.waitForTimeout(550);

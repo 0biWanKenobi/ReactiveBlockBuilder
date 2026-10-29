@@ -260,8 +260,8 @@
   .confirmation-actions button { padding: 9px; border: 1px solid #d4c7b7; background: #f6e7cf; border-radius: 7px; cursor: pointer; }
 
   /* Keep the live editor and CodeMirror mounted while the workspace recedes. */
-  .editor-layout.left-collapsed { --left-pane-width: 44px; }
-  .editor-layout.right-collapsed { --right-pane-width: 44px; }
+  .editor-layout.left-collapsed { --left-pane-width: 0px; --left-toggle-inset: 48px; }
+  .editor-layout.right-collapsed { --right-pane-width: 0px; --right-toggle-inset: 48px; }
   .playing .editor-layout { --left-pane-width: 0px; --right-pane-width: 0px; }
 
   @media (prefers-reduced-motion: reduce) {

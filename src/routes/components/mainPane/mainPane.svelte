@@ -193,6 +193,7 @@
 		flex-shrink: 0;
 	}
 	.pane-title {
+		padding-inline: var(--left-toggle-inset, 0px) var(--right-toggle-inset, 0px);
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
@@ -201,6 +202,7 @@
 		max-height: 180px;
 		overflow: hidden;
 		transition:
+			padding 460ms ease,
 			opacity 200ms ease,
 			max-height 460ms ease,
 			margin-bottom 460ms ease,
