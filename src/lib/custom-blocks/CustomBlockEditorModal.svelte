@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { Editor, type JSONContent } from '@tiptap/core';
-  import { NodeSelection } from '@tiptap/pm/state';
+  import { selectedBlock, updateBlockAttribute } from '../editor/selection.js';
   import { createSheetExtensions } from '../editor/nodes.js';
   import { startPaletteDrag, endPaletteDrag } from '../editor/blockDragPreview.js';
   import { setBlockDragMode } from '../editor/blockInteraction.js';
@@ -47,15 +47,11 @@
   let previewStyle: HTMLStyleElement | null = null;
 
   function synchronizeSelection(instance: Editor) {
-    const selection = instance.state.selection;
-    const node = selection instanceof NodeSelection
-      ? { pos: selection.from, node: selection.node }
-      : selection.$from.depth
-        ? { pos: selection.$from.before(selection.$from.depth), node: selection.$from.parent }
-        : null;
-    selected = node ? { pos: node.pos, type: node.node.type.name, attrs: { ...node.node.attrs } } : null;
+    const found = selectedBlock(instance);
+    selected = found;
     nestedValues = [];
-    if (node?.node.type.name === 'customBlock') {
+    const node = found ? { pos: found.pos, node: instance.state.doc.nodeAt(found.pos) } : null;
+    if (node?.node?.type.name === 'customBlock') {
       node.node.descendants((child, offset) => {
         if (!['textBlock', 'formula', 'image'].includes(child.type.name)) return true;
         const type = child.type.name;
@@ -128,11 +124,34 @@
     if (expanded) startPaletteDrag(editor.view, event, ensureNodeIds(expanded));
   }
 
+  /**
+   * In the definition editor, clicking a nested custom block selects the
+   * component instance rather than one of its implementation nodes.
+   * Parent-specific values are then edited in the inspector.
+   */
+  function selectNestedFromPreview(event: MouseEvent) {
+    if (!editor || !(event.target instanceof Element)) return;
+    const nested = event.target.closest('section[data-custom-block-type]');
+    if (!nested || !canvas.contains(nested)) return;
+    const parent = nested.parentNode;
+    if (!parent) return;
+    const index = Array.prototype.indexOf.call(parent.childNodes, nested);
+    if (index < 0) return;
+    try {
+      const pos = editor.view.posAtDOM(parent, index);
+      if (editor.state.doc.nodeAt(pos)?.type.name === 'customBlock') {
+        editor.commands.setNodeSelection(pos);
+      }
+    } catch {
+      // Click targets are allowed to disappear during ProseMirror updates.
+    }
+  }
+
   function updateAttr(attribute: string, value: string) {
     if (!editor || !selected) return;
     const node = editor.state.doc.nodeAt(selected.pos);
     if (!node) return;
-    editor.view.dispatch(editor.state.tr.setNodeMarkup(selected.pos, undefined, { ...node.attrs, [attribute]: value }));
+    updateBlockAttribute(editor, selected.pos, attribute, value);
     syncStructure();
   }
 
@@ -281,7 +300,7 @@
       </aside>
       <section class="preview-pane">
         <div class="section-title">Live preview</div>
-        <div class="preview sheet-content rbb-definition-preview" bind:this={canvas}></div>
+        <div class="preview sheet-content rbb-definition-preview" bind:this={canvas} onclick={selectNestedFromPreview}></div>
       </section>
       <section class="source-pane">
         {#if tab === 'structure'}

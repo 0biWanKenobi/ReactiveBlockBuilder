@@ -10,7 +10,7 @@
   import type { CustomBlockDefinition } from '../lib/custom-blocks/types.js';
   import { blockBoundary } from '../lib/editor/blockInteraction.js';
   import { Editor, type JSONContent } from '@tiptap/core';
-  import { NodeSelection } from '@tiptap/pm/state';
+  import { selectedBlock, updateBlockAttribute } from '../lib/editor/selection.js';
   import { startPaletteDrag, endPaletteDrag } from '../lib/editor/blockDragPreview.js';
   import { setBlockDragMode } from '../lib/editor/blockInteraction.js';
   import {
@@ -63,25 +63,10 @@
   let styleElement: HTMLStyleElement | null = null;
 
   function synchronizeSelection(current: Editor) {
-    const selection = current.state.selection;
-    const found = selection instanceof NodeSelection
-      ? { node: selection.node, pos: selection.from }
-      : selection.$from.depth > 0
-        ? {
-            node: selection.$from.parent,
-            pos: selection.$from.before(selection.$from.depth)
-          }
-        : null;
-
-    if (found && allowedNodeTypes.includes(found.node.type.name as SheetNodeType)) {
-      selected = {
-        type: found.node.type.name as SheetNodeType,
-        attrs: { ...found.node.attrs },
-        pos: found.pos
-      };
-    } else {
-      selected = null;
-    }
+    const found = selectedBlock(current);
+    selected = found && allowedNodeTypes.includes(found.type as SheetNodeType)
+      ? { ...found, type: found.type as SheetNodeType }
+      : null;
   }
 
   onMount(() => {
@@ -315,10 +300,7 @@
     const node = editor.state.doc.nodeAt(selected.pos);
     if (!node || node.type.name !== selected.type) return;
     if (attribute === 'class' && selectedIsInsideCustomBlock()) return;
-    // Do not call editor.focus(): doing so would steal focus from the property input.
-    editor.view.dispatch(editor.state.tr.setNodeMarkup(
-      selected.pos, undefined, { ...node.attrs, [attribute]: value }
-    ));
+    updateBlockAttribute(editor, selected.pos, attribute, value);
   }
 
   function selectedIsInsideCustomBlock() {

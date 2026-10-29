@@ -166,3 +166,35 @@ test('nested values are captured when converting an expanded container into a de
   expect(restored.content?.[0].content?.[0].content?.[0].content?.[0]
     .content?.[0].content?.[0]?.text).toBe('Original instance');
 });
+
+test('definition evolution retains stable overrides through reorder and prunes removed leaves', () => {
+  const base = createDefinition('Evolving', {
+    type: 'container', content: [
+      { type: 'textBlock', content: [{ type: 'text', text: 'First' }] },
+      { type: 'textBlock', content: [{ type: 'text', text: 'Second' }] }
+    ]
+  }, library());
+  const root = String(base.structure.attrs?.nodeId);
+  const first = String(base.structure.content?.[0].attrs?.nodeId);
+  const second = String(base.structure.content?.[1].attrs?.nodeId);
+  const instance = makeInstance(base);
+  instance.attrs = { ...instance.attrs, values: { [root + '/' + first]: 'Customized' } };
+  const compact = { type: 'doc', content: [instance] };
+  const reordered = { ...base, structure: {
+    ...base.structure, content: [
+      base.structure.content![1], base.structure.content![0],
+      { type: 'textBlock', attrs: { nodeId: 'added' }, content: [{ type: 'text', text: 'New' }] }
+    ]
+  } };
+  const edited = expandDocument(compact, library(reordered));
+  const children = edited.content![0].content![0].content!;
+  expect(children.map(c => c.content?.[0]?.text)).toEqual(['Second', 'Customized', 'New']);
+  expect(collapseDocument(edited, library(reordered)).content![0].attrs?.values)
+    .toEqual({ [root + '/' + first]: 'Customized' });
+  const deleted = { ...reordered, structure: { ...reordered.structure,
+    content: reordered.structure.content!.filter(c => c.attrs?.nodeId !== first)
+  } };
+  const revised = collapseDocument(expandDocument(compact, library(deleted)), library(deleted));
+  expect(revised.content![0].attrs?.values).toEqual({});
+  expect(String(second)).toBeTruthy();
+});

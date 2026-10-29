@@ -138,6 +138,97 @@ try {
   console.log('After CSS save', { alerts: await editModal.locator('[role="alert"]').allTextContents(), status: await page.locator('[role="status"]').allTextContents(), visible: await editModal.isVisible() });
   await editModal.waitFor({ state: 'hidden', timeout: 2500 });
   console.log('Import atomicity, unapplied JSON protection, CSS draft containment passed');
+
+  // End-to-end nested definitions: parent-specific defaults survive save,
+  // while the referenced child definition retains its shared default.
+  const childDefinition = {
+    typeId: 'test-nested-child', name: 'Nested Child', rootClass: '',
+    structure: { type: 'container', attrs: { nodeId: 'child-root', class: 'child-root' },
+      content: [{ type: 'textBlock', attrs: { nodeId: 'child-leaf', class: 'child-label' },
+        content: [{ type: 'text', text: 'Global child default' }] }] }
+  };
+  const parentDefinition = {
+    typeId: 'test-nested-parent', name: 'Nested Parent', rootClass: '',
+    structure: { type: 'container', attrs: { nodeId: 'parent-root', class: 'parent-root' },
+      content: [{ type: 'customBlock', attrs: {
+        nodeId: 'nested-slot', typeId: 'test-nested-child', instanceId: 'definition-nested-slot',
+        values: {}
+      } }] }
+  };
+  await page.evaluate(([child, parent]) => {
+    localStorage.setItem('rbb:custom-blocks/' + child.typeId + '.json', JSON.stringify(child));
+    localStorage.setItem('rbb:custom-blocks/' + parent.typeId + '.json', JSON.stringify(parent));
+  }, [childDefinition, parentDefinition]);
+  await page.reload({ waitUntil: 'networkidle' });
+  const nestedSheet = {
+    version: 1, themeId: 'default', fields: serialized.fields,
+    document: { type: 'doc', content: [
+      { type: 'customBlock', attrs: { typeId: 'test-nested-parent', instanceId: 'sheet-parent', values: {} } },
+      { type: 'customBlock', attrs: { typeId: 'test-nested-child', instanceId: 'sheet-child', values: {} } }
+    ] }
+  };
+  const nestedSource = page.locator('.source-panel').first().locator('.cm-content');
+  await nestedSource.click();
+  await page.keyboard.press('ControlOrMeta+A');
+  await page.keyboard.insertText(JSON.stringify(nestedSheet));
+  await page.getByRole('button', { name: 'Import', exact: true }).click();
+  assert.equal(await page.locator('.sheet-content .parent-root .child-label').first().innerText(), 'Global child default');
+  // Dragging a nested component on the sheet must expose only the outer
+  // custom-block handle, not the child definition's internal structure.
+  await page.getByRole('button', { name: 'Drag', exact: true }).first().click();
+  await page.locator('.sheet-content .parent-root .child-label').first().hover();
+  const handles = page.locator('.sheet-content .rbb-block-drag-rail:not([hidden]) .rbb-block-drag-handle');
+  assert.equal(await handles.count(), 1, 'Nested child should have no separate sheet drag handle');
+  await page.getByRole('button', { name: 'Edit', exact: true }).first().click();
+
+  await page.getByRole('button', { name: 'Edit Nested Parent' }).click();
+  const parentModal = page.getByRole('dialog', { name: 'Custom block definition editor' });
+  await parentModal.locator('.preview .child-label').click();
+  const nestedInput = parentModal.getByLabel('Nested child-label value');
+  await nestedInput.waitFor();
+  await nestedInput.fill('Parent-only default');
+  await parentModal.getByRole('button', { name: 'Save definition' }).click();
+  await parentModal.waitFor({ state: 'hidden' });
+  assert.equal(await page.locator('.sheet-content .parent-root .child-label').first().innerText(), 'Parent-only default');
+
+  // Live definition evolution: insert a sibling before the nested component
+  // while preserving the parent-only nested override in the open sheet.
+  await page.getByRole('button', { name: 'Edit Nested Parent' }).click();
+  const evolutionModal = page.getByRole('dialog', { name: 'Custom block definition editor' });
+  const definitionJSON = evolutionModal.locator('.source-pane .cm-content');
+  await definitionJSON.click();
+  await page.keyboard.press('ControlOrMeta+A');
+  await page.keyboard.press('ControlOrMeta+C');
+  const structure = JSON.parse(await page.evaluate(() => navigator.clipboard.readText()));
+  structure.content.unshift({
+    type: 'textBlock',
+    attrs: { nodeId: 'new-sibling', class: 'new-sibling' },
+    content: [{ type: 'text', text: 'Added later' }]
+  });
+  await definitionJSON.click();
+  await page.keyboard.press('ControlOrMeta+A');
+  await page.keyboard.insertText(JSON.stringify(structure));
+  await evolutionModal.getByRole('button', { name: 'Apply JSON' }).click();
+  await evolutionModal.getByRole('button', { name: 'Save definition' }).click();
+  await evolutionModal.waitFor({ state: 'hidden' });
+  assert.equal(await page.locator('.sheet-content .parent-root .new-sibling').first().innerText(), 'Added later');
+  assert.equal(await page.locator('.sheet-content .parent-root .child-label').first().innerText(), 'Parent-only default');
+  assert.equal(await page.locator('.sheet-content > div .child-root').last().locator('.child-label').innerText(), 'Global child default');
+
+  await page.getByRole('button', { name: 'Edit Nested Parent' }).click();
+  const parentAgain = page.getByRole('dialog', { name: 'Custom block definition editor' });
+  await parentAgain.locator('.preview .child-label').click();
+  await parentAgain.getByRole('button', { name: 'Edit definition' }).click();
+  await page.getByRole('dialog', { name: 'Custom block definition editor' })
+    .getByLabel('Custom block name').fill('Renamed Child');
+  await page.getByRole('dialog', { name: 'Custom block definition editor' })
+    .getByRole('button', { name: 'Save definition' }).click();
+  await page.getByRole('dialog', { name: 'Custom block definition editor' })
+    .getByText('Nested Parent').waitFor();
+  await page.getByRole('dialog', { name: 'Custom block definition editor' })
+    .getByRole('button', { name: 'Cancel' }).click();
+  console.log('Nested definition editing, inherited values and navigation passed');
+
 } finally {
   await browser.close();
 }
