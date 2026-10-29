@@ -191,8 +191,8 @@
 		<div class="source-heading">
 			<strong>Sheet JSON</strong>
 			<div class="source-actions">
-				<button onclick={exportSheet}>Export</button>
-				<button onclick={importSheet}>Import</button>
+				<button onclick={exportSheet}>Apply JSON ➡️ Preview</button>
+				<button onclick={importSheet}>Sync Preview ➡️ JSON</button>
 				<button
 					class="format-button"
 					title="Format JSON"
