@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import CodeEditor from '../lib/editor/CodeEditor.svelte';
   import { Editor, type JSONContent } from '@tiptap/core';
   import { NodeSelection } from '@tiptap/pm/state';
   import {
@@ -144,6 +145,33 @@
     fieldError = '';
   }
 
+  function formatJSON() {
+    try {
+      jsonSource = JSON.stringify(JSON.parse(jsonSource), null, 2) + '\n';
+      message = 'JSON formatted';
+    } catch (error) {
+      message = `Cannot format JSON: ${error instanceof Error ? error.message : String(error)}`;
+    }
+  }
+
+  async function formatCSS() {
+    try {
+      // Lazy-load Prettier only when the format action is requested.
+      const [prettier, postcss] = await Promise.all([
+        import('prettier/standalone'),
+        import('prettier/plugins/postcss')
+      ]);
+      css = await prettier.format(css, {
+        parser: 'css',
+        plugins: [postcss],
+        tabWidth: 2
+      });
+      message = 'CSS formatted';
+    } catch (error) {
+      message = `Cannot format CSS: ${error instanceof Error ? error.message : String(error)}`;
+    }
+  }
+
   function exportSheet() {
     if (!editor) return;
     const saved: SavedSheet = {
@@ -268,13 +296,20 @@
             <div class="source-actions">
               <button onclick={exportSheet}>Export</button>
               <button onclick={importSheet}>Import</button>
+              <button class="format-button" title="Format JSON" aria-label="Format JSON" onclick={formatJSON}>Format</button>
             </div>
           </div>
-          <textarea aria-label="Sheet JSON" spellcheck="false" bind:value={jsonSource}></textarea>
+          <CodeEditor language="json" label="Sheet JSON" value={jsonSource} onChange={(next) => jsonSource = next} />
         </section>
         <section class="source-panel">
-          <div class="source-heading"><strong>Custom CSS</strong><span>Live</span></div>
-          <textarea aria-label="Custom sheet CSS" spellcheck="false" bind:value={css}></textarea>
+          <div class="source-heading">
+            <strong>Custom CSS</strong>
+            <div class="source-actions">
+              <span>Live</span>
+              <button class="format-button" title="Format CSS" aria-label="Format CSS" onclick={formatCSS}>Format</button>
+            </div>
+          </div>
+          <CodeEditor language="css" label="Custom sheet CSS" value={css} onChange={(next) => css = next} />
         </section>
       </div>
     </main>
@@ -353,7 +388,7 @@
   .field-list { display: flex; flex-direction: column; gap: 8px; }
   .field-row { display: grid; gap: 4px; }
   .field-row span { color: #746353; font: 700 .67rem ui-monospace, monospace; }
-  input, textarea { width: 100%; min-width: 0; border: 1px solid #d8d2c9; background: #fff; border-radius: 6px; padding: 8px; color: #292723; outline-color: #987451; }
+  input { width: 100%; min-width: 0; border: 1px solid #d8d2c9; background: #fff; border-radius: 6px; padding: 8px; color: #292723; outline-color: #987451; }
   .field-row input, .new-field input { font: .73rem ui-monospace, monospace; }
   .new-field { display: grid; gap: 8px; margin-top: 15px; }
   .new-field button { padding: 8px; border: 1px solid #a57e4f; border-radius: 7px; color: #5b401e; background: #f8e9d0; font-size: .78rem; font-weight: 700; }
@@ -377,9 +412,11 @@
   .source-panel { min-width: 0; background: #fff; border: 1px solid #e4ded5; border-radius: 10px; overflow: hidden; }
   .source-heading { display: flex; align-items: center; justify-content: space-between; padding: 11px 13px; border-bottom: 1px solid #eee9e2; font-size: .76rem; }
   .source-heading span { color: #8a806f; }
-  .source-actions { display: flex; gap: 6px; }
+  .source-actions { display: flex; gap: 6px; align-items: center; }
   .source-actions button { border: 1px solid #d8c7b4; border-radius: 5px; background: #faf6ef; padding: 5px 9px; font-size: .7rem; }
-  textarea { display: block; height: 215px; resize: vertical; border: 0; border-radius: 0; padding: 12px; font: .72rem/1.5 ui-monospace, monospace; }
+  .source-actions .format-button { border-color: transparent; background: transparent; color: #80776d; font-size: .67rem; padding: 4px 6px; }
+  .source-actions .format-button:hover { border-color: #d8c7b4; background: #f7f3ed; color: #564433; }
+  .source-actions .format-button:focus-visible { outline: 2px solid #a47a4b; outline-offset: 2px; }
   .selection-heading { display: flex; justify-content: space-between; gap: 10px; margin: 18px 0; }
   .selection-heading strong { font-size: .85rem; }
   .selection-heading span { color: #8c7f70; font-size: .67rem; }
