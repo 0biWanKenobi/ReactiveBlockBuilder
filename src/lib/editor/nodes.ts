@@ -1,4 +1,7 @@
 import { Node, mergeAttributes, type Extensions, type JSONContent } from '@tiptap/core';
+import { BlockDragPreview } from './blockDragPreview.js';
+import { BlockInteraction } from './blockInteraction.js';
+import { BlockDragHandle } from './blockDragHandle.js';
 import Document from '@tiptap/extension-document';
 import Text from '@tiptap/extension-text';
 import { mount, unmount } from 'svelte';
@@ -24,7 +27,6 @@ export function createSheetExtensions(fields: Sheet): Extensions {
     group: 'block',
     content: 'block+',
     defining: true,
-    draggable: true,
     addAttributes: () => classes('sheet-container'),
     parseHTML: () => [{ tag: 'section[data-sheet-container]' }],
     renderHTML: ({ HTMLAttributes }) => [
@@ -37,7 +39,6 @@ export function createSheetExtensions(fields: Sheet): Extensions {
     group: 'block',
     content: 'text*',
     defining: true,
-    draggable: true,
     addAttributes: () => classes('sheet-text'),
     parseHTML: () => [{ tag: 'p[data-sheet-text]' }],
     renderHTML: ({ HTMLAttributes }) => [
@@ -49,7 +50,6 @@ export function createSheetExtensions(fields: Sheet): Extensions {
     name: 'formula',
     group: 'block',
     atom: true,
-    draggable: true,
     selectable: true,
     addAttributes: () => ({
       ...classes('sheet-formula'),
@@ -86,7 +86,6 @@ export function createSheetExtensions(fields: Sheet): Extensions {
     name: 'image',
     group: 'block',
     atom: true,
-    draggable: true,
     selectable: true,
     addAttributes: () => ({
       ...classes('sheet-image'),
@@ -121,7 +120,8 @@ export function createSheetExtensions(fields: Sheet): Extensions {
     }
   });
 
-  return [Document, Text, Container, TextBlock, Formula, ImageNode];
+  return [Document, Text, Container, TextBlock, Formula, ImageNode,
+    BlockInteraction, BlockDragPreview, BlockDragHandle];
 }
 
 export const insertionSamples: Record<SheetNodeType, JSONContent> = {
