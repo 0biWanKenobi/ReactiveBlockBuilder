@@ -3,13 +3,30 @@ import { chromium } from 'playwright';
 
 const browser = await chromium.launch({ headless: true });
 try {
-  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  const context = await browser.newContext({ viewport: { width: 1440, height: 900 }, permissions: ['clipboard-read', 'clipboard-write'] });
+  const page = await context.newPage();
   page.on('pageerror', (error) => console.error('BROWSER ERROR:', error.stack ?? error.message));
+  page.on('console', msg => { if(msg.type() !== 'log') console.error('BROWSER CONSOLE', msg.type(), msg.text()); });
+  page.on('response', response => { if(response.status() >= 400) console.error('BROWSER RESPONSE', response.status(), response.url()); });
   await page.goto('http://127.0.0.1:5189/', { waitUntil: 'networkidle' });
 
   const header = page.locator('.sheet-content .sheet-header').first();
   await header.click({ button: 'right' });
+  await page.evaluate(() => {
+    window.__trace = [];
+    document.addEventListener('click', (event) => {
+      window.__trace.push('capture:' + event.target?.outerHTML?.slice(0, 140));
+    }, true);
+    document.addEventListener('click', (event) => {
+      window.__trace.push('bubble:' + event.target?.outerHTML?.slice(0, 140));
+    });
+    window.addEventListener('beforeunload', () => console.log('BEFORE UNLOAD'), { once:true });
+  });
+  console.log('Menu before click', await page.getByRole('button', { name: 'Save as custom block' }).evaluate(el => el.outerHTML));
   await page.getByRole('button', { name: 'Save as custom block' }).click();
+  console.log('Trace', await page.evaluate(() => window.__trace));
+  console.log('URL', page.url());
+  console.log('Body status', (await page.locator('body').innerText()).slice(0,600));
   const modal = page.getByRole('dialog', { name: 'Custom block definition editor' });
   console.log('After creation:', {
     dialogs: await page.locator('[role="dialog"]').count(),
@@ -36,7 +53,10 @@ try {
 
   const source = page.locator('.source-panel').first().locator('.cm-content');
   await page.getByRole('button', { name: 'Export', exact: true }).click();
-  const serialized = JSON.parse(await source.innerText());
+  await source.click();
+  await page.keyboard.press('ControlOrMeta+A');
+  await page.keyboard.press('ControlOrMeta+C');
+  const serialized = JSON.parse(await page.evaluate(() => navigator.clipboard.readText()));
   assert.equal(serialized.themeId, 'default');
   assert.equal('css' in serialized, false);
   const compact = serialized.document.content[0];

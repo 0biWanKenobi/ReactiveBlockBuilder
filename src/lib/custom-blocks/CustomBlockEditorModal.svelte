@@ -12,7 +12,7 @@
   import type { Sheet } from '../formula/engine.js';
 
   let {
-    initial, initialCSS, library, fields, onSave, onClose
+    initial, initialCSS, library, fields, onSave, onClose, onNavigate, breadcrumbs = []
   }: {
     initial: CustomBlockDefinition;
     initialCSS: string;
@@ -20,6 +20,8 @@
     fields: Sheet;
     onSave: (definition: CustomBlockDefinition, css: string) => void;
     onClose: () => void;
+    onNavigate?: (typeId: string, current: CustomBlockDefinition, css: string) => void;
+    breadcrumbs?: string[];
   } = $props();
 
   let name = $state(initial.name);
@@ -134,14 +136,37 @@
     }
   }
 
+  function currentDraft(): CustomBlockDefinition {
+    return {
+      typeId: initial.typeId,
+      name: name.trim() || initial.name,
+      rootClass: rootClass.trim(),
+      structure: currentStructure()
+    };
+  }
+
+  function dirty(): boolean {
+    return name !== initial.name || rootClass !== initial.rootClass ||
+      css !== initialCSS && !(initialCSS === '' && css.trim().startsWith('/*')) ||
+      JSON.stringify(currentStructure()) !== JSON.stringify(initial.structure);
+  }
+
+  function close() {
+    if (!dirty() || window.confirm('Discard unsaved changes to this definition?')) onClose();
+  }
+
+  function openNested() {
+    if (!selected || selected.type !== 'customBlock' || !onNavigate) return;
+    try {
+      onNavigate(String(selected.attrs.typeId ?? ''), currentDraft(), css);
+    } catch (cause) {
+      error = cause instanceof Error ? cause.message : String(cause);
+    }
+  }
+
   function save() {
     try {
-      const next: CustomBlockDefinition = {
-        typeId: initial.typeId,
-        name: name.trim() || initial.name,
-        rootClass: rootClass.trim(),
-        structure: currentStructure()
-      };
+      const next = currentDraft();
       onSave(next, css);
     } catch (cause) {
       error = cause instanceof Error ? cause.message : String(cause);
@@ -152,8 +177,14 @@
 <div class="overlay" role="presentation">
   <div class="modal" role="dialog" aria-modal="true" aria-label="Custom block definition editor">
     <header>
-      <div><strong>Custom block definition</strong><span>{initial.typeId}</span></div>
-      <button onclick={onClose} aria-label="Close editor">✕</button>
+      <div>
+        <strong>Custom block definition</strong>
+        <span>{[...breadcrumbs, name].join(' / ')}</span>
+      </div>
+      <div class="nav-actions">
+        {#if breadcrumbs.length}<button onclick={close} aria-label="Back to parent definition">← Back</button>{/if}
+        <button onclick={close} aria-label="Close editor">✕</button>
+      </div>
     </header>
     <div class="properties">
       <label>Name <input aria-label="Custom block name" bind:value={name} /></label>
@@ -180,7 +211,10 @@
           onDragEnd={() => editor && endPaletteDrag(editor.view)} />
         {#if selected}
           <div class="section-title">Selected: {selected.type}</div>
-          {#if selected.type === 'formula'}
+          {#if selected.type === 'customBlock'}
+            <p class="hint">Nested block: {String(selected.attrs.typeId ?? '')}</p>
+            <button onclick={openNested}>Edit definition</button>
+          {:else if selected.type === 'formula'}
             <label>Field <input value={String(selected.attrs.field ?? '')} oninput={(e) => updateAttr('field', e.currentTarget.value)}/></label>
           {:else if selected.type === 'image'}
             <label>Source <input value={String(selected.attrs.src ?? '')} oninput={(e) => updateAttr('src', e.currentTarget.value)}/></label>
@@ -204,7 +238,7 @@
       </section>
     </div>
     {#if error}<div role="alert" class="error">{error}</div>{/if}
-    <footer><button onclick={onClose}>Cancel</button><button class="primary" onclick={save}>Save definition</button></footer>
+    <footer><button onclick={close}>Cancel</button><button class="primary" onclick={save}>Save definition</button></footer>
   </div>
 </div>
 
@@ -214,6 +248,8 @@
   header, footer { display: flex; align-items: center; justify-content: space-between; padding: 15px 22px; border-bottom: 1px solid #dedad4; }
   header div { display: flex; flex-direction: column; gap: 2px; }
   header span { color: #8c8177; font: .73rem monospace; }
+  .nav-actions { display: flex; gap: 8px; }
+  .hint { font-size: .74rem; color: #796d61; }
   footer { justify-content: flex-end; gap: 10px; border-top: 1px solid #dedad4; border-bottom: 0; }
   button { border: 1px solid #d4c7b7; background: #fdfaf5; color: #5e4e3f; padding: 8px 11px; border-radius: 7px; cursor: pointer; }
   button.primary { background: #ddbd8c; color: #242526; font-weight: 800; }
