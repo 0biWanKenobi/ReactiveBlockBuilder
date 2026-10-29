@@ -18,6 +18,7 @@
 
   let target: HTMLDivElement;
   let view: EditorView | undefined;
+  let synchronizing = false;
 
   onMount(() => {
     view = new EditorView({
@@ -46,7 +47,7 @@
             '&.cm-focused': { outline: 'none' }
           }),
           EditorView.updateListener.of((update) => {
-            if (update.docChanged) {
+            if (update.docChanged && !synchronizing) {
               onChange(update.state.doc.toString());
             }
           })
@@ -65,9 +66,14 @@
   $effect(() => {
     const latest = value;
     if (view && view.state.doc.toString() !== latest) {
-      view.dispatch({
-        changes: { from: 0, to: view.state.doc.length, insert: latest }
-      });
+      synchronizing = true;
+      try {
+        view.dispatch({
+          changes: { from: 0, to: view.state.doc.length, insert: latest }
+        });
+      } finally {
+        synchronizing = false;
+      }
     }
   });
 </script>

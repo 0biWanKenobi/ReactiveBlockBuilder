@@ -51,6 +51,19 @@ try {
   await page.keyboard.insertText('!');
   assert.match(await title.innerText(), /!/);
 
+  // Custom block structure is protected in the sheet, but leaf values are editable.
+  const beforeChildren = await instance.locator('[data-sheet-text], [data-sheet-block]').count();
+  await title.click();
+  await page.keyboard.press('ControlOrMeta+A');
+  await page.keyboard.press('Backspace');
+  const afterChildren = await instance.locator('[data-sheet-text], [data-sheet-block]').count();
+  assert.equal(afterChildren, beforeChildren, 'Cannot delete custom block descendants individually');
+  // Restore the typed override for the export/import assertion.
+  await title.click();
+  await page.keyboard.press('End');
+  await page.keyboard.insertText('!');
+  assert.match(await title.innerText(), /!/);
+
   const source = page.locator('.source-panel').first().locator('.cm-content');
   await page.getByRole('button', { name: 'Export', exact: true }).click();
   await source.click();
@@ -82,7 +95,49 @@ try {
   await page.getByRole('button', { name: 'Import', exact: true }).click();
   assert.match(await page.locator('[role="status"]').innerText(), /Import failed: Missing custom block definition: not-installed/);
   assert.equal(await page.locator('.sheet-content [data-custom-block-type="sheet-header"]').count(), 1);
-  console.log('Custom block creation, compact overrides, persistence, import failure passed');
+  // A rejected import must leave BOTH the sheet and reactive fields unchanged.
+  const invalid = structuredClone(serialized);
+  invalid.fields['NOT A VALID ID'] = { id: 'NOT A VALID ID', formula: '42' };
+  await importSource.click();
+  await page.keyboard.press('ControlOrMeta+A');
+  await page.keyboard.insertText(JSON.stringify(invalid));
+  await page.getByRole('button', { name: 'Import', exact: true }).click();
+  assert.match(await page.locator('[role="status"]').innerText(), /Import failed: Invalid formula field/);
+  await page.getByRole('button', { name: 'Export', exact: true }).click();
+  await importSource.click();
+  await page.keyboard.press('ControlOrMeta+A');
+  await page.keyboard.press('ControlOrMeta+C');
+  const afterInvalid = JSON.parse(await page.evaluate(() => navigator.clipboard.readText()));
+  assert.deepEqual(afterInvalid.fields, serialized.fields, 'Rejected import must preserve fields');
+
+  // The JSON editor has an explicit Apply action. Save must not silently
+  // discard unapplied JSON edits and keep the older preview tree.
+  await page.getByRole('button', { name: 'Edit Test Header' }).click();
+  const editModal = page.getByRole('dialog', { name: 'Custom block definition editor' });
+  await editModal.waitFor();
+  const structureSource = editModal.locator('.source-pane .cm-content');
+  await structureSource.click();
+  await page.keyboard.press('ControlOrMeta+End');
+  await page.keyboard.insertText(' ');
+  await editModal.getByRole('button', { name: 'Save definition' }).click();
+  assert.match(await editModal.getByRole('alert').innerText(), /Unapplied JSON changes/);
+  await editModal.getByRole('button', { name: 'From preview' }).click();
+
+  // Unsaved CSS must not leak from the preview into the sheet behind the modal.
+  const originalColor = await page.locator('.sheet-content [data-custom-block-type="sheet-header"] .sheet-title')
+    .first().evaluate(node => getComputedStyle(node).color);
+  await editModal.getByRole('button', { name: 'CSS', exact: true }).click();
+  const cssSource = editModal.locator('.source-pane .cm-content');
+  await cssSource.click();
+  await page.keyboard.press('ControlOrMeta+A');
+  await page.keyboard.insertText('.sheet-title { color: rgb(1, 2, 3) !important; }');
+  const sheetColor = await page.locator('.sheet-content [data-custom-block-type="sheet-header"] .sheet-title')
+    .first().evaluate(node => getComputedStyle(node).color);
+  assert.equal(sheetColor, originalColor, 'Draft CSS must be scoped to modal preview');
+  await editModal.getByRole('button', { name: 'Save definition' }).click();
+  console.log('After CSS save', { alerts: await editModal.locator('[role="alert"]').allTextContents(), status: await page.locator('[role="status"]').allTextContents(), visible: await editModal.isVisible() });
+  await editModal.waitFor({ state: 'hidden', timeout: 2500 });
+  console.log('Import atomicity, unapplied JSON protection, CSS draft containment passed');
 } finally {
   await browser.close();
 }

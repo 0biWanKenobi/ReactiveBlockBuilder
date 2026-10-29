@@ -178,7 +178,7 @@ function collapseInstance(node: JSONContent, library: BlockLibrary): JSONContent
 
 export function collapseDocument(node: JSONContent, library: BlockLibrary): JSONContent {
   const visit = (current: JSONContent): JSONContent => {
-    if (current.type === 'customBlock') return collapseInstance(current, library);
+    if (current.type === 'customBlock') return current.content ? collapseInstance(current, library) : clone(current);
     return { ...current, content: current.content?.map(visit) };
   };
   return visit(clone(node));
@@ -216,6 +216,19 @@ export function createDefinition(
     rootClass: '',
     structure: ensureNodeIds(collapseDocument({ type: 'doc', content: [structure] }, library).content?.[0] ?? structure)
   };
+}
+
+/** Validate the candidate against its dependencies before publishing it. */
+export function validateDefinition(definition: CustomBlockDefinition, library: BlockLibrary): void {
+  if (definition.structure.type !== 'container' || !definition.structure.content?.length) {
+    throw new Error('A custom block must contain a non-empty root container');
+  }
+  const candidate: BlockLibrary = {
+    get: (typeId) => typeId === definition.typeId ? definition : library.get(typeId),
+    list: () => [...library.list().filter((item) => item.typeId !== definition.typeId), definition]
+  };
+  // Expansion checks both missing dependencies and recursive type references.
+  expandDocument({ type: 'doc', content: [makeInstance(definition)] }, candidate);
 }
 
 export function makeInstance(definition: CustomBlockDefinition): JSONContent {

@@ -1,7 +1,7 @@
 import { test, expect } from 'bun:test';
 import {
   createDefinition, makeInstance, expandDocument, collapseDocument,
-  resetLeafDefaults
+  resetLeafDefaults, validateDefinition, captureInitialValues
 } from '../src/lib/custom-blocks/model.js';
 import type { CustomBlockDefinition } from '../src/lib/custom-blocks/types.js';
 
@@ -80,4 +80,89 @@ test('reset type defaults leaves structure and ids in place', () => {
   expect(reset.content?.[0].content?.[0].text).toBe('...');
   expect(reset.content?.[1].attrs?.field).toBe('');
   expect(reset.content?.[2].attrs?.src).toBe('');
+});
+
+test('definition validator rejects missing and cyclic dependencies', () => {
+  const registry = library();
+  const child = createDefinition('Child', {
+    type: 'container', content: [{ type: 'textBlock', content: [{ type: 'text', text: 'Child' }] }]
+  }, registry);
+  const parent = createDefinition('Parent', {
+    type: 'container', content: [{ type: 'customBlock', attrs: { typeId: child.typeId, instanceId: 'nested-1' } }]
+  }, library(child));
+  expect(() => validateDefinition(parent, library(child))).not.toThrow();
+  expect(() => validateDefinition(parent, registry)).toThrow(/Missing custom block definition/);
+  const recursive = {
+    ...child,
+    structure: {
+      ...child.structure, content: [
+        { type: 'customBlock', attrs: { typeId: parent.typeId, instanceId: 'nested-2' } }
+      ]
+    }
+  };
+  expect(() => validateDefinition(recursive, library(child, parent))).toThrow(/Circular custom block reference/);
+});
+
+test('nested custom block values resolve child, parent and sheet overrides', () => {
+  const child = createDefinition('Child', {
+    type: 'container', content: [
+      { type: 'textBlock', content: [{ type: 'text', text: 'Child default' }] }
+    ]
+  }, library());
+  const childRoot = String(child.structure.attrs?.nodeId);
+  const childText = String(child.structure.content?.[0].attrs?.nodeId);
+  const nestedKey = `${childRoot}/${childText}`;
+  const parent = createDefinition('Parent', {
+    type: 'container', content: [{
+      type: 'customBlock', attrs: {
+        typeId: child.typeId, instanceId: 'inner', values: { [nestedKey]: 'Parent default' }
+      }
+    }]
+  }, library(child));
+  const all = library(child, parent);
+  const parentRoot = String(parent.structure.attrs?.nodeId);
+  const innerId = String(parent.structure.content?.[0].attrs?.nodeId);
+  const overrideKey = `${parentRoot}/${innerId}/${nestedKey}`;
+  const compact = { type: 'doc', content: [{
+    type: 'customBlock', attrs: { typeId: parent.typeId, instanceId: 'outer',
+      values: { [overrideKey]: 'Sheet value' }
+    }
+  }] };
+  const expanded = expandDocument(compact, all);
+  const sheetText = expanded.content?.[0].content?.[0].content?.[0]
+    .content?.[0].content?.[0].content?.[0]?.text;
+  expect(sheetText).toBe('Sheet value');
+  expect(collapseDocument(expanded, all).content?.[0].attrs?.values)
+    .toEqual({ [overrideKey]: 'Sheet value' });
+  const inherited = expandDocument({
+    type: 'doc', content: [makeInstance(parent)]
+  }, all);
+  expect(inherited.content?.[0].content?.[0].content?.[0].content?.[0]
+    .content?.[0].content?.[0]?.text).toBe('Parent default');
+});
+
+test('nested values are captured when converting an expanded container into a definition', () => {
+  const child = createDefinition('Nested', {
+    type: 'container', content: [{ type: 'textBlock',
+      content: [{ type: 'text', text: 'Default' }] }]
+  }, library());
+  const originals = library(child);
+  const source = expandDocument({
+    type: 'doc', content: [{
+      type: 'container', content: [makeInstance(child)]
+    }]
+  }, originals).content?.[0];
+  if (!source) throw new Error('Missing expanded source');
+  const leaf = source.content?.[0].content?.[0].content?.[0];
+  if (!leaf) throw new Error('Missing nested leaf');
+  leaf.content = [{ type: 'text', text: 'Original instance' }];
+  const definition = createDefinition('Wrapper', source, originals);
+  const template = expandDocument({ type: 'doc', content: [definition.structure] }, originals).content?.[0];
+  if (!template) throw new Error('Missing wrapper template');
+  const originalValues = captureInitialValues(template, source);
+  const instance = makeInstance(definition);
+  instance.attrs = { ...instance.attrs, values: originalValues };
+  const restored = expandDocument({ type: 'doc', content: [instance] }, library(child, definition));
+  expect(restored.content?.[0].content?.[0].content?.[0].content?.[0]
+    .content?.[0].content?.[0]?.text).toBe('Original instance');
 });

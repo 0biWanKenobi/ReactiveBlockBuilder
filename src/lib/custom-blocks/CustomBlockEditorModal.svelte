@@ -26,17 +26,21 @@
 
   let name = $state(initial.name);
   let rootClass = $state(initial.rootClass);
-  let css = $state(initialCSS || `/*
+  const starterCSS = initialCSS || `/*
  * Fill this with your styles as needed, or leave it empty.
  *
  * .custom-class {
  *
  * }
- */`);
+ */`;
+  let css = $state(starterCSS);
+  let jsonDraftEdited = $state(false);
   let structure = $state(JSON.stringify(initial.structure, null, 2));
   let tab = $state<'structure' | 'css'>('structure');
   let tool = $state<'edit' | 'drag'>('edit');
   let selected = $state<{ pos: number; type: string; attrs: Record<string, unknown> } | null>(null);
+  type NestedValue = { pos: number; type: string; label: string; value: string; alt?: string };
+  let nestedValues = $state<NestedValue[]>([]);
   let error = $state('');
   let canvas: HTMLDivElement;
   let editor: Editor | null = null;
@@ -50,6 +54,23 @@
         ? { pos: selection.$from.before(selection.$from.depth), node: selection.$from.parent }
         : null;
     selected = node ? { pos: node.pos, type: node.node.type.name, attrs: { ...node.node.attrs } } : null;
+    nestedValues = [];
+    if (node?.node.type.name === 'customBlock') {
+      node.node.descendants((child, offset) => {
+        if (!['textBlock', 'formula', 'image'].includes(child.type.name)) return true;
+        const type = child.type.name;
+        nestedValues.push({
+          pos: node.pos + 1 + offset,
+          type,
+          label: String(child.attrs.class ?? type) || type,
+          value: type === 'textBlock'
+            ? child.textContent
+            : String(child.attrs[type === 'formula' ? 'field' : 'src'] ?? ''),
+          alt: type === 'image' ? String(child.attrs.alt ?? '') : undefined
+        });
+        return false;
+      });
+    }
   }
 
   function currentStructure(): JSONContent {
@@ -65,20 +86,21 @@
   function syncStructure() {
     if (!editor) return;
     structure = JSON.stringify(currentStructure(), null, 2);
+    jsonDraftEdited = false;
   }
 
   onMount(() => {
     previewStyle = document.createElement('style');
     previewStyle.dataset.customBlockDraft = initial.typeId;
     document.head.appendChild(previewStyle);
-    previewStyle.textContent = css;
+    previewStyle.textContent = `@scope (.rbb-definition-preview) {\n${css}\n}`;
     editor = new Editor({
       element: canvas,
       extensions: createSheetExtensions(fields),
       content: expandDocument({ type: 'doc', content: [initial.structure] }, library),
       onSelectionUpdate: ({ editor }) => synchronizeSelection(editor),
       onTransaction: ({ editor }) => synchronizeSelection(editor),
-      onUpdate: () => syncStructure()
+      onUpdate: () => { if (!jsonDraftEdited) syncStructure(); }
     });
     return () => { editor?.destroy(); editor = null; previewStyle?.remove(); previewStyle = null; };
   });
@@ -88,7 +110,7 @@
   });
 
   $effect(() => {
-    if (previewStyle) previewStyle.textContent = css;
+    if (previewStyle) previewStyle.textContent = `@scope (.rbb-definition-preview) {\n${css}\n}`;
   });
 
   function insert(block: JSONContent) {
@@ -114,11 +136,29 @@
     syncStructure();
   }
 
+  function updateNestedValue(leaf: NestedValue, value: string, property: 'value' | 'alt' = 'value') {
+    if (!editor) return;
+    const node = editor.state.doc.nodeAt(leaf.pos);
+    if (!node || node.type.name !== leaf.type) return;
+    const transaction = editor.state.tr;
+    if (leaf.type === 'textBlock') {
+      const content = value ? editor.state.schema.text(value) : undefined;
+      transaction.replaceWith(leaf.pos, leaf.pos + node.nodeSize,
+        node.type.create(node.attrs, content));
+    } else {
+      const key = property === 'alt' ? 'alt' : leaf.type === 'formula' ? 'field' : 'src';
+      transaction.setNodeMarkup(leaf.pos, undefined, { ...node.attrs, [key]: value });
+    }
+    editor.view.dispatch(transaction);
+    syncStructure();
+  }
+
   function applyJSON() {
     try {
       const parsed = ensureNodeIds(JSON.parse(structure) as JSONContent);
       if (parsed.type !== 'container' || !parsed.content?.length) throw new Error('Expected a non-empty container');
       editor?.commands.setContent(expandDocument({ type: 'doc', content: [parsed] }, library));
+      syncStructure();
       error = '';
     } catch (cause) {
       error = cause instanceof Error ? cause.message : String(cause);
@@ -137,6 +177,7 @@
   }
 
   function currentDraft(): CustomBlockDefinition {
+    if (jsonDraftEdited) throw new Error('Unapplied JSON changes. Click Apply JSON before continuing.');
     return {
       typeId: initial.typeId,
       name: name.trim() || initial.name,
@@ -147,7 +188,7 @@
 
   function dirty(): boolean {
     return name !== initial.name || rootClass !== initial.rootClass ||
-      css !== initialCSS && !(initialCSS === '' && css.trim().startsWith('/*')) ||
+      css !== starterCSS || jsonDraftEdited ||
       JSON.stringify(currentStructure()) !== JSON.stringify(initial.structure);
   }
 
@@ -213,24 +254,39 @@
           <div class="section-title">Selected: {selected.type}</div>
           {#if selected.type === 'customBlock'}
             <p class="hint">Nested block: {String(selected.attrs.typeId ?? '')}</p>
+            <p class="hint">Values here override defaults only within this parent definition.</p>
+            {#each nestedValues as leaf (leaf.pos)}
+              <label>{leaf.label} ({leaf.type})
+                <input aria-label={`Nested ${leaf.label} value`} value={leaf.value}
+                  oninput={(event) => updateNestedValue(leaf, event.currentTarget.value)} />
+              </label>
+              {#if leaf.type === 'image'}
+                <label>Image description
+                  <input aria-label={`Nested ${leaf.label} alt`} value={leaf.alt ?? ''}
+                    oninput={(event) => updateNestedValue(leaf, event.currentTarget.value, 'alt')} />
+                </label>
+              {/if}
+            {/each}
             <button onclick={openNested}>Edit definition</button>
           {:else if selected.type === 'formula'}
             <label>Field <input value={String(selected.attrs.field ?? '')} oninput={(e) => updateAttr('field', e.currentTarget.value)}/></label>
           {:else if selected.type === 'image'}
             <label>Source <input value={String(selected.attrs.src ?? '')} oninput={(e) => updateAttr('src', e.currentTarget.value)}/></label>
           {/if}
-          <label>Classes <input value={String(selected.attrs.class ?? '')} oninput={(e) => updateAttr('class', e.currentTarget.value)} /></label>
+          {#if selected.type !== 'customBlock'}
+            <label>Classes <input value={String(selected.attrs.class ?? '')} oninput={(e) => updateAttr('class', e.currentTarget.value)} /></label>
+          {/if}
           <button onclick={() => { if (selected && editor) { const n = editor.state.doc.nodeAt(selected.pos); if (n) editor.commands.deleteRange({ from: selected.pos, to: selected.pos + n.nodeSize }); syncStructure(); } }}>Delete selected</button>
         {/if}
       </aside>
       <section class="preview-pane">
         <div class="section-title">Live preview</div>
-        <div class="preview sheet-content" bind:this={canvas}></div>
+        <div class="preview sheet-content rbb-definition-preview" bind:this={canvas}></div>
       </section>
       <section class="source-pane">
         {#if tab === 'structure'}
           <div class="source-actions"><strong>Definition JSON</strong><button onclick={syncStructure}>From preview</button><button onclick={applyJSON}>Apply JSON</button></div>
-          <CodeEditor language="json" label="Custom block structure JSON" value={structure} onChange={(v) => structure = v} />
+          <CodeEditor language="json" label="Custom block structure JSON" value={structure} onChange={(v) => { structure = v; jsonDraftEdited = true; }} />
         {:else}
           <div class="source-actions"><strong>Custom block CSS</strong></div>
           <CodeEditor language="css" label="Custom block CSS" value={css} onChange={(v) => css = v} />
