@@ -1,0 +1,18 @@
+/* Shared controls for the page and its inspector. */
+.mode-switch button,
+.confirmation button,
+.inspector button {
+	cursor: pointer;
+}
+
+.confirmation input,
+.inspector input {
+	width: 100%;
+	min-width: 0;
+	border: 1px solid #d8d2c9;
+	background: #fff;
+	border-radius: 6px;
+	padding: 8px;
+	color: #292723;
+	outline-color: #987451;
+}

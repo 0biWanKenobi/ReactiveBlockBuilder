@@ -18,7 +18,6 @@
 		repository,
 		blockCSS,
 		message = $bindable(''),
-		onSelectionChange,
 		onSaveAsCustomBlock
 	}: {
 		mode: EditorMode;
@@ -28,7 +27,6 @@
 		repository: CustomBlockRepository;
 		blockCSS: Record<string, string>;
 		message: string;
-		onSelectionChange: (editor: Editor) => void;
 		onSaveAsCustomBlock: (position: number) => void;
 	} = $props();
 
@@ -46,12 +44,9 @@
 			autofocus: false,
 			editorProps: {
 				attributes: { 'aria-label': 'Character sheet block editor' }
-			},
-			onSelectionUpdate: ({ editor }) => onSelectionChange(editor),
-			onTransaction: ({ editor }) => onSelectionChange(editor)
+			}
 		});
 		editor = instance;
-		onSelectionChange(instance);
 
 		return () => {
 			instance.destroy();
