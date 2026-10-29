@@ -6,7 +6,6 @@
   let {
     customBlocks = [],
     draggable = false,
-    onInsert,
     onDragStart,
     onDragEnd,
     onEdit,
@@ -14,7 +13,6 @@
   }: {
     customBlocks?: CustomBlockDefinition[];
     draggable?: boolean;
-    onInsert: (block: JSONContent) => void;
     onDragStart: (event: DragEvent, block: JSONContent) => void;
     onDragEnd: () => void;
     onEdit?: (block: CustomBlockDefinition) => void;
@@ -43,7 +41,6 @@
       draggable={draggable}
       ondragstart={(event) => onDragStart(event, structuredClone(insertionSamples[entry.key]))}
       ondragend={onDragEnd}
-      onclick={() => onInsert(structuredClone(insertionSamples[entry.key]))}
     ><span class="symbol">{entry.icon}</span>{entry.title}</button>
   {/each}
 </div>
@@ -56,7 +53,7 @@
         <button class="tile" draggable={draggable}
           ondragstart={(event) => onDragStart(event, instance(definition))}
           ondragend={onDragEnd}
-          onclick={() => onInsert(instance(definition))}>
+        >
           <span class="symbol">◇</span>{definition.name}
         </button>
         {#if onEdit}

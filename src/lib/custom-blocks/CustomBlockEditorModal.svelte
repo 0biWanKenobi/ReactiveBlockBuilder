@@ -109,15 +109,6 @@
     if (previewStyle) previewStyle.textContent = `@scope (.rbb-definition-preview) {\n${css}\n}`;
   });
 
-  function insert(block: JSONContent) {
-    if (!editor) return;
-    if (block.type === 'textBlock') block.content = [{ type: 'text', text: '...' }];
-    const expanded = expandDocument({ type: 'doc', content: [block] }, library).content?.[0];
-    if (!expanded) return;
-    editor.chain().focus().insertContent(ensureNodeIds(expanded)).run();
-    syncStructure();
-  }
-
   function dragStart(event: DragEvent, block: JSONContent) {
     if (!editor) { event.preventDefault(); return; }
     const expanded = expandDocument({ type: 'doc', content: [block] }, library).content?.[0];
@@ -267,7 +258,7 @@
       <aside class="palette-pane">
         <div class="section-title">Blocks</div>
         <BlockPalette customBlocks={library.list().filter((item) => item.typeId !== initial.typeId)}
-          draggable={true} onInsert={insert} onDragStart={dragStart}
+          draggable={true} onDragStart={dragStart}
           onDragEnd={() => editor && endPaletteDrag(editor.view)} />
         {#if selected}
           <div class="section-title">Selected: {selected.type}</div>

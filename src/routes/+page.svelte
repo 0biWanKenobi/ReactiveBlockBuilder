@@ -1,7 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import CodeEditor from '../lib/editor/CodeEditor.svelte';
-  import BlockPalette from '../lib/editor/BlockPalette.svelte';
   import CustomBlockEditorModal from '../lib/custom-blocks/CustomBlockEditorModal.svelte';
   import { CustomBlockLibrary } from '../lib/custom-blocks/library.svelte.js';
   import { CustomBlockRepository, DEFAULT_THEME } from '../lib/custom-blocks/repository.js';
@@ -11,7 +10,6 @@
   import { blockBoundary } from '../lib/editor/blockInteraction.js';
   import { Editor, type JSONContent } from '@tiptap/core';
   import { selectedBlock, updateBlockAttribute } from '../lib/editor/selection.js';
-  import { startPaletteDrag, endPaletteDrag } from '../lib/editor/blockDragPreview.js';
   import { setBlockDragMode } from '../lib/editor/blockInteraction.js';
   import {
     createSheetExtensions, allowedNodeTypes,
@@ -19,6 +17,7 @@
   } from '../lib/index.js';
   import type { Sheet, SheetNodeType } from '../lib/index.js';
 	import { clickOutside } from '#lib/directives/clickOutside.js';
+	import LeftSidebar from './components/leftSidebar.svelte';
 
   type SelectedBlock = {
     type: SheetNodeType;
@@ -58,9 +57,6 @@
     version: 1, themeId: DEFAULT_THEME, document: sampleDocument, fields: initialFields
   }, null, 2));
   let message = $state('');
-  let newField = $state('');
-  let newExpression = $state('1');
-  let fieldError = $state('');
   let styleElement: HTMLStyleElement | null = null;
 
   function synchronizeSelection(current: Editor) {
@@ -199,18 +195,6 @@
     }
   }
 
-  async function deleteDefinition(definition: CustomBlockDefinition) {
-    if (!window.confirm(`Delete "${definition.name}"? Sheets and custom blocks that reference it will fail to import.`)) return;
-    try {
-      await repository.delete(definition.typeId);
-      library.remove(definition.typeId);
-      await reloadBlockStyles();
-      message = `Deleted custom block: ${definition.name}`;
-    } catch (error) {
-      message = `Delete failed: ${error instanceof Error ? error.message : String(error)}`;
-    }
-  }
-
   async function saveDefinition(definition: CustomBlockDefinition, blockStyle: string) {
     try {
       // Capture changes against the old definition before it is replaced.
@@ -265,37 +249,6 @@
     editor.setEditable(mode === 'design');
   });
 
-  function insert(block: JSONContent) {
-    if (!editor) return;
-    mode = 'design';
-    try {
-      const expanded = expandDocument({ type: 'doc', content: [block] }, library).content?.[0];
-      if (!expanded) return;
-      editor.chain().focus().insertContent(expanded).run();
-      message = `Added ${block.type} block`;
-    } catch (error) {
-      message = `Cannot insert block: ${error instanceof Error ? error.message : String(error)}`;
-    }
-  }
-
-  function dragPaletteBlock(event: DragEvent, block: JSONContent) {
-    if (!editor || mode !== 'design') {
-      event.preventDefault();
-      return;
-    }
-    try {
-      const expanded = expandDocument({ type: 'doc', content: [block] }, library).content?.[0];
-      if (expanded) startPaletteDrag(editor.view, event, expanded);
-    } catch (error) {
-      event.preventDefault();
-      message = `Cannot drag block: ${error instanceof Error ? error.message : String(error)}`;
-    }
-  }
-
-  function finishPaletteDrag() {
-    if (editor) endPaletteDrag(editor.view);
-  }
-
   function editAttribute(attribute: string, value: string) {
     if (!editor || !selected) return;
     const node = editor.state.doc.nodeAt(selected.pos);
@@ -331,17 +284,6 @@
     if (!node) return;
     editor.commands.deleteRange({ from: selected.pos, to: selected.pos + node.nodeSize });
     selected = null;
-  }
-
-  function addField() {
-    const id = newField.trim().toUpperCase();
-    const invalid = validateId(id);
-    if (invalid) { fieldError = invalid; return; }
-    if (Object.hasOwn(fields, id)) { fieldError = 'Field already exists'; return; }
-    fields[id] = { id, formula: newExpression };
-    newField = '';
-    newExpression = '1';
-    fieldError = '';
   }
 
   function formatJSON() {
@@ -446,46 +388,22 @@
   </header>
 
   <div class="editor-layout">
-    <aside class="sidebar" inert={mode === 'play'}>
-      <div class="panel-heading">Block palette</div>
-      <p class="muted">Drag blocks onto the sheet, inside containers or between blocks. Use the canvas gutters for top-level placement. Click to insert at the cursor.</p>
-      <div class="panel-heading">Stock blocks</div>
-      <label class="property">
-        <span>After saving a custom block</span>
-        <select aria-label="After saving a custom block" bind:value={saveBehavior}>
-          <option value="ask">Ask every time</option>
-          <option value="replace">Replace original with custom block</option>
-          <option value="keep">Keep original unchanged</option>
-        </select>
-      </label>
-      <BlockPalette customBlocks={library.definitions}
-        draggable={mode === 'design'} onInsert={insert}
-        onDragStart={dragPaletteBlock} onDragEnd={finishPaletteDrag}
-        onEdit={(block) => {
+    <LeftSidebar
+      {mode} {saveBehavior} {library} {editor} {repository}
+      sheet={fields}
+      onDragPaletteBlock={({success, message: msg}) => {
+        if(!success) message = msg
+      }}
+      onBlockEdit={(block) => {
           editedCSS = null;
           definitionTrail = [];
           editedBlock = block;
           pendingConversion = null;
         }}
-        onDelete={deleteDefinition} />
-      <div class="separator"></div>
-      <div class="panel-heading">Formula fields</div>
-      <p class="muted">Modify STR to watch STR_MOD, ATTACK and the stat blocks update.</p>
-      <div class="field-list">
-        {#each Object.keys(fields) as id (id)}
-          <label class="field-row">
-            <span>{id}</span>
-            <input aria-label={`Formula for ${id}`} spellcheck="false" bind:value={fields[id].formula} />
-          </label>
-        {/each}
-      </div>
-      <form class="new-field" onsubmit={(event) => { event.preventDefault(); addField(); }}>
-        <input aria-label="New field identifier" placeholder="FIELD_ID" bind:value={newField} />
-        <input aria-label="New field formula" placeholder="Formula" bind:value={newExpression} />
-        <button type="submit">+ Add field</button>
-      </form>
-      {#if fieldError}<p class="error">{fieldError}</p>{/if}
-    </aside>
+      onBlockDelete={async ({success, message: msg}) => {
+        if(!success) message = msg;
+        else await reloadBlockStyles();
+      }} />
 
     <main class="main-pane">
       <div class="pane-title" inert={mode === 'play'}>
@@ -664,22 +582,8 @@
   .confirmation label input { width: auto; min-width: 0; }
   .confirmation-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
   .confirmation-actions button { padding: 9px; border: 1px solid #d4c7b7; background: #f6e7cf; border-radius: 7px; cursor: pointer; }
-  select { width: 100%; padding: 8px; border: 1px solid #d8d2c9; border-radius: 6px; background: white; }
-
-
-
-
-
-
   .separator { height: 1px; background: #e8e2db; margin: 21px 0; }
-  .field-list { display: flex; flex-direction: column; gap: 8px; }
-  .field-row { display: grid; gap: 4px; }
-  .field-row span { color: #746353; font: 700 .67rem ui-monospace, monospace; }
   input { width: 100%; min-width: 0; border: 1px solid #d8d2c9; background: #fff; border-radius: 6px; padding: 8px; color: #292723; outline-color: #987451; }
-  .field-row input, .new-field input { font: .73rem ui-monospace, monospace; }
-  .new-field { display: grid; gap: 8px; margin-top: 15px; }
-  .new-field button { padding: 8px; border: 1px solid #a57e4f; border-radius: 7px; color: #5b401e; background: #f8e9d0; font-size: .78rem; font-weight: 700; }
-  .error { color: #b34536; font-size: .73rem; }
   .main-pane {
     display: flex;
     flex-direction: column;
@@ -815,13 +719,6 @@
 
   /* Keep the live editor and CodeMirror mounted while the workspace recedes. */
   .playing .editor-layout { grid-template-columns: 0px minmax(0, 1fr) 0px; }
-  .playing .sidebar {
-    padding-inline: 0;
-    opacity: 0;
-    visibility: hidden;
-    border-color: transparent;
-    pointer-events: none;
-  }
   .playing .main-pane { padding: clamp(20px, 4vw, 56px); }
   .playing .pane-title, .playing .source-panels, .playing .status {
     opacity: 0;
