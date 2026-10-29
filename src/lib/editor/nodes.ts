@@ -19,6 +19,17 @@ const classes = (defaultClass: string) => ({
   nodeId: { default: '' }
 });
 
+/** Update only document-owned classes; ProseMirror owns selection/decorations. */
+function nodeViewClasses(dom: HTMLElement): (value: unknown) => void {
+  let current = new Set<string>();
+  return (value) => {
+    const next = new Set(String(value ?? '').split(/\s+/).filter(Boolean));
+    for (const name of current) if (!next.has(name)) dom.classList.remove(name);
+    for (const name of next) if (!current.has(name)) dom.classList.add(name);
+    current = next;
+  };
+}
+
 /**
  * Creates the intentionally small sheet schema. The custom atom nodes mount Svelte 5
  * components directly, avoiding both runtime compilation and a third-party bridge.
@@ -84,7 +95,8 @@ export function createSheetExtensions(fields: Sheet, options: { protectCustomBlo
       return ({ node }) => {
         const dom = document.createElement('div');
         const attrs = reactiveNodeAttrs({ field: String(node.attrs.field ?? '') });
-        dom.className = String(node.attrs.class ?? '');
+        const updateClasses = nodeViewClasses(dom);
+        updateClasses(node.attrs.class);
         dom.dataset.sheetBlock = 'formula';
         dom.contentEditable = 'false';
         const component = mount(FormulaBlock, { target: dom, props: { attrs, fields } });
@@ -93,7 +105,7 @@ export function createSheetExtensions(fields: Sheet, options: { protectCustomBlo
           update(next) {
             if (next.type.name !== 'formula') return false;
             attrs.field = String(next.attrs.field ?? '');
-            dom.className = String(next.attrs.class ?? '');
+            updateClasses(next.attrs.class);
             return true;
           },
           stopEvent(event) {
@@ -124,7 +136,8 @@ export function createSheetExtensions(fields: Sheet, options: { protectCustomBlo
           src: String(node.attrs.src ?? ''),
           alt: String(node.attrs.alt ?? '')
         });
-        dom.className = String(node.attrs.class ?? '');
+        const updateClasses = nodeViewClasses(dom);
+        updateClasses(node.attrs.class);
         dom.dataset.sheetBlock = 'image';
         dom.contentEditable = 'false';
         const component = mount(ImageBlock, { target: dom, props: { attrs } });
@@ -134,7 +147,7 @@ export function createSheetExtensions(fields: Sheet, options: { protectCustomBlo
             if (next.type.name !== 'image') return false;
             attrs.src = String(next.attrs.src ?? '');
             attrs.alt = String(next.attrs.alt ?? '');
-            dom.className = String(next.attrs.class ?? '');
+            updateClasses(next.attrs.class);
             return true;
           },
           destroy() { void unmount(component); }

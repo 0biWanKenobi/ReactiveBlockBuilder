@@ -1,6 +1,7 @@
 import { Extension } from '@tiptap/core';
 import { NodeSelection, Plugin, PluginKey, type EditorState } from '@tiptap/pm/state';
 import { Decoration, DecorationSet, type EditorView } from '@tiptap/pm/view';
+import { selectedBlock } from './selection.js';
 
 export const blockSelector =
   'section[data-custom-block-type], section[data-sheet-container], p[data-sheet-text], [data-sheet-block]';
@@ -93,13 +94,21 @@ export const BlockInteraction = Extension.create({
       },
       props: {
         decorations(state) {
+          const decorations: Decoration[] = [];
+          // A caret/text selection still selects a block in the inspector.
+          // Decorate it without replacing native text selection or editing.
+          const selected = state.selection instanceof NodeSelection ? null : selectedBlock({ state });
+          const selectedNode = selected && state.doc.nodeAt(selected.pos);
+          if (selected && selectedNode && blockTypes.has(selected.type)) {
+            decorations.push(Decoration.node(selected.pos, selected.pos + selectedNode.nodeSize,
+              { 'data-rbb-selected': '' }));
+          }
           const pos = hoverKey.getState(state);
-          if (pos === null || pos === undefined) return DecorationSet.empty;
-          const node = state.doc.nodeAt(pos);
-          if (!node || !blockTypes.has(node.type.name)) return DecorationSet.empty;
-          return DecorationSet.create(state.doc, [
-            Decoration.node(pos, pos + node.nodeSize, { 'data-rbb-hovered': '' })
-          ]);
+          const node = pos === null || pos === undefined ? null : state.doc.nodeAt(pos);
+          if (node && pos !== null && pos !== undefined && blockTypes.has(node.type.name)) {
+            decorations.push(Decoration.node(pos, pos + node.nodeSize, { 'data-rbb-hovered': '' }));
+          }
+          return DecorationSet.create(state.doc, decorations);
         }
       }
     }), new Plugin<boolean>({

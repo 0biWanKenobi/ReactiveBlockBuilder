@@ -280,10 +280,6 @@
 	.sheet-content :global(.tiptap p) {
 		margin: 0;
 	}
-	.sheet-content :global(.tiptap .ProseMirror-selectednode) {
-		outline: 2px solid #c68b3c !important;
-		outline-offset: 3px;
-	}
 	/* Keep structural boundaries visible, without :hover styling ancestors.
      The pointer overlay alone marks the single active hover target. */
 	.sheet-content :global(.tiptap section) {
@@ -333,6 +329,7 @@
 		max-width: 1050px;
 		margin-inline: auto;
 	}
+	.playing .sheet-content :global([data-rbb-selected]),
 	.playing .sheet-content :global(.ProseMirror-selectednode) {
 		outline: none !important;
 	}

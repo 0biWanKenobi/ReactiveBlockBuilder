@@ -8,7 +8,7 @@ export interface SelectedEditorBlock {
 }
 
 /** Shared block identity and position resolution for both editor surfaces. */
-export function selectedBlock(editor: Editor): SelectedEditorBlock | null {
+export function selectedBlock(editor: Pick<Editor, 'state'>): SelectedEditorBlock | null {
   const selection = editor.state.selection;
   const node = selection instanceof NodeSelection
     ? { pos: selection.from, block: selection.node }

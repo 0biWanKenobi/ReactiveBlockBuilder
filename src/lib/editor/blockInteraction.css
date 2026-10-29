@@ -56,10 +56,17 @@
 	outline-offset: 2px;
 }
 
-/* Highlight only the active block, rather than all hovered ancestors. */
-.sheet-content .tiptap [data-rbb-hovered] {
+/* Outrank structural container boundaries; selected blocks keep a solid outline. */
+.sheet-content .tiptap [data-rbb-hovered]:not([data-rbb-selected]) {
 	outline: 2px dashed #b48348;
 	outline-offset: 2px;
+}
+
+/* Selection follows editor state and takes precedence over pointer hover. */
+.sheet-content .tiptap [data-rbb-selected],
+.sheet-content .tiptap .ProseMirror-selectednode {
+	outline: 2px solid #c68b3c !important;
+	outline-offset: 3px;
 }
 
 .sheet-content .rbb-drop-placeholder {
