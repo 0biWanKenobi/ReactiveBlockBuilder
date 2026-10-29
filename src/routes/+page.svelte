@@ -13,9 +13,12 @@
   import LeftSidebar from './components/leftSidebar.svelte';
   import MainPane from './components/mainPane/mainPane.svelte';
   import Inspector from './components/inspector.svelte';
+  import SidePane from './components/sidePane.svelte';
 
   let editor = $state<Editor | null>(null);
   let mode = $state<'design' | 'play'>('design');
+  let leftCollapsed = $state(false);
+  let rightCollapsed = $state(false);
   let fields = $state<Sheet>(structuredClone(initialFields));
   const library = new CustomBlockLibrary();
   const repository = new CustomBlockRepository(new LocalStorageAdapter());
@@ -168,30 +171,34 @@
     </div>
   </header>
 
-  <div class="editor-layout">
-    <LeftSidebar
-      {mode} {saveBehavior} {library} {editor} {repository}
-      sheet={fields}
-      onDragPaletteBlock={({success, message: msg}) => {
-        if(!success) message = msg
-      }}
-      onBlockEdit={(block) => {
-          editedCSS = null;
-          definitionTrail = [];
-          editedBlock = block;
-          pendingConversion = null;
+  <div class="editor-layout" class:left-collapsed={leftCollapsed} class:right-collapsed={rightCollapsed}>
+    <SidePane id="block-palette-pane" label="block palette" side="left" {mode} bind:collapsed={leftCollapsed}>
+      <LeftSidebar
+        {mode} {saveBehavior} {library} {editor} {repository}
+        sheet={fields}
+        onDragPaletteBlock={({success, message: msg}) => {
+          if(!success) message = msg
         }}
-      onBlockDelete={async ({success, message: msg}) => {
-        if(!success) message = msg;
-        else await reloadBlockStyles();
-      }} />
+        onBlockEdit={(block) => {
+            editedCSS = null;
+            definitionTrail = [];
+            editedBlock = block;
+            pendingConversion = null;
+          }}
+        onBlockDelete={async ({success, message: msg}) => {
+          if(!success) message = msg;
+          else await reloadBlockStyles();
+        }} />
+    </SidePane>
 
     <MainPane
       {mode} bind:editor bind:fields {library} {repository} {blockCSS} bind:message
       onSaveAsCustomBlock={startNewDefinition}
     />
 
-    <Inspector {mode} {editor} />
+    <SidePane id="inspector-pane" label="inspector" side="right" {mode} bind:collapsed={rightCollapsed}>
+      <Inspector {mode} {editor} />
+    </SidePane>
   </div>
 </div>
 
@@ -235,9 +242,11 @@
   .mode-switch button { background: transparent; border: 0; color: #c5c8ca; border-radius: 7px; padding: 9px 15px; font-size: .83rem; }
   .mode-switch button.active { background: #ddbd8c; color: #242526; font-weight: 800; }
   .editor-layout {
+    --left-pane-width: 240px;
+    --right-pane-width: 230px;
     display: grid;
     flex: 1;
-    grid-template-columns: 240px minmax(0, 1fr) 230px;
+    grid-template-columns: var(--left-pane-width) minmax(0, 1fr) var(--right-pane-width);
     align-items: stretch;
     min-height: 0;
     transition: grid-template-columns 460ms cubic-bezier(.2, .7, .2, 1);
@@ -251,15 +260,16 @@
   .confirmation-actions button { padding: 9px; border: 1px solid #d4c7b7; background: #f6e7cf; border-radius: 7px; cursor: pointer; }
 
   /* Keep the live editor and CodeMirror mounted while the workspace recedes. */
-  .playing .editor-layout { grid-template-columns: 0px minmax(0, 1fr) 0px; }
+  .editor-layout.left-collapsed { --left-pane-width: 44px; }
+  .editor-layout.right-collapsed { --right-pane-width: 44px; }
+  .playing .editor-layout { --left-pane-width: 0px; --right-pane-width: 0px; }
 
   @media (prefers-reduced-motion: reduce) {
     .editor-layout { transition-duration: 0ms; }
   }
 
   @media (max-width: 1000px) {
-    .editor-layout { grid-template-columns: 190px minmax(0,1fr); }
-    .playing .editor-layout { grid-template-columns: 0px minmax(0,1fr); }
+    .editor-layout { --left-pane-width: 190px; grid-template-columns: var(--left-pane-width) minmax(0,1fr); }
   }
   @media (max-width: 620px) {
     .topbar { flex-direction: column; align-items: flex-start; }

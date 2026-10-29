@@ -107,7 +107,7 @@
 	}
 </script>
 
-<aside class="sidebar" class:playing={mode === 'play'} inert={mode === 'play'}>
+<aside class="sidebar" inert={mode === 'play'}>
 	<div class="panel-heading">Block palette</div>
 	<p class="muted">
 		Drag blocks onto the sheet, inside containers or between blocks. Use the canvas gutters for
@@ -162,19 +162,6 @@
 		padding: 22px 16px;
 		overflow: hidden;
 		background: #fbfaf8;
-		border-right: 1px solid #dedad4;
-		transition:
-			opacity 240ms ease,
-			padding 460ms ease,
-			border-color 460ms ease,
-			visibility 0s linear 460ms;
-		&.playing {
-			padding-inline: 0;
-			opacity: 0;
-			visibility: hidden;
-			border-color: transparent;
-			pointer-events: none;
-		}
 	}
 
 	.panel-heading {

@@ -63,7 +63,7 @@
 	}
 </script>
 
-<aside class="sidebar inspector" class:playing={mode === 'play'} inert={mode === 'play'}>
+<aside class="sidebar inspector" inert={mode === 'play'}>
 	<div class="panel-heading">Properties</div>
 	{#if mode !== 'design'}
 		<p class="muted">Switch to Design to modify nodes.</p>
@@ -135,12 +135,6 @@
 		padding: 22px 16px;
 		overflow: hidden;
 		background: #fbfaf8;
-		border-left: 1px solid #dedad4;
-		transition:
-			opacity 240ms ease,
-			padding 460ms ease,
-			border-color 460ms ease,
-			visibility 0s linear 460ms;
 	}
 	.panel-heading {
 		color: #4c4034;
@@ -193,30 +187,5 @@
 		color: #a74335;
 		padding: 9px;
 		font-size: 0.76rem;
-	}
-
-	@media (prefers-reduced-motion: reduce) {
-		.inspector {
-			transition-duration: 0ms;
-		}
-	}
-
-	@media (max-width: 1000px) {
-		.inspector {
-			grid-column: 1 / -1;
-			border-left: 0;
-			border-top: 1px solid #dedad4;
-		}
-		.inspector.playing {
-			max-height: 0;
-			padding-block: 0;
-			border-width: 0;
-		}
-	}
-	@media (max-width: 620px) {
-		.inspector {
-			width: 100%;
-			flex-shrink: 0;
-		}
 	}
 </style>
