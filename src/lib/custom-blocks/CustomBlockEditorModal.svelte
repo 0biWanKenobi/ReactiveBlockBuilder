@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import '../editor/blockInteraction.css';
   import { Editor, type JSONContent } from '@tiptap/core';
   import { selectedBlock, updateBlockAttribute } from '../editor/selection.js';
   import { createSheetExtensions } from '../editor/nodes.js';
@@ -10,6 +11,7 @@
   import { collapseDocument, ensureNodeIds, expandDocument, resetLeafDefaults } from './model.js';
   import type { CustomBlockDefinition, BlockLibrary } from './types.js';
   import type { Sheet } from '../formula/engine.js';
+	import Button from '#lib/components/Button.svelte';
 
   let {
     initial, initialCSS, library, fields, onSave, onClose, onNavigate, breadcrumbs = []
@@ -24,17 +26,21 @@
     breadcrumbs?: string[];
   } = $props();
 
+  // svelte-ignore state_referenced_locally
   let name = $state(initial.name);
+  // svelte-ignore state_referenced_locally
   let rootClass = $state(initial.rootClass);
-  const starterCSS = initialCSS || `/*
- * Fill this with your styles as needed, or leave it empty.
- *
- * .custom-class {
- *
- * }
- */`;
-  let css = $state(starterCSS);
-  let jsonDraftEdited = $state(false);
+  const starterCSS = $derived(initialCSS || `/*
+  * Fill this with your styles as needed, or leave it empty.
+  *
+  * .custom-class {
+    *
+    * }
+    */`);
+    // svelte-ignore state_referenced_locally
+    let css = $state(starterCSS);
+    let jsonDraftEdited = $state(false);
+    // svelte-ignore state_referenced_locally
   let structure = $state(JSON.stringify(initial.structure, null, 2));
   let tab = $state<'structure' | 'css'>('structure');
   let tool = $state<'edit' | 'drag'>('edit');
@@ -120,7 +126,7 @@
    * component instance rather than one of its implementation nodes.
    * Parent-specific values are then edited in the inspector.
    */
-  function selectNestedFromPreview(event: MouseEvent) {
+  function selectNestedFromPreview(event: MouseEvent | KeyboardEvent) {
     if (!editor || !(event.target instanceof Element)) return;
     const nested = event.target.closest('section[data-custom-block-type]');
     if (!nested || !canvas.contains(nested)) return;
@@ -286,12 +292,12 @@
           {#if selected.type !== 'customBlock'}
             <label>Classes <input value={String(selected.attrs.class ?? '')} oninput={(e) => updateAttr('class', e.currentTarget.value)} /></label>
           {/if}
-          <button onclick={() => { if (selected && editor) { const n = editor.state.doc.nodeAt(selected.pos); if (n) editor.commands.deleteRange({ from: selected.pos, to: selected.pos + n.nodeSize }); syncStructure(); } }}>Delete selected</button>
+          <button style="margin-top: 12px" onclick={() => { if (selected && editor) { const n = editor.state.doc.nodeAt(selected.pos); if (n) editor.commands.deleteRange({ from: selected.pos, to: selected.pos + n.nodeSize }); syncStructure(); } }}>Delete selected</button>
         {/if}
       </aside>
       <section class="preview-pane">
         <div class="section-title">Live preview</div>
-        <div class="preview sheet-content rbb-definition-preview" bind:this={canvas} onclick={selectNestedFromPreview}></div>
+        <Button type='div' class="preview sheet-content rbb-definition-preview" bind:to={canvas} onclick={selectNestedFromPreview}></Button>
       </section>
       <section class="source-pane">
         {#if tab === 'structure'}
@@ -331,8 +337,8 @@
   .palette-pane label { margin-top: 12px; }
   .section-title { font-size: .75rem; font-weight: 800; margin-bottom: 12px; }
   .preview-pane { padding: 18px; min-width: 0; overflow: auto; background: #f3efe8; }
-  .preview { background: #fdfaf4; min-height: 300px; padding: 16px; border-radius: 10px; }
-  .preview :global(.tiptap) { outline: none; min-height: 260px; }
+  .preview-pane :global(.preview) { background: #fdfaf4; min-height: 300px; padding: 16px; border-radius: 10px; }
+  .preview-pane :global(.preview .tiptap) { outline: none; min-height: 260px; }
   .source-pane { display: flex; flex-direction: column; min-width: 0; min-height: 0; background: white; }
   .source-actions { display: flex; align-items: center; gap: 5px; padding: 8px; border-bottom: 1px solid #dedad4; }
   .source-actions strong { margin-right: auto; font-size: .75rem; }

@@ -1,0 +1,79 @@
+/* Shared by the sheet canvas and custom block definition previews. */
+.sheet-content .tiptap[data-rbb-drag-mode='true'] {
+	user-select: none;
+	caret-color: transparent;
+	cursor: grab;
+}
+
+.sheet-content .tiptap[data-rbb-drag-mode='true'] [draggable='true'] {
+	cursor: grab;
+}
+
+.sheet-content .rbb-block-drag-rail {
+	position: fixed;
+	z-index: 20;
+	display: flex;
+	gap: 4px;
+	align-items: flex-start;
+	padding-right: 6px;
+	pointer-events: auto;
+}
+
+.sheet-content .rbb-block-drag-rail[hidden],
+.sheet-content .rbb-block-drag-handle[hidden] {
+	display: none;
+}
+
+.sheet-content .rbb-block-drag-handle {
+	flex: 0 0 20px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 20px;
+	height: 24px;
+	padding: 0;
+	border: 1px solid #d4c7b7;
+	border-radius: 5px;
+	background: #fdfaf4;
+	color: #907b61;
+	box-shadow: 0 1px 4px #332c2414;
+	cursor: grab;
+	user-select: none;
+}
+
+.sheet-content .rbb-block-drag-handle:hover {
+	border-color: #b48348;
+	color: #684a28;
+	background: #fff4df;
+}
+
+.sheet-content .rbb-block-drag-handle:active {
+	cursor: grabbing;
+}
+
+.sheet-content .rbb-block-drag-handle:focus-visible {
+	outline: 2px solid #a47a4b;
+	outline-offset: 2px;
+}
+
+/* Highlight only the active block, rather than all hovered ancestors. */
+.sheet-content .tiptap [data-rbb-hovered] {
+	outline: 2px dashed #b48348;
+	outline-offset: 2px;
+}
+
+.sheet-content .rbb-drop-placeholder {
+	box-sizing: border-box;
+	display: block;
+	min-width: 0;
+	max-width: 100%;
+	border: 2px dashed #b9874c;
+	background: repeating-linear-gradient(-45deg, #e9d7b94d 0 9px, #dcb98b33 9px 18px);
+	border-radius: 9px;
+	pointer-events: none;
+	align-self: stretch;
+}
+
+.sheet-content .rbb-drag-origin {
+	opacity: 0.4;
+}
