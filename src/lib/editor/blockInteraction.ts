@@ -50,6 +50,23 @@ export function outermostCustomBlock(view: EditorView, target: Element): Element
   return outermost;
 }
 
+/** The deepest block under the pointer, except that custom blocks drag atomically. */
+export function pointerBlock(view: EditorView, target: EventTarget | null): HTMLElement | null {
+  const element = target instanceof Element ? target
+    : target instanceof globalThis.Node ? target.parentElement : null;
+  if (!element || !view.dom.contains(element)) return null;
+  const block = (isBlockDragMode(view.state) ? outermostCustomBlock(view, element) : null)
+    ?? element.closest(blockSelector);
+  return block instanceof HTMLElement && view.dom.contains(block) ? block : null;
+}
+
+function pointerSelection(view: EditorView, target: EventTarget | null): NodeSelection | null {
+  const block = pointerBlock(view, target);
+  const boundary = block && blockBoundary(view, block);
+  if (!boundary) return null;
+  return NodeSelection.create(view.state.doc, boundary.from);
+}
+
 /** Disable native content editing while keeping block drag events available. */
 export const BlockInteraction = Extension.create({
   name: 'blockInteraction',
@@ -68,13 +85,37 @@ export const BlockInteraction = Extension.create({
         attributes: (state) => ({ 'data-rbb-drag-mode': String(isBlockDragMode(state)) }),
         handleDOMEvents: {
           mousedown(view, event) {
-            if (!isBlockDragMode(view.state) || !canDragBlocks(view) || event.button !== 0) return false;
-            const block = event.target instanceof Element ? outermostCustomBlock(view, event.target) ?? event.target.closest(blockSelector) : null;
-            const boundary = block ? blockBoundary(view, block) : null;
-            if (boundary) {
-              view.dispatch(view.state.tr.setSelection(NodeSelection.create(view.state.doc, boundary.from)));
+            if (event.button !== 0) return false;
+            const block = pointerBlock(view, event.target);
+            if (!block) return false;
+            const dragMode = isBlockDragMode(view.state);
+            // In Edit mode, only intercept clicks on container surfaces.
+            // Text, formula and image clicks retain their native editing behavior.
+            if (!dragMode && !block.matches('section[data-sheet-container], section[data-custom-block-type]')) {
+              return false;
             }
-            return false;
+            const selection = pointerSelection(view, event.target);
+            if (!selection) return false;
+            if (!dragMode) event.preventDefault();
+            view.dispatch(view.state.tr.setSelection(selection));
+            // Crucial: do not let ProseMirror's own mousedown handler
+            // overwrite our block selection, causing flickering.
+            // In Drag mode leave native mousedown defaults intact so HTML
+            // draggable elements can still start a drag gesture.
+            return true;
+          },
+          click(view, event) {
+            const block = pointerBlock(view, event.target);
+            if (!block) return false;
+            if (!isBlockDragMode(view.state) &&
+                !block.matches('section[data-sheet-container], section[data-custom-block-type]')) {
+              return false;
+            }
+            const selection = pointerSelection(view, event.target);
+            if (!selection) return false;
+            view.dispatch(view.state.tr.setSelection(selection));
+            event.preventDefault();
+            return true;
           }
         },
         decorations(state) {

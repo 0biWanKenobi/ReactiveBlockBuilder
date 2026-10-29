@@ -1,7 +1,7 @@
 import { Extension } from '@tiptap/core';
 import { NodeSelection, Plugin } from '@tiptap/pm/state';
 import type { EditorView } from '@tiptap/pm/view';
-import { blockBoundary, blockSelector, canDragBlocks, outermostCustomBlock } from './blockInteraction.js';
+import { blockBoundary, blockSelector, canDragBlocks, outermostCustomBlock, pointerBlock } from './blockInteraction.js';
 import { endPaletteDrag } from './blockDragPreview.js';
 
 interface HandleTarget {
@@ -96,8 +96,11 @@ function createHandles(view: EditorView) {
   }
 
   function position() {
+    // The hover outline works in both Edit and Drag modes. Drag handles
+    // themselves exist only in Drag mode.
+    positionHighlight();
     if (!hovered || !canDragBlocks(view) || !view.dom.contains(hovered)) {
-      hide();
+      rail.hidden = true;
       return;
     }
     const rect = hovered.getBoundingClientRect();
@@ -165,27 +168,28 @@ function createHandles(view: EditorView) {
 
   function mousemove(event: MouseEvent) {
     if (dragging || pressed) return;
-    if (!canDragBlocks(view)) { hide(); return; }
-
     const target = event.target;
     if (target instanceof Node && rail.contains(target)) return;
 
-    // Actual document content always wins: a stale gutter bridge must not
-    // retain the previous block's handles when moving between siblings or
-    // back up through ancestors (even when their rectangles overlap).
-    const block = target instanceof Element ? outermostCustomBlock(view, target) ?? target.closest(blockSelector) : null;
-    if (block instanceof HTMLElement && view.dom.contains(block)) {
-      if (hovered !== block || rail.hidden) {
-        clearHighlight();
-        show(block);
+    // Hover and click resolve the very same pointer target. Only this
+    // single block gets a visible outline; ancestors retain optional grips.
+    const block = pointerBlock(view, target);
+    if (block) {
+      highlight({ element: block, from: 0, type: '', classes: '' });
+      if (canDragBlocks(view)) {
+        if (hovered !== block || rail.hidden) show(block);
+      } else {
+        hovered = null;
+        targets = [];
+        rail.hidden = true;
+        rail.replaceChildren();
       }
       return;
     }
 
-    // Preserve the handles only across the narrow *horizontal* gutter
-    // between the current block and its rail, never over another block.
-    if (withinGutterBridge(event)) return;
-
+    // Crossing from the hovered block to its gutter handles is not
+    // leaving the target. Do not hide handles in that narrow bridge.
+    if (canDragBlocks(view) && withinGutterBridge(event)) return;
     hide();
   }
 
@@ -229,7 +233,10 @@ function createHandles(view: EditorView) {
 
   function handleOut(event: MouseEvent) {
     const next = event.relatedTarget;
-    if (!(next instanceof Node && rail.contains(next))) clearHighlight();
+    if (!(next instanceof Node && rail.contains(next))) {
+      highlighted = hovered;
+      positionHighlight();
+    }
   }
 
   function dragstart(event: DragEvent) {
@@ -272,6 +279,7 @@ function createHandles(view: EditorView) {
 
   return {
     update() {
+      if (highlighted && !view.dom.contains(highlighted)) clearHighlight();
       if (hovered && !dragging && !pressed) {
         // A changed document may replace elements or move positions.
         const next = ancestors(hovered);

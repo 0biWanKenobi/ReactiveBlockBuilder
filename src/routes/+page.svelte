@@ -720,9 +720,7 @@
   .sheet-content :global(.tiptap > *) { margin-top: 0; }
   .sheet-content :global(.tiptap p) { margin: 0; }
   .sheet-content :global(.tiptap .ProseMirror-selectednode) { outline: 2px solid #c68b3c !important; outline-offset: 3px; }
-  .sheet-content :global(.tiptap:is([contenteditable="true"], [data-rbb-drag-mode="true"]) section) { outline: 1px dashed #d9c9b1; outline-offset: 2px; }
-  .sheet-content :global(.tiptap:is([contenteditable="true"], [data-rbb-drag-mode="true"]) section:hover) { outline-color: #b48348; }
-  .playing .sheet-content :global(.tiptap section) { outline: none; }
+   .playing .sheet-content :global(.tiptap section) { outline: none; }
   .sheet-content :global(.tiptap[data-rbb-drag-mode="true"]) { user-select: none; caret-color: transparent; cursor: grab; }
   .sheet-content :global(.tiptap[data-rbb-drag-mode="true"] [draggable="true"]) { cursor: grab; }
   .sheet-content :global(.rbb-block-drag-rail) {
@@ -755,17 +753,15 @@
   .sheet-content :global(.rbb-block-drag-handle:hover) { border-color: #b48348; color: #684a28; background: #fff4df; }
   .sheet-content :global(.rbb-block-drag-handle:active) { cursor: grabbing; }
   .sheet-content :global(.rbb-block-drag-handle:focus-visible) { outline: 2px solid #a47a4b; outline-offset: 2px; }
-  .sheet-content :global(.rbb-block-highlight-overlay) {
+  :global(.rbb-block-highlight-overlay) {
     position: fixed;
-    z-index: 19;
+    z-index: 110;
     pointer-events: none;
     box-sizing: border-box;
-    border: 2px solid #b48348;
+    border: 2px dashed #b48348;
     border-radius: 3px;
-    outline: 1px solid #fff8ed;
-    outline-offset: 1px;
   }
-  .sheet-content :global(.rbb-block-highlight-overlay[hidden]) { display: none; }
+  :global(.rbb-block-highlight-overlay[hidden]) { display: none; }
   .sheet-content :global(.rbb-drop-placeholder) {
     box-sizing: border-box;
     display: block;
