@@ -43,6 +43,7 @@ jobs:
             if curl --fail --silent http://127.0.0.1:5189/ > /dev/null; then break; fi
             sleep 1
           done
+          node scripts/test-play-mode.mjs
           node scripts/test-ancestor-handles.mjs || {
             cat /tmp/rbb-browser.log
             exit 1
