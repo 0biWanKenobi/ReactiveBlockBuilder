@@ -1,7 +1,7 @@
 import { Extension } from '@tiptap/core';
 import { NodeSelection, Plugin } from '@tiptap/pm/state';
 import type { EditorView } from '@tiptap/pm/view';
-import { blockBoundary, blockSelector, canDragBlocks } from './blockInteraction.js';
+import { blockBoundary, blockSelector, canDragBlocks, outermostCustomBlock } from './blockInteraction.js';
 import { endPaletteDrag } from './blockDragPreview.js';
 
 interface HandleTarget {
@@ -73,7 +73,7 @@ function createHandles(view: EditorView) {
 
   function ancestors(block: HTMLElement): HandleTarget[] {
     const result: HandleTarget[] = [];
-    let element: HTMLElement | null = block;
+    let element: HTMLElement | null = (outermostCustomBlock(view, block) as HTMLElement | null) ?? block;
     while (element && element !== view.dom) {
       if (element.matches(blockSelector)) {
         const boundary = blockBoundary(view, element);
@@ -86,6 +86,7 @@ function createHandles(view: EditorView) {
             classes: String(node.attrs.class ?? '')
           });
         }
+        if (element.matches('section[data-custom-block-type]')) break;
       }
       element = element.parentElement;
     }
@@ -172,7 +173,7 @@ function createHandles(view: EditorView) {
     // Actual document content always wins: a stale gutter bridge must not
     // retain the previous block's handles when moving between siblings or
     // back up through ancestors (even when their rectangles overlap).
-    const block = target instanceof Element ? target.closest(blockSelector) : null;
+    const block = target instanceof Element ? outermostCustomBlock(view, target) ?? target.closest(blockSelector) : null;
     if (block instanceof HTMLElement && view.dom.contains(block)) {
       if (hovered !== block || rail.hidden) {
         clearHighlight();

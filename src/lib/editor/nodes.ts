@@ -10,11 +10,12 @@ import ImageBlock from '../blocks/ImageBlock.svelte';
 import { reactiveNodeAttrs } from './reactive.svelte.js';
 import type { Sheet } from '../formula/engine.js';
 
-export type SheetNodeType = 'container' | 'textBlock' | 'formula' | 'image';
-export const allowedNodeTypes: SheetNodeType[] = ['container', 'textBlock', 'formula', 'image'];
+export type SheetNodeType = 'container' | 'textBlock' | 'formula' | 'image' | 'customBlock';
+export const allowedNodeTypes: SheetNodeType[] = ['container', 'textBlock', 'formula', 'image', 'customBlock'];
 
 const classes = (defaultClass: string) => ({
-  class: { default: defaultClass }
+  class: { default: defaultClass },
+  nodeId: { default: '' }
 });
 
 /**
@@ -31,6 +32,27 @@ export function createSheetExtensions(fields: Sheet): Extensions {
     parseHTML: () => [{ tag: 'section[data-sheet-container]' }],
     renderHTML: ({ HTMLAttributes }) => [
       'section', mergeAttributes({ 'data-sheet-container': '' }, HTMLAttributes), 0
+    ]
+  });
+
+  const CustomBlock = Node.create({
+    name: 'customBlock',
+    group: 'block',
+    content: 'block+',
+    defining: true,
+    isolating: true,
+    selectable: true,
+    addAttributes: () => ({
+      ...classes('sheet-custom-block'),
+      typeId: { default: '' },
+      instanceId: { default: '' },
+      nodeId: { default: '' }
+    }),
+    parseHTML: () => [{ tag: 'section[data-custom-block-type]' }],
+    renderHTML: ({ HTMLAttributes }) => [
+      'section',
+      mergeAttributes({ 'data-custom-block-type': HTMLAttributes.typeId }, HTMLAttributes),
+      0
     ]
   });
 
@@ -120,7 +142,7 @@ export function createSheetExtensions(fields: Sheet): Extensions {
     }
   });
 
-  return [Document, Text, Container, TextBlock, Formula, ImageNode,
+  return [Document, Text, Container, CustomBlock, TextBlock, Formula, ImageNode,
     BlockInteraction, BlockDragPreview, BlockDragHandle];
 }
 
@@ -134,5 +156,6 @@ export const insertionSamples: Record<SheetNodeType, JSONContent> = {
     type: 'textBlock', attrs: { class: 'sheet-text' }, content: [{ type: 'text', text: 'Edit this text' }]
   },
   formula: { type: 'formula', attrs: { class: 'sheet-formula', field: 'STR_MOD' } },
-  image: { type: 'image', attrs: { class: 'sheet-image', src: '', alt: '' } }
+  image: { type: 'image', attrs: { class: 'sheet-image', src: '', alt: '' } },
+  customBlock: { type: 'customBlock', attrs: { class: 'sheet-custom-block', typeId: '', instanceId: '' }, content: [ { type: 'container', content: [{ type: 'textBlock', content: [{ type: 'text', text: '...' }] }] } ] }
 };
