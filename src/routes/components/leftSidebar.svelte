@@ -142,6 +142,7 @@
 			</label>
 		{/each}
 	</div>
+	<div class="separator"></div>
 	<form
 		class="new-field"
 		onsubmit={(event) => {
