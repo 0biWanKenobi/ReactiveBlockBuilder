@@ -1,12 +1,20 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import CodeEditor from '../lib/editor/CodeEditor.svelte';
+  import BlockPalette from '../lib/editor/BlockPalette.svelte';
+  import CustomBlockEditorModal from '../lib/custom-blocks/CustomBlockEditorModal.svelte';
+  import { CustomBlockLibrary } from '../lib/custom-blocks/library.svelte.js';
+  import { CustomBlockRepository, DEFAULT_THEME } from '../lib/custom-blocks/repository.js';
+  import { LocalStorageAdapter } from '../lib/storage/StorageAdapter.js';
+  import { createDefinition, makeInstance, expandDocument, collapseDocument } from '../lib/custom-blocks/model.js';
+  import type { CustomBlockDefinition } from '../lib/custom-blocks/types.js';
+  import { blockBoundary } from '../lib/editor/blockInteraction.js';
   import { Editor, type JSONContent } from '@tiptap/core';
   import { NodeSelection } from '@tiptap/pm/state';
   import { startPaletteDrag, endPaletteDrag } from '../lib/editor/blockDragPreview.js';
   import { setBlockDragMode } from '../lib/editor/blockInteraction.js';
   import {
-    createSheetExtensions, insertionSamples, allowedNodeTypes,
+    createSheetExtensions, allowedNodeTypes,
     initialFields, sampleDocument, defaultCSS, validateId
   } from '../lib/index.js';
   import type { Sheet, SheetNodeType } from '../lib/index.js';
@@ -20,7 +28,7 @@
   type SavedSheet = {
     version: 1;
     document: JSONContent;
-    css: string;
+    themeId: string;
     fields: Sheet;
   };
 
@@ -30,9 +38,19 @@
   let mode = $state<'design' | 'play'>('design');
   let designTool = $state<'edit' | 'drag'>('edit');
   let fields = $state<Sheet>(structuredClone(initialFields));
+  const library = new CustomBlockLibrary();
+  const repository = new CustomBlockRepository(new LocalStorageAdapter());
   let css = $state(defaultCSS);
+  let savedCSS = $state(defaultCSS);
+  let blockCSS = $state<Record<string, string>>({});
+  let editedBlock = $state<CustomBlockDefinition | null>(null);
+  let pendingConversion = $state<number | null>(null);
+  let contextPosition = $state<number | null>(null);
+  let saveBehavior = $state<'ask' | 'replace' | 'keep'>('ask');
+  let conversionPrompt = $state<{ pos: number; typeId: string } | null>(null);
+  let rememberChoice = $state(false);
   let jsonSource = $state(JSON.stringify({
-    version: 1, document: sampleDocument, css: defaultCSS, fields: initialFields
+    version: 1, themeId: DEFAULT_THEME, document: sampleDocument, fields: initialFields
   }, null, 2));
   let message = $state('');
   let newField = $state('');
@@ -68,6 +86,18 @@
     styleElement.textContent = css;
     document.head.appendChild(styleElement);
 
+    void (async () => {
+      try {
+        library.replace(await repository.list());
+        const stored = await repository.readBaseCSS();
+        if (stored !== null) { css = stored; savedCSS = stored; }
+        else await repository.writeBaseCSS(defaultCSS);
+        await reloadBlockStyles();
+      } catch (error) {
+        message = `Storage initialization failed: ${error instanceof Error ? error.message : String(error)}`;
+      }
+    })();
+
     const instance = new Editor({
       element: canvas,
       extensions: createSheetExtensions(fields),
@@ -92,8 +122,93 @@
   });
 
   $effect(() => {
-    if (styleElement) styleElement.textContent = css;
+    if (styleElement) styleElement.textContent = css + '\n' +
+      Object.values(blockCSS).join('\n');
   });
+
+  async function reloadBlockStyles() {
+    const styles: Record<string, string> = {};
+    for (const definition of library.list()) {
+      styles[definition.typeId] = await repository.readBlockCSS(definition.typeId);
+    }
+    blockCSS = styles;
+  }
+
+  async function saveThemeCSS() {
+    await repository.writeBaseCSS(css);
+    savedCSS = css;
+    message = 'Theme CSS saved';
+  }
+
+  function discardThemeCSS() {
+    css = savedCSS;
+    message = 'Theme CSS discarded';
+  }
+
+  function startNewDefinition(pos: number) {
+    if (!editor) return;
+    const node = editor.state.doc.nodeAt(pos);
+    if (!node || node.type.name !== 'container' || !node.childCount) return;
+    const name = window.prompt('Name this custom block', 'New custom block');
+    if (!name?.trim()) return;
+    editedBlock = createDefinition(name.trim(), node.toJSON(), library);
+    pendingConversion = pos;
+  }
+
+  function conversionChoice(replace: boolean) {
+    if (!conversionPrompt) return;
+    if (rememberChoice) saveBehavior = replace ? 'replace' : 'keep';
+    if (replace) replaceOriginal(conversionPrompt.pos, conversionPrompt.typeId);
+    conversionPrompt = null;
+    rememberChoice = false;
+  }
+
+  function replaceOriginal(pos: number, typeId: string) {
+    if (!editor) return;
+    const definition = library.get(typeId);
+    if (!definition) return;
+    const original = editor.state.doc.nodeAt(pos);
+    if (!original || original.type.name !== 'container') return;
+    const expanded = expandDocument({
+      type: 'doc', content: [makeInstance(definition)]
+    }, library).content?.[0];
+    if (!expanded) return;
+    const replacement = editor.state.schema.nodeFromJSON(expanded);
+    editor.view.dispatch(editor.state.tr.replaceWith(pos, pos + original.nodeSize, replacement));
+  }
+
+  async function saveDefinition(definition: CustomBlockDefinition, blockStyle: string) {
+    try {
+      await repository.save(definition);
+      await repository.writeBlockCSS(definition.typeId, blockStyle);
+      library.upsert(definition);
+      await reloadBlockStyles();
+      editedBlock = null;
+      if (pendingConversion !== null) {
+        if (saveBehavior === 'ask') {
+          conversionPrompt = { pos: pendingConversion, typeId: definition.typeId };
+        } else if (saveBehavior === 'replace') {
+          replaceOriginal(pendingConversion, definition.typeId);
+        }
+        pendingConversion = null;
+      }
+      message = `Saved custom block: ${definition.name}`;
+    } catch (error) {
+      message = `Save failed: ${error instanceof Error ? error.message : String(error)}`;
+    }
+  }
+
+  function contextMenu(event: MouseEvent) {
+    if (!editor || mode !== 'design') return;
+    const target = event.target instanceof Element
+      ? event.target.closest('section[data-sheet-container]') : null;
+    if (!target) { contextPosition = null; return; }
+    const boundary = blockBoundary(editor.view, target);
+    const node = boundary && editor.state.doc.nodeAt(boundary.from);
+    if (!boundary || !node?.childCount) return;
+    event.preventDefault();
+    contextPosition = boundary.from;
+  }
 
   $effect(() => {
     if (!editor) return;
@@ -101,20 +216,31 @@
     editor.setEditable(mode === 'design');
   });
 
-  function insert(type: SheetNodeType) {
+  function insert(block: JSONContent) {
     if (!editor) return;
     mode = 'design';
-    // Use a fresh node object; Tiptap may normalize its content.
-    editor.chain().focus().insertContent(structuredClone(insertionSamples[type])).run();
-    message = `Added ${type} block`;
+    try {
+      const expanded = expandDocument({ type: 'doc', content: [block] }, library).content?.[0];
+      if (!expanded) return;
+      editor.chain().focus().insertContent(expanded).run();
+      message = `Added ${block.type} block`;
+    } catch (error) {
+      message = `Cannot insert block: ${error instanceof Error ? error.message : String(error)}`;
+    }
   }
 
-  function dragPaletteBlock(event: DragEvent, type: SheetNodeType) {
+  function dragPaletteBlock(event: DragEvent, block: JSONContent) {
     if (!editor || mode !== 'design' || designTool !== 'drag') {
       event.preventDefault();
       return;
     }
-    startPaletteDrag(editor.view, event, insertionSamples[type]);
+    try {
+      const expanded = expandDocument({ type: 'doc', content: [block] }, library).content?.[0];
+      if (expanded) startPaletteDrag(editor.view, event, expanded);
+    } catch (error) {
+      event.preventDefault();
+      message = `Cannot drag block: ${error instanceof Error ? error.message : String(error)}`;
+    }
   }
 
   function finishPaletteDrag() {
@@ -125,10 +251,20 @@
     if (!editor || !selected) return;
     const node = editor.state.doc.nodeAt(selected.pos);
     if (!node || node.type.name !== selected.type) return;
+    if (attribute === 'class' && selectedIsInsideCustomBlock()) return;
     // Do not call editor.focus(): doing so would steal focus from the property input.
     editor.view.dispatch(editor.state.tr.setNodeMarkup(
       selected.pos, undefined, { ...node.attrs, [attribute]: value }
     ));
+  }
+
+  function selectedIsInsideCustomBlock() {
+    if (!editor || !selected) return false;
+    const resolved = editor.state.doc.resolve(selected.pos);
+    for (let depth = 1; depth <= resolved.depth; depth++) {
+      if (resolved.node(depth).type.name === 'customBlock') return true;
+    }
+    return editor.state.doc.nodeAt(selected.pos)?.type.name === 'customBlock';
   }
 
   function selectContainer() {
@@ -193,8 +329,8 @@
     if (!editor) return;
     const saved: SavedSheet = {
       version: 1,
-      document: editor.getJSON(),
-      css,
+      themeId: DEFAULT_THEME,
+      document: collapseDocument(editor.getJSON(), library),
       fields: structuredClone($state.snapshot(fields))
     };
     jsonSource = JSON.stringify(saved, null, 2);
@@ -220,11 +356,12 @@
     try {
       const imported: SavedSheet = JSON.parse(jsonSource);
       if (imported.version !== 1 || imported.document?.type !== 'doc' ||
-          typeof imported.css !== 'string' ||
+          imported.themeId !== DEFAULT_THEME ||
           !imported.fields || typeof imported.fields !== 'object' || Array.isArray(imported.fields)) {
-        throw new Error('Expected version 1 sheet with document, css and fields');
+        throw new Error('Expected version 1 sheet with document, fields and default themeId');
       }
       validateNode(imported.document);
+      const expanded = expandDocument(imported.document, library);
       // Preserve the reactive proxy: existing node views hold a reference to it.
       for (const key of Object.keys(fields)) delete fields[key];
       for (const [key, value] of Object.entries(imported.fields)) {
@@ -233,8 +370,7 @@
         }
         fields[key] = { id: key, formula: value.formula };
       }
-      css = imported.css;
-      editor.commands.setContent(imported.document);
+      editor.commands.setContent(expanded);
       message = 'Sheet loaded';
     } catch (error) {
       message = `Import failed: ${error instanceof Error ? error.message : String(error)}`;
@@ -264,16 +400,19 @@
     <aside class="sidebar" inert={mode === 'play'}>
       <div class="panel-heading">Block palette</div>
       <p class="muted">Drag blocks onto the sheet, inside containers or between blocks. Use the canvas gutters for top-level placement. Click to insert at the cursor.</p>
-      <div class="palette">
-        <button draggable={mode === 'design' && designTool === 'drag'} ondragstart={(event) => dragPaletteBlock(event, 'container')}
-          ondragend={finishPaletteDrag} onclick={() => insert('container')}><span>▦</span> Container</button>
-        <button draggable={mode === 'design' && designTool === 'drag'} ondragstart={(event) => dragPaletteBlock(event, 'textBlock')}
-          ondragend={finishPaletteDrag} onclick={() => insert('textBlock')}><span>¶</span> Text</button>
-        <button draggable={mode === 'design' && designTool === 'drag'} ondragstart={(event) => dragPaletteBlock(event, 'formula')}
-          ondragend={finishPaletteDrag} onclick={() => insert('formula')}><span>ƒ</span> Formula</button>
-        <button draggable={mode === 'design' && designTool === 'drag'} ondragstart={(event) => dragPaletteBlock(event, 'image')}
-          ondragend={finishPaletteDrag} onclick={() => insert('image')}><span>▧</span> Image</button>
-      </div>
+      <div class="panel-heading">Stock blocks</div>
+      <label class="property">
+        <span>After saving a custom block</span>
+        <select aria-label="After saving a custom block" bind:value={saveBehavior}>
+          <option value="ask">Ask every time</option>
+          <option value="replace">Replace original with custom block</option>
+          <option value="keep">Keep original unchanged</option>
+        </select>
+      </label>
+      <BlockPalette customBlocks={library.definitions}
+        draggable={mode === 'design' && designTool === 'drag'} onInsert={insert}
+        onDragStart={dragPaletteBlock} onDragEnd={finishPaletteDrag}
+        onEdit={(block) => { editedBlock = block; pendingConversion = null; }} />
       <div class="separator"></div>
       <div class="panel-heading">Formula fields</div>
       <p class="muted">Modify STR to watch STR_MOD, ATTACK and the stat blocks update.</p>
@@ -312,8 +451,14 @@
         {/if}
       </div>
       <div class="sheet-frame" class:playing={mode === 'play'}>
-        <div class="sheet-content">
+        <div class="sheet-content" oncontextmenu={contextMenu}>
           <div bind:this={canvas}></div>
+          {#if contextPosition !== null}
+            <div class="context-action">
+              <button onclick={() => { if (contextPosition !== null) startNewDefinition(contextPosition); contextPosition = null; }}>Save as custom block</button>
+              <button onclick={() => contextPosition = null} aria-label="Close context menu">✕</button>
+            </div>
+          {/if}
         </div>
       </div>
       {#if message}<div class="status" role="status" inert={mode === 'play'}>{message}</div>{/if}
@@ -332,13 +477,15 @@
         </section>
         <section class="source-panel">
           <div class="source-heading">
-            <strong>Custom CSS</strong>
+            <strong>Theme CSS</strong>
             <div class="source-actions">
-              <span>Live</span>
+              <span>Live preview · draft</span>
+              <button onclick={saveThemeCSS}>Save</button>
+              <button onclick={discardThemeCSS}>Discard</button>
               <button class="format-button" title="Format CSS" aria-label="Format CSS" onclick={formatCSS}>Format</button>
             </div>
           </div>
-          <CodeEditor language="css" label="Custom sheet CSS" value={css} onChange={(next) => css = next} />
+          <CodeEditor language="css" label="Theme CSS" value={css} onChange={(next) => css = next} />
         </section>
       </div>
     </main>
@@ -349,14 +496,14 @@
         <p class="muted">Switch to Design to modify nodes.</p>
       {:else if selected}
         <div class="selection-heading"><strong>{selected.type}</strong><span>node at {selected.pos}</span></div>
-        <label class="property">
+        {#if !selectedIsInsideCustomBlock()}<label class="property">
           <span>CSS classes</span>
           <input
             aria-label="Selected block CSS classes"
             value={String(selected.attrs.class ?? '')}
             oninput={(event) => editAttribute('class', event.currentTarget.value)}
           />
-        </label>
+        </label>{/if}
         {#if selected.type === 'formula'}
           <label class="property">
             <span>Field ID</span>
@@ -379,7 +526,7 @@
         {:else}
           <p class="muted">The container can hold other blocks. Select its inner blocks or edit its CSS layout rules.</p>
         {/if}
-        <button class="danger-button" onclick={removeSelected}>Delete selected block</button>
+        {#if !selectedIsInsideCustomBlock()}<button class="danger-button" onclick={removeSelected}>Delete selected block</button>{/if}
       {:else}
         <p class="muted">Select a text, formula, image or container block to edit its properties.</p>
       {/if}
@@ -390,6 +537,29 @@
     </aside>
   </div>
 </div>
+
+{#if editedBlock}
+  <CustomBlockEditorModal
+    initial={editedBlock}
+    initialCSS={blockCSS[editedBlock.typeId] ?? ''}
+    {library} {fields}
+    onSave={saveDefinition}
+    onClose={() => { editedBlock = null; pendingConversion = null; }}
+  />
+{/if}
+{#if conversionPrompt}
+  <div class="confirmation-backdrop">
+    <div class="confirmation" role="dialog" aria-modal="true" aria-label="Saved custom block">
+      <h2>Custom block saved</h2>
+      <p>Replace the original container with an instance of the new custom block?</p>
+      <label><input type="checkbox" bind:checked={rememberChoice}/> Remember for this session</label>
+      <div class="confirmation-actions">
+        <button onclick={() => conversionChoice(false)}>Keep original</button>
+        <button onclick={() => conversionChoice(true)}>Replace original</button>
+      </div>
+    </div>
+  </div>
+{/if}
 
 <style>
   :global(*) { box-sizing: border-box; }
@@ -425,6 +595,16 @@
   .inspector { border-right: 0; border-left: 1px solid #dedad4; }
   .panel-heading { color: #4c4034; text-transform: uppercase; letter-spacing: .09em; font-weight: 800; font-size: .72rem; }
   .muted { font-size: .76rem; line-height: 1.55; color: #8b8178; margin: 9px 0 16px; }
+  .context-action { display: flex; gap: 6px; padding: 10px; background: #fff7e9; border: 1px solid #c7ab83; border-radius: 8px; margin: 8px; }
+  .context-action button { border: 1px solid #d4c7b7; border-radius: 6px; padding: 7px; background: white; cursor: pointer; }
+  .confirmation-backdrop { position: fixed; inset: 0; z-index: 120; background: #0008; display: grid; place-items: center; }
+  .confirmation { background: #fffaf3; padding: 24px; border-radius: 12px; width: min(420px, 90vw); box-shadow: 0 20px 50px #0004; }
+  .confirmation h2 { font-size: 1.1rem; }
+  .confirmation label { display: flex; gap: 8px; align-items: center; font-size: .85rem; }
+  .confirmation label input { width: auto; min-width: 0; }
+  .confirmation-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+  .confirmation-actions button { padding: 9px; border: 1px solid #d4c7b7; background: #f6e7cf; border-radius: 7px; cursor: pointer; }
+  select { width: 100%; padding: 8px; border: 1px solid #d8d2c9; border-radius: 6px; background: white; }
   .palette { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
   .palette button { display: flex; align-items: center; flex-direction: column; gap: 7px; padding: 13px 5px; border: 1px solid #ded6cb; background: white; border-radius: 9px; color: #4d463e; font-weight: 650; font-size: .75rem; }
   .palette button:hover { border-color: #a9773c; }
