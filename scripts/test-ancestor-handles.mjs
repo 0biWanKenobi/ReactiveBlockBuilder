@@ -14,8 +14,8 @@ try {
   const palette = page.locator('.palette button').first();
   const rail = page.locator('.rbb-block-drag-rail');
 
-  // Design/Edit is the default: text remains editable, but neither the
-  // palette nor document nodes should start a block drag.
+  // Design/Edit is the default: text remains editable and palette
+  // blocks can be inserted by dragging, but existing canvas blocks cannot move.
   const title = page.locator('.sheet-content .sheet-title').first();
   await title.hover();
   assert.equal(await canvas.getAttribute('contenteditable'), 'true');
@@ -23,7 +23,21 @@ try {
   assert.equal(await rail.isVisible(), false);
   assert.equal(await rail.locator('button').count(), 0);
   assert.notEqual(await title.getAttribute('draggable'), 'true');
-  assert.notEqual(await palette.getAttribute('draggable'), 'true');
+  assert.equal(await palette.getAttribute('draggable'), 'true');
+
+  // Drag a stock palette block into an editable canvas. The drag should
+  // create a new block (without enabling movement of existing nodes).
+  const originalTextCount = await canvas.locator('[data-sheet-text]').count();
+  const paletteText = page.locator('.palette button').filter({ hasText: 'Text' }).first();
+  await paletteText.dragTo(canvas, { targetPosition: { x: 8, y: 8 } });
+  assert.equal(await canvas.locator('[data-sheet-text]').count(), originalTextCount + 1,
+    'Palette drag must insert a block while Edit is selected');
+  assert.equal(await canvas.getAttribute('data-rbb-drag-mode'), 'false');
+  
+  // Both tools must produce exactly the same palette insertion result
+  // when dropping the same stock block at the same canvas coordinates.
+  const editInserted = 'Edit this text';
+  assert.equal(await canvas.locator('[data-sheet-text]').filter({ hasText: editInserted }).count(), 1);
 
   // Edit-mode hover uses exactly one pointer target, and a container
   // click on its padding selects that container rather than its first child.
@@ -63,6 +77,13 @@ try {
   assert.equal(await palette.getAttribute('draggable'), 'true');
   assert.equal(await title.getAttribute('draggable'), 'true');
 
+  const beforeDragPalette = await canvas.locator('[data-sheet-text]').count();
+  await paletteText.dragTo(canvas, { targetPosition: { x: 8, y: 8 } });
+  assert.equal(await canvas.locator('[data-sheet-text]').count(), beforeDragPalette + 1,
+    'Palette drag must insert in Drag mode as well');
+  assert.equal(await canvas.locator('[data-sheet-text]').filter({ hasText: editInserted }).count(), 2,
+    'Palette insertion has identical content in both modes');
+
   // Drag-mode click on free container padding must select the container
   // on every click, without bouncing to its first nested text/formula.
   const dragHeader = page.locator('.sheet-content .sheet-header').first();
@@ -88,7 +109,7 @@ try {
   assert.equal(await rail.isVisible(), false);
   assert.equal(await rail.locator('button').count(), 0);
   assert.notEqual(await title.getAttribute('draggable'), 'true');
-  assert.notEqual(await palette.getAttribute('draggable'), 'true');
+  assert.equal(await palette.getAttribute('draggable'), 'true');
   assert.equal(await page.locator('.rbb-drop-placeholder').count(), 0);
 
   await page.getByRole('button', { name: 'Drag', exact: true }).click();

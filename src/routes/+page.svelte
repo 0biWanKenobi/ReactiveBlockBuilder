@@ -278,7 +278,7 @@
   }
 
   function dragPaletteBlock(event: DragEvent, block: JSONContent) {
-    if (!editor || mode !== 'design' || designTool !== 'drag') {
+    if (!editor || mode !== 'design') {
       event.preventDefault();
       return;
     }
@@ -458,7 +458,7 @@
         </select>
       </label>
       <BlockPalette customBlocks={library.definitions}
-        draggable={mode === 'design' && designTool === 'drag'} onInsert={insert}
+        draggable={mode === 'design'} onInsert={insert}
         onDragStart={dragPaletteBlock} onDragEnd={finishPaletteDrag}
         onEdit={(block) => {
           editedCSS = null;

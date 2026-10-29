@@ -21,9 +21,14 @@ const previewKey = new PluginKey<DragPreview | null>('rbbBlockDropPreview');
 const paletteMime = 'application/x-rbb-palette-block';
 const paletteDrags = new WeakMap<EditorView, ProseMirrorNode>();
 
+/** Palette insertion is allowed in either design tool, but never in Play. */
+function canInsertFromPalette(view: EditorView): boolean {
+  return canDragBlocks(view) || view.editable;
+}
+
 /** Keep the node locally: browsers hide drag payloads until the drop event. */
 export function startPaletteDrag(view: EditorView, event: DragEvent, content: JSONContent): void {
-  if (!canDragBlocks(view) || !event.dataTransfer || !content.type || !blockTypes.has(content.type)) {
+  if (!canInsertFromPalette(view) || !event.dataTransfer || !content.type || !blockTypes.has(content.type)) {
     event.preventDefault();
     return;
   }
@@ -140,7 +145,8 @@ function calculatePreview(view: EditorView, event: DragEvent): DragPreview | nul
   const dragging = view.dragging;
   const palette = paletteBlock(view, event);
   const source = palette ? null : draggedBlock(view);
-  if (!canDragBlocks(view) || (!palette && (!source || !dragging))) return null;
+  if (!(palette ? canInsertFromPalette(view) : canDragBlocks(view)) ||
+      (!palette && (!source || !dragging))) return null;
   if (source && !blockTypes.has(source.node.type.name)) return null;
   const slice = palette ? new Slice(Fragment.from(palette), 0, 0) : dragging?.slice;
   if (!slice || slice.openStart !== 0 || slice.openEnd !== 0) return null;
@@ -203,8 +209,8 @@ function decorations(preview: DragPreview | null, viewState: EditorView['state']
 }
 
 function dropBlock(view: EditorView, event: DragEvent, slice: Slice, moved: boolean): boolean {
-  if (!canDragBlocks(view)) return false;
   const palette = paletteBlock(view, event);
+  if (!(palette ? canInsertFromPalette(view) : canDragBlocks(view))) return false;
   const preview = previewKey.getState(view.state) ?? calculatePreview(view, event);
   const source = palette ? null : draggedBlock(view);
   if (!preview || (!palette && (!source || slice.openStart !== 0 ||
@@ -249,8 +255,9 @@ export const BlockDragPreview = Extension.create({
         state: {
           init: () => null,
           apply(transaction, current, _oldState, newState) {
-            // Mode changes must clear any stale placeholder immediately.
-            if (!isBlockDragMode(newState)) return null;
+            // Existing-canvas drags belong to Drag mode. Palette
+            // previews also remain valid when the editor is in Edit mode.
+            if (!isBlockDragMode(newState) && current?.source) return null;
             const meta = transaction.getMeta(previewKey) as DragPreview | null | undefined;
             if (meta !== undefined) return meta;
             return transaction.docChanged ? null : current;
@@ -265,7 +272,7 @@ export const BlockDragPreview = Extension.create({
               const palette = paletteBlock(view, event);
               if (!palette && !draggedBlock(view)) return false;
               updatePreview(view, calculatePreview(view, event));
-              if (canDragBlocks(view) && (palette || isBlockDragMode(view.state))) {
+              if (palette ? canInsertFromPalette(view) : canDragBlocks(view)) {
                 event.preventDefault();
                 if (event.dataTransfer) {
                   event.dataTransfer.dropEffect = palette || dragCopies(view, event) ? 'copy' : 'move';
@@ -285,24 +292,25 @@ export const BlockDragPreview = Extension.create({
               return false;
             },
             drop(view, event) {
-              if (isBlockDragMode(view.state)) {
-                // ProseMirror skips native drop handling in a read-only view.
-                dropBlock(view, event, view.dragging?.slice ?? Slice.empty,
-                  !!view.dragging && !dragCopies(view, event));
-                view.dragging = null;
-                endPaletteDrag(view);
-                event.preventDefault();
-                return true;
-              }
-              // The native drop handler runs after this event handler. Don't
-              // collapse the space until the drop has been processed.
-              queueMicrotask(() => {
-                endPaletteDrag(view);
-              });
-              return false;
+              const palette = paletteBlock(view, event);
+              const canvasDrag = !palette && canDragBlocks(view) && !!view.dragging;
+              if (!palette && !canvasDrag) return false;
+
+              // The same preview position, insertion transaction and cleanup
+              // are used for palette drops in BOTH Edit and Drag modes.
+              // Consume the event before editable ProseMirror can run its
+              // native text/HTML drop handling.
+              dropBlock(
+                view, event,
+                palette ? Slice.empty : view.dragging?.slice ?? Slice.empty,
+                !!canvasDrag && !dragCopies(view, event)
+              );
+              if (canvasDrag) view.dragging = null;
+              endPaletteDrag(view);
+              event.preventDefault();
+              return true;
             }
-          },
-          handleDrop: dropBlock
+          }
         }
       })
     ];

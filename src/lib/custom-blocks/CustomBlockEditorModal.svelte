@@ -119,7 +119,7 @@
   }
 
   function dragStart(event: DragEvent, block: JSONContent) {
-    if (!editor || tool !== 'drag') { event.preventDefault(); return; }
+    if (!editor) { event.preventDefault(); return; }
     const expanded = expandDocument({ type: 'doc', content: [block] }, library).content?.[0];
     if (expanded) startPaletteDrag(editor.view, event, ensureNodeIds(expanded));
   }
@@ -267,7 +267,7 @@
       <aside class="palette-pane">
         <div class="section-title">Blocks</div>
         <BlockPalette customBlocks={library.list().filter((item) => item.typeId !== initial.typeId)}
-          draggable={tool === 'drag'} onInsert={insert} onDragStart={dragStart}
+          draggable={true} onInsert={insert} onDragStart={dragStart}
           onDragEnd={() => editor && endPaletteDrag(editor.view)} />
         {#if selected}
           <div class="section-title">Selected: {selected.type}</div>
