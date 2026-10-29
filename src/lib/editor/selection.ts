@@ -23,11 +23,9 @@ export function selectedBlock(editor: Pick<Editor, 'state'>): SelectedEditorBloc
     : null;
 }
 
-/** Inspector edits should not steal focus from the active input. */
+/** Update attributes without replacing the selected node or stealing input focus. */
 export function updateBlockAttribute(editor: Editor, pos: number, attribute: string, value: string): void {
   const node = editor.state.doc.nodeAt(pos);
   if (!node) return;
-  editor.view.dispatch(editor.state.tr.setNodeMarkup(
-    pos, undefined, { ...node.attrs, [attribute]: value }
-  ));
+  editor.view.dispatch(editor.state.tr.setNodeAttribute(pos, attribute, value));
 }
