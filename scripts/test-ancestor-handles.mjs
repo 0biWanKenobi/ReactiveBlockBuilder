@@ -25,11 +25,57 @@ try {
   assert.notEqual(await title.getAttribute('draggable'), 'true');
   assert.notEqual(await palette.getAttribute('draggable'), 'true');
 
+  // Edit-mode hover uses exactly one pointer target, and a container
+  // click on its padding selects that container rather than its first child.
+  const container = page.locator('.sheet-content .sheet-header').first();
+  await title.hover();
+  const defaultBoundary = page.locator('.sheet-content .sheet-header').first();
+  const initialOutline = await defaultBoundary.evaluate((element) => {
+    const computed = getComputedStyle(element);
+    return { style: computed.outlineStyle, width: computed.outlineWidth, color: computed.outlineColor };
+  });
+  assert.equal(initialOutline.style, 'dotted', 'Unselected containers retain their subtle dotted boundary');
+  assert.equal(initialOutline.width, '1px');
+  assert.equal(await page.locator('.rbb-block-highlight-overlay').count(), 0,
+    'Hover must use the block outline, not a separate overlay');
+  assert.equal(await page.locator('.sheet-content [data-rbb-hovered]').count(), 1);
+  assert.equal(await title.getAttribute('data-rbb-hovered'), '');
+  assert.equal(await title.evaluate((element) => getComputedStyle(element).outlineStyle), 'dashed');
+  const parentWhileHovering = await defaultBoundary.evaluate((element) => {
+    const computed = getComputedStyle(element);
+    return { style: computed.outlineStyle, color: computed.outlineColor };
+  });
+  assert.deepEqual(parentWhileHovering, { style: 'dotted', color: initialOutline.color },
+    'Parent boundary must stay subtle on child hover');
+  const cr = await container.boundingBox();
+  assert(cr);
+  await page.mouse.move(cr.x + cr.width - 5, cr.y + cr.height - 5);
+  assert.equal(await page.locator('.sheet-content [data-rbb-hovered]').count(), 1);
+  assert.equal(await container.getAttribute('data-rbb-hovered'), '');
+  assert.equal(await container.evaluate((element) => getComputedStyle(element).outlineStyle), 'dashed');
+  assert.equal(await title.getAttribute('data-rbb-hovered'), null);
+  await page.mouse.click(cr.x + cr.width - 5, cr.y + cr.height - 5);
+  assert.equal(await page.locator('.selection-heading strong').innerText(), 'container');
+
   await page.getByRole('button', { name: 'Drag', exact: true }).click();
   assert.equal(await canvas.getAttribute('contenteditable'), 'false');
   assert.equal(await canvas.getAttribute('data-rbb-drag-mode'), 'true');
   assert.equal(await palette.getAttribute('draggable'), 'true');
   assert.equal(await title.getAttribute('draggable'), 'true');
+
+  // Drag-mode click on free container padding must select the container
+  // on every click, without bouncing to its first nested text/formula.
+  const dragHeader = page.locator('.sheet-content .sheet-header').first();
+  const dragRect = await dragHeader.boundingBox();
+  assert(dragRect);
+  const dx = dragRect.x + dragRect.width - 6;
+  const dy = dragRect.y + dragRect.height - 6;
+  await page.mouse.move(dx, dy);
+  for (let attempt = 0; attempt < 3; attempt++) {
+    await page.mouse.click(dx, dy);
+    assert.equal(await page.locator('.selection-heading strong').innerText(), 'container',
+      'Container selection must not flicker to a child');
+  }
 
   await title.hover();
   await rail.locator('button').first().waitFor({ state: 'visible' });
@@ -79,14 +125,14 @@ try {
   }
   await handles.first().hover();
   assert.equal(await rail.isVisible(), true, 'rail must remain visible while hovering grip');
-  assert.equal(await page.locator('.rbb-block-highlight-overlay').isVisible(), true);
+  assert.equal(await page.locator('.sheet-content [data-rbb-hovered]').count(), 1);
 
   await handles.first().click();
   assert.equal(await page.locator('.selection-heading strong').innerText(), 'container');
 
   await title.hover();
   await handles.nth(1).hover();
-  assert.equal(await page.locator('.rbb-block-highlight-overlay').isVisible(), true);
+  assert.equal(await page.locator('.sheet-content [data-rbb-hovered]').count(), 1);
   await handles.nth(1).click();
   assert.equal(await page.locator('.selection-heading strong').innerText(), 'textBlock');
 

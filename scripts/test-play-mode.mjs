@@ -23,6 +23,8 @@ try {
   assert.equal(await sidebar.isVisible(), true);
   assert.equal(await sources.isVisible(), true);
 
+  await title.hover();
+  assert.equal(await page.locator('.sheet-content [data-rbb-hovered]').count(), 1);
   await page.locator('.mode-switch button').nth(1).click();
   await page.waitForTimeout(650);
   assert.equal(await header.isVisible(), true);
@@ -36,6 +38,9 @@ try {
   assert(playWidth > designWidth + 100, `Canvas should expand: ${designWidth} to ${playWidth}`);
   assert.equal(await title.innerText(), originalText);
   assert.equal(await page.locator('.sheet-content .tiptap').getAttribute('contenteditable'), 'false');
+  await title.hover();
+  assert.equal(await page.locator('.sheet-content [data-rbb-hovered]').count(), 0);
+  assert.equal(await page.locator('.sheet-header').first().evaluate(el => getComputedStyle(el).outlineStyle), 'none');
 
   await page.locator('.mode-switch button').nth(0).click();
   await page.waitForTimeout(650);

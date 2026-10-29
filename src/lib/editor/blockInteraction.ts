@@ -6,6 +6,15 @@ export const blockSelector =
   'section[data-custom-block-type], section[data-sheet-container], p[data-sheet-text], [data-sheet-block]';
 export const blockTypes = new Set(['container', 'textBlock', 'formula', 'image', 'customBlock']);
 const dragModeKey = new PluginKey<boolean>('rbbBlockDragMode');
+const hoverKey = new PluginKey<number | null>('rbbHoveredBlock');
+
+/** ProseMirror-managed decoration prevents its DOM observer from reverting hover styles. */
+export function setHoveredBlock(view: EditorView, element: Element | null): void {
+  const boundary = element ? blockBoundary(view, element) : null;
+  const pos = boundary?.from ?? null;
+  if (hoverKey.getState(view.state) === pos) return;
+  view.dispatch(view.state.tr.setMeta(hoverKey, pos).setMeta('addToHistory', false));
+}
 
 export function isBlockDragMode(state: EditorState): boolean {
   return dragModeKey.getState(state) === true;
@@ -72,7 +81,28 @@ export const BlockInteraction = Extension.create({
   name: 'blockInteraction',
 
   addProseMirrorPlugins() {
-    return [new Plugin<boolean>({
+    return [new Plugin<number | null>({
+      key: hoverKey,
+      state: {
+        init: () => null,
+        apply(transaction, current) {
+          if (transaction.docChanged) return null;
+          const next = transaction.getMeta(hoverKey);
+          return next === undefined ? current : next;
+        }
+      },
+      props: {
+        decorations(state) {
+          const pos = hoverKey.getState(state);
+          if (pos === null || pos === undefined) return DecorationSet.empty;
+          const node = state.doc.nodeAt(pos);
+          if (!node || !blockTypes.has(node.type.name)) return DecorationSet.empty;
+          return DecorationSet.create(state.doc, [
+            Decoration.node(pos, pos + node.nodeSize, { 'data-rbb-hovered': '' })
+          ]);
+        }
+      }
+    }), new Plugin<boolean>({
       key: dragModeKey,
       state: {
         init: () => false,

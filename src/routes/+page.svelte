@@ -720,7 +720,10 @@
   .sheet-content :global(.tiptap > *) { margin-top: 0; }
   .sheet-content :global(.tiptap p) { margin: 0; }
   .sheet-content :global(.tiptap .ProseMirror-selectednode) { outline: 2px solid #c68b3c !important; outline-offset: 3px; }
-   .playing .sheet-content :global(.tiptap section) { outline: none; }
+  /* Keep structural boundaries visible, without :hover styling ancestors.
+     The pointer overlay alone marks the single active hover target. */
+  .sheet-content :global(.tiptap section) { outline: 1px dotted #d9c9b1; outline-offset: 2px; }
+  .playing .sheet-content :global(.tiptap section) { outline: none; }
   .sheet-content :global(.tiptap[data-rbb-drag-mode="true"]) { user-select: none; caret-color: transparent; cursor: grab; }
   .sheet-content :global(.tiptap[data-rbb-drag-mode="true"] [draggable="true"]) { cursor: grab; }
   .sheet-content :global(.rbb-block-drag-rail) {
@@ -753,15 +756,13 @@
   .sheet-content :global(.rbb-block-drag-handle:hover) { border-color: #b48348; color: #684a28; background: #fff4df; }
   .sheet-content :global(.rbb-block-drag-handle:active) { cursor: grabbing; }
   .sheet-content :global(.rbb-block-drag-handle:focus-visible) { outline: 2px solid #a47a4b; outline-offset: 2px; }
-  :global(.rbb-block-highlight-overlay) {
-    position: fixed;
-    z-index: 110;
-    pointer-events: none;
-    box-sizing: border-box;
-    border: 2px dashed #b48348;
-    border-radius: 3px;
+  /* A hovered block changes its own outline rather than receiving
+     an independent border. The JS hover marker is exclusive to one block. */
+  .sheet-content :global(.tiptap [data-rbb-hovered]) {
+    outline: 2px dashed #b48348;
+    outline-offset: 2px;
   }
-  :global(.rbb-block-highlight-overlay[hidden]) { display: none; }
+  .playing .sheet-content :global(.tiptap [data-rbb-hovered]) { outline: none; }
   .sheet-content :global(.rbb-drop-placeholder) {
     box-sizing: border-box;
     display: block;

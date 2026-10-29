@@ -1,7 +1,7 @@
 import { Extension } from '@tiptap/core';
 import { NodeSelection, Plugin } from '@tiptap/pm/state';
 import type { EditorView } from '@tiptap/pm/view';
-import { blockBoundary, blockSelector, canDragBlocks, outermostCustomBlock, pointerBlock } from './blockInteraction.js';
+import { blockBoundary, blockSelector, canDragBlocks, outermostCustomBlock, pointerBlock, setHoveredBlock } from './blockInteraction.js';
 import { endPaletteDrag } from './blockDragPreview.js';
 
 interface HandleTarget {
@@ -28,11 +28,6 @@ function createHandles(view: EditorView) {
   rail.className = 'rbb-block-drag-rail';
   rail.hidden = true;
   view.dom.parentElement!.appendChild(rail);
-  const outline = document.createElement('div');
-  outline.className = 'rbb-block-highlight-overlay';
-  outline.hidden = true;
-  view.dom.parentElement!.appendChild(outline);
-
   let targets: HandleTarget[] = [];
   let hovered: HTMLElement | null = null;
   let highlighted: HTMLElement | null = null;
@@ -41,25 +36,13 @@ function createHandles(view: EditorView) {
 
   function clearHighlight() {
     highlighted = null;
-    outline.hidden = true;
-  }
-
-  function positionHighlight() {
-    if (!highlighted || !view.dom.contains(highlighted)) {
-      clearHighlight();
-      return;
-    }
-    const rect = highlighted.getBoundingClientRect();
-    outline.style.left = `${rect.left}px`;
-    outline.style.top = `${rect.top}px`;
-    outline.style.width = `${rect.width}px`;
-    outline.style.height = `${rect.height}px`;
-    outline.hidden = false;
+    setHoveredBlock(view, null);
   }
 
   function highlight(target: HandleTarget | null) {
-    highlighted = target?.element ?? null;
-    positionHighlight();
+    const next = target?.element ?? null;
+    highlighted = next;
+    setHoveredBlock(view, next);
   }
 
   function hide(force = false) {
@@ -96,9 +79,8 @@ function createHandles(view: EditorView) {
   }
 
   function position() {
-    // The hover outline works in both Edit and Drag modes. Drag handles
-    // themselves exist only in Drag mode.
-    positionHighlight();
+    // The outline is the block's own CSS outline. Only drag handles
+    // need repositioning; they exist exclusively in Drag mode.
     if (!hovered || !canDragBlocks(view) || !view.dom.contains(hovered)) {
       rail.hidden = true;
       return;
@@ -112,7 +94,6 @@ function createHandles(view: EditorView) {
     const width = count * GRIP_WIDTH + Math.max(0, count - 1) * GRIP_GAP;
     rail.style.left = `${rect.left - width - BRIDGE_WIDTH}px`;
     rail.style.top = `${rect.top + Math.min(6, Math.max(0, (rect.height - 24) / 2))}px`;
-    positionHighlight();
   }
 
   function makeGrip(target: HandleTarget): HTMLButtonElement {
@@ -167,6 +148,7 @@ function createHandles(view: EditorView) {
   }
 
   function mousemove(event: MouseEvent) {
+    if (view.dom.closest('.playing')) { hide(true); return; }
     if (dragging || pressed) return;
     const target = event.target;
     if (target instanceof Node && rail.contains(target)) return;
@@ -234,8 +216,7 @@ function createHandles(view: EditorView) {
   function handleOut(event: MouseEvent) {
     const next = event.relatedTarget;
     if (!(next instanceof Node && rail.contains(next))) {
-      highlighted = hovered;
-      positionHighlight();
+      highlight(hovered ? { element: hovered, from: 0, type: '', classes: '' } : null);
     }
   }
 
@@ -279,6 +260,7 @@ function createHandles(view: EditorView) {
 
   return {
     update() {
+      if (view.dom.closest('.playing')) { hide(true); return; }
       if (highlighted && !view.dom.contains(highlighted)) clearHighlight();
       if (hovered && !dragging && !pressed) {
         // A changed document may replace elements or move positions.
@@ -303,7 +285,6 @@ function createHandles(view: EditorView) {
       window.removeEventListener('mouseup', mouseup);
       clearHighlight();
       rail.remove();
-      outline.remove();
     }
   };
 }
