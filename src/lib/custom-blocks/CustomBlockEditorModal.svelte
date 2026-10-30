@@ -58,7 +58,7 @@
 	type NestedValue = { pos: number; type: string; label: string; value: string; alt?: string };
 	let nestedValues = $state<NestedValue[]>([]);
 	let error = $state('');
-	let canvas: HTMLDivElement;
+	let canvas = $state<HTMLDivElement>();
 	let editor: Editor | null = null;
 	let previewStyle: HTMLStyleElement | null = null;
 
@@ -150,7 +150,7 @@
 	function selectNestedFromPreview(event: MouseEvent | KeyboardEvent) {
 		if (!editor || !(event.target instanceof Element)) return;
 		const nested = event.target.closest('section[data-custom-block-type]');
-		if (!nested || !canvas.contains(nested)) return;
+		if (!nested || !canvas?.contains(nested)) return;
 		const parent = nested.parentNode;
 		if (!parent) return;
 		const index = Array.prototype.indexOf.call(parent.childNodes, nested);
