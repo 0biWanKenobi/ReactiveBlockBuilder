@@ -1,87 +1,98 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
-  import { EditorView, basicSetup } from 'codemirror';
-  import { json } from '@codemirror/lang-json';
-  import { css } from '@codemirror/lang-css';
+	import { onMount } from 'svelte';
+	import { EditorView, basicSetup } from 'codemirror';
+	import { json } from '@codemirror/lang-json';
+	import { css } from '@codemirror/lang-css';
 
-  let {
-    value,
-    language,
-    label,
-    onChange
-  }: {
-    value: string;
-    language: 'json' | 'css';
-    label: string;
-    onChange: (next: string) => void;
-  } = $props();
+	let {
+		value,
+		language,
+		label,
+		onChange
+	}: {
+		value: string;
+		language: 'json' | 'css';
+		label: string;
+		onChange: (next: string) => void;
+	} = $props();
 
-  let target: HTMLDivElement;
-  let view: EditorView | undefined;
-  let synchronizing = false;
+	let target: HTMLDivElement;
+	let view: EditorView | undefined;
+	let synchronizing = false;
 
-  onMount(() => {
-    view = new EditorView({
-      parent: target,
-      doc: value,
-      extensions: [
-          basicSetup,
-          language === 'css' ? css() : json(),
-          EditorView.lineWrapping,
-          EditorView.theme({
-            '&': {
-              fontSize: '12px',
-              backgroundColor: '#ffffff'
-            },
-            '.cm-scroller': { overflow: 'auto' },
-            '.cm-content': {
-              padding: '10px 4px',
-              fontFamily: 'ui-monospace, SFMono-Regular, Consolas, monospace',
-              lineHeight: '1.55'
-            },
-            '.cm-gutters': {
-              backgroundColor: '#fbfaf8',
-              borderRight: '1px solid #eee9e2',
-              color: '#ac9e90'
-            },
-            '&.cm-focused': { outline: 'none' }
-          }),
-          EditorView.updateListener.of((update) => {
-            if (update.docChanged && !synchronizing) {
-              onChange(update.state.doc.toString());
-            }
-          })
-        ]
-    });
-    view.contentDOM.setAttribute('aria-label', label);
+	onMount(() => {
+		view = new EditorView({
+			parent: target,
+			doc: value,
+			extensions: [
+				basicSetup,
+				language === 'css' ? css() : json(),
+				EditorView.lineWrapping,
+				EditorView.theme({
+					'&': {
+						fontSize: '12px',
+						backgroundColor: '#ffffff'
+					},
+					'.cm-scroller': { overflow: 'auto' },
+					'.cm-content': {
+						padding: '10px 4px',
+						fontFamily: 'ui-monospace, SFMono-Regular, Consolas, monospace',
+						lineHeight: '1.55'
+					},
+					'.cm-gutters': {
+						backgroundColor: '#fbfaf8',
+						borderRight: '1px solid #eee9e2',
+						color: '#ac9e90'
+					},
+					'&.cm-focused': { outline: 'none' }
+				}),
+				EditorView.updateListener.of((update) => {
+					if (update.docChanged && !synchronizing) {
+						onChange(update.state.doc.toString());
+					}
+				})
+			]
+		});
+		view.contentDOM.setAttribute('aria-label', label);
 
-    return () => {
-      view?.destroy();
-      view = undefined;
-    };
-  });
+		return () => {
+			view?.destroy();
+			view = undefined;
+		};
+	});
 
-  // Keep programmatic imports, exports and formatting in sync without
-  // replacing the editor contents on each keystroke.
-  $effect(() => {
-    const latest = value;
-    if (view && view.state.doc.toString() !== latest) {
-      synchronizing = true;
-      try {
-        view.dispatch({
-          changes: { from: 0, to: view.state.doc.length, insert: latest }
-        });
-      } finally {
-        synchronizing = false;
-      }
-    }
-  });
+	// Keep programmatic imports, exports and formatting in sync without
+	// replacing the editor contents on each keystroke.
+	$effect(() => {
+		const latest = value;
+		if (view && view.state.doc.toString() !== latest) {
+			synchronizing = true;
+			try {
+				view.dispatch({
+					changes: { from: 0, to: view.state.doc.length, insert: latest }
+				});
+			} finally {
+				synchronizing = false;
+			}
+		}
+	});
 </script>
 
 <div class="code-editor" bind:this={target}></div>
 
 <style>
-  /* Let the panel size the editor instead of the document's line count. */
-  .code-editor { display: flex; flex: 1; min-width: 0; min-height: 0; contain: size; }
-  .code-editor :global(.cm-editor) { flex: 1; min-width: 0; min-height: 0; max-width: 100%; }
+	/* Let the panel size the editor instead of the document's line count. */
+	.code-editor {
+		display: flex;
+		flex: 1;
+		min-width: 0;
+		min-height: 0;
+		contain: size;
+	}
+	.code-editor :global(.cm-editor) {
+		flex: 1;
+		min-width: 0;
+		min-height: 0;
+		max-width: 100%;
+	}
 </style>
