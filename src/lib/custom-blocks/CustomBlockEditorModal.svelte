@@ -313,7 +313,7 @@
 					onDragEnd={() => editor && endPaletteDrag(editor.view)}
 				/>
 				{#if selected}
-					<div class="section-title">Selected: {selected.type}</div>
+					<div class="section-title" style="margin-top: 10px;">Selected: {selected.type}</div>
 					{#if selected.type === 'customBlock'}
 						<p class="hint">Nested block: {String(selected.attrs.typeId ?? '')}</p>
 						<p class="hint">Values here override defaults only within this parent definition.</p>
