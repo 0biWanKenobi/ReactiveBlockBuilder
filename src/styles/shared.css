@@ -59,14 +59,20 @@ button.primary,
 	background: transparent;
 }
 
-.confirmation input,
-.sidebar input {
-	width: 100%;
-	min-width: 0;
+/* Shared appearance; components keep their sizing and font overrides. */
+input,
+select {
 	border: 1px solid #d8d2c9;
 	background: #fff;
 	border-radius: 6px;
 	padding: 8px;
 	color: #292723;
 	outline-color: #987451;
+}
+
+.confirmation input,
+.sidebar input,
+.sidebar select {
+	width: 100%;
+	min-width: 0;
 }

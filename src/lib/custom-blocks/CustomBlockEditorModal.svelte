@@ -489,10 +489,8 @@
 		font-weight: 700;
 	}
 	input {
-		border: 1px solid #d8d2c9;
 		padding: 7px;
 		min-width: 150px;
-		border-radius: 6px;
 	}
 	.toolbar {
 		display: flex;

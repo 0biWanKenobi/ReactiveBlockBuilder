@@ -193,12 +193,4 @@
 			0.73rem ui-monospace,
 			monospace;
 	}
-
-	select {
-		width: 100%;
-		padding: 8px;
-		border: 1px solid #d8d2c9;
-		border-radius: 6px;
-		background: white;
-	}
 </style>
