@@ -193,12 +193,7 @@
 			<div class="source-actions">
 				<button id="apply-sheet-json" onclick={importSheet}>Apply JSON ➡️ Preview</button>
 				<button id="sync-sheet-json" onclick={exportSheet}>Sync Preview ➡️ JSON</button>
-				<button
-					class="format-button"
-					title="Format JSON"
-					aria-label="Format JSON"
-					onclick={formatJSON}>Format</button
-				>
+				<button title="Format JSON" aria-label="Format JSON" onclick={formatJSON}>Format</button>
 			</div>
 		</div>
 		<CodeEditor
@@ -213,11 +208,9 @@
 			<strong>Theme CSS</strong>
 			<div class="source-actions">
 				<span>Live preview · draft</span>
-				<button onclick={saveThemeCSS}>Save</button>
+				<button class="primary" onclick={saveThemeCSS}>Save</button>
 				<button onclick={discardThemeCSS}>Discard</button>
-				<button class="format-button" title="Format CSS" aria-label="Format CSS" onclick={formatCSS}
-					>Format</button
-				>
+				<button title="Format CSS" aria-label="Format CSS" onclick={formatCSS}>Format</button>
 			</div>
 		</div>
 		<CodeEditor language="css" label="Theme CSS" value={css} onChange={(next) => (css = next)} />
@@ -225,9 +218,6 @@
 </div>
 
 <style>
-	button {
-		cursor: pointer;
-	}
 	.source-panels {
 		display: grid;
 		flex: 1 1 320px;
@@ -268,29 +258,6 @@
 		display: flex;
 		gap: 6px;
 		align-items: center;
-	}
-	.source-actions button {
-		border: 1px solid #d8c7b4;
-		border-radius: 5px;
-		background: #faf6ef;
-		padding: 5px 9px;
-		font-size: 0.7rem;
-	}
-	.source-actions .format-button {
-		border-color: transparent;
-		background: transparent;
-		color: #80776d;
-		font-size: 0.67rem;
-		padding: 4px 6px;
-	}
-	.source-actions .format-button:hover {
-		border-color: #d8c7b4;
-		background: #f7f3ed;
-		color: #564433;
-	}
-	.source-actions .format-button:focus-visible {
-		outline: 2px solid #a47a4b;
-		outline-offset: 2px;
 	}
 
 	.source-panels.playing {

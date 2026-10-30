@@ -56,14 +56,6 @@
 		color: #bb3434;
 		font-size: 0.75rem;
 	}
-	.rbb-roll {
-		border: 1px solid #bd9e74;
-		border-radius: 6px;
-		padding: 4px 7px;
-		cursor: pointer;
-		background: #fff4df;
-		font-size: 0.74rem;
-	}
 	.rbb-roll-total {
 		color: #655028;
 	}

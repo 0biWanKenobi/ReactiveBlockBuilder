@@ -29,7 +29,7 @@
 >
 	<div class="pane-toolbar">
 		<svg class="pane-tab-shape" viewBox="0 0 88 56" fill="none" aria-hidden="true">
-			<!-- Offset the button's 6px corner by 11px to the stroke centerline:
+			<!-- Offset the button's rounded corner to the stroke centerline:
 			     radius = 17px, center = (49.5, 38.5). The 45-degree midpoint
 			     lies on the button's corner diagonal, x + y = 88. -->
 			<path d="M0 .5H87.5V55.5H49.5A17 17 0 0 1 32.5 38.5V21.5C32.5 .5 16.25 .5 0 .5Z" />
@@ -125,18 +125,6 @@
 		height: 33px;
 		flex-shrink: 0;
 		padding: 0;
-		border: 1px solid #d8c7b4;
-		border-radius: 6px;
-		background: #faf6ef;
-		color: #5b401e;
-		cursor: pointer;
-	}
-	.pane-toggle:hover {
-		background: #f6e7cf;
-	}
-	.pane-toggle:focus-visible {
-		outline: 2px solid #987451;
-		outline-offset: 1px;
 	}
 	.pane-content {
 		min-width: 0;

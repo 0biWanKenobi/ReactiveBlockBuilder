@@ -110,7 +110,7 @@
 		</div>
 		{#if mode === 'design'}
 			<div class="canvas-actions">
-				<div class="design-tools" role="group" aria-label="Design tool">
+				<div class="switch design-tools" role="group" aria-label="Design tool">
 					<button
 						class:active={designTool === 'edit'}
 						aria-pressed={designTool === 'edit'}
@@ -122,7 +122,7 @@
 						onclick={() => (designTool = 'drag')}>Drag</button
 					>
 				</div>
-				<button class="subtle-button" onclick={selectContainer}>Select parent container</button>
+				<button onclick={selectContainer}>Select parent container</button>
 			</div>
 		{/if}
 	</div>
@@ -164,9 +164,6 @@
 {/if}
 
 <style>
-	button {
-		cursor: pointer;
-	}
 	.context-action {
 		position: fixed;
 		z-index: 50;
@@ -177,13 +174,6 @@
 		border: 1px solid #c7ab83;
 		border-radius: 8px;
 		margin: 8px;
-	}
-	.context-action button {
-		border: 1px solid #d4c7b7;
-		border-radius: 6px;
-		padding: 7px;
-		background: white;
-		cursor: pointer;
 	}
 	.main-pane {
 		display: flex;
@@ -223,41 +213,12 @@
 		font-size: 0.76rem;
 		margin-top: 4px;
 	}
-	.subtle-button {
-		border: 1px solid #d4c7b7;
-		color: #766149;
-		background: #faf7f3;
-		border-radius: 8px;
-		padding: 9px;
-		font-size: 0.72rem;
-	}
 	.canvas-actions {
 		display: flex;
 		align-items: center;
 		gap: 8px;
 		flex-wrap: wrap;
 		justify-content: flex-end;
-	}
-	.design-tools {
-		display: flex;
-		gap: 3px;
-		padding: 3px;
-		border: 1px solid #d4c7b7;
-		border-radius: 8px;
-		background: #faf7f3;
-	}
-	.design-tools button {
-		border: 0;
-		border-radius: 5px;
-		background: transparent;
-		color: #766149;
-		padding: 6px 10px;
-		font-size: 0.72rem;
-	}
-	.design-tools button.active {
-		background: #e8d5b7;
-		color: #4d3923;
-		font-weight: 700;
 	}
 	.sheet-frame {
 		width: 100%;

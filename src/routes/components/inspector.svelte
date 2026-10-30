@@ -153,12 +153,4 @@
 	.property input {
 		font-size: 0.77rem;
 	}
-	.danger-button {
-		border: 1px solid #e5c8c0;
-		border-radius: 7px;
-		background: #fff5f3;
-		color: #a74335;
-		padding: 9px;
-		font-size: 0.76rem;
-	}
 </style>

@@ -1,8 +1,53 @@
-/* Shared controls for the page and sidebars. */
-.mode-switch button,
-.confirmation button,
-.sidebar button {
+/* Shared button variants and segmented switches. */
+button {
+	border: 1px solid #d4c7b7;
+	border-radius: 7px;
+	background: #fdfaf5;
+	color: #5e4e3f;
+	padding: 8px 11px;
+	font: inherit;
+	font-size: 0.76rem;
 	cursor: pointer;
+}
+
+button:enabled:hover {
+	filter: brightness(0.97);
+}
+
+button:focus-visible {
+	outline: 2px solid #987451;
+	outline-offset: 2px;
+}
+
+button:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+
+button.primary,
+.switch > button.active {
+	background: #ddbd8c;
+	color: #242526;
+	font-weight: 800;
+}
+
+.danger-button {
+	border-color: #e5c8c0;
+	background: #fff5f3;
+	color: #a74335;
+}
+
+.switch {
+	display: flex;
+	gap: 4px;
+	padding: 3px;
+	border-radius: 9px;
+	background: #eae4db;
+}
+
+.switch > button {
+	border-color: transparent;
+	background: transparent;
 }
 
 .confirmation input,

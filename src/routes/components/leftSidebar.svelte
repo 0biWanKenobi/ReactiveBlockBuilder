@@ -152,7 +152,7 @@
 	>
 		<input aria-label="New field identifier" placeholder="FIELD_ID" bind:value={newField} />
 		<input aria-label="New field formula" placeholder="Formula" bind:value={newExpression} />
-		<button type="submit">+ Add field</button>
+		<button class="primary" type="submit">+ Add field</button>
 	</form>
 	{#if fieldError}<p class="error">{fieldError}</p>{/if}
 </aside>
@@ -180,16 +180,6 @@
 		display: grid;
 		gap: 8px;
 		margin-top: 15px;
-	}
-
-	.new-field button {
-		padding: 8px;
-		border: 1px solid #a57e4f;
-		border-radius: 7px;
-		color: #5b401e;
-		background: #f8e9d0;
-		font-size: 0.78rem;
-		font-weight: 700;
 	}
 
 	.error {

@@ -199,7 +199,7 @@
 			<h1>Reactive Block Builder</h1>
 			<p>Build a nested character sheet with your own CSS and reactive formulas.</p>
 		</div>
-		<div class="mode-switch" role="group" aria-label="Editor mode">
+		<div class="switch mode-switch" role="group" aria-label="Editor mode">
 			<button class:active={mode === 'design'} onclick={() => (mode = 'design')}>✎ Design</button>
 			<button class:active={mode === 'play'} onclick={() => (mode = 'play')}>▶ Play</button>
 		</div>
@@ -287,7 +287,7 @@
 			>
 			<div class="confirmation-actions">
 				<button onclick={() => conversionChoice(false)}>Keep original</button>
-				<button onclick={() => conversionChoice(true)}>Replace original</button>
+				<button class="primary" onclick={() => conversionChoice(true)}>Replace original</button>
 			</div>
 		</div>
 	</div>
@@ -307,7 +307,6 @@
 			-apple-system,
 			sans-serif;
 	}
-	:global(button),
 	:global(input),
 	:global(textarea) {
 		font: inherit;
@@ -340,26 +339,6 @@
 		margin: 0;
 		font-size: 0.87rem;
 		color: #bdbfc0;
-	}
-	.mode-switch {
-		display: flex;
-		gap: 4px;
-		background: #161c1f;
-		padding: 5px;
-		border-radius: 10px;
-	}
-	.mode-switch button {
-		background: transparent;
-		border: 0;
-		color: #c5c8ca;
-		border-radius: 7px;
-		padding: 9px 15px;
-		font-size: 0.83rem;
-	}
-	.mode-switch button.active {
-		background: #ddbd8c;
-		color: #242526;
-		font-weight: 800;
 	}
 	.editor-layout {
 		--left-pane-width: 240px;
@@ -404,13 +383,6 @@
 		justify-content: flex-end;
 		gap: 10px;
 		margin-top: 20px;
-	}
-	.confirmation-actions button {
-		padding: 9px;
-		border: 1px solid #d4c7b7;
-		background: #f6e7cf;
-		border-radius: 7px;
-		cursor: pointer;
 	}
 
 	/* Keep the live editor and CodeMirror mounted while the workspace recedes. */

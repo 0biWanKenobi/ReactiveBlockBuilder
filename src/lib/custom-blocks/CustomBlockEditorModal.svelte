@@ -273,9 +273,9 @@
 				<span>{[...breadcrumbs, name].join(' / ')}</span>
 			</div>
 			<div class="nav-actions">
-				{#if breadcrumbs.length}<button onclick={close} aria-label="Back to parent definition"
-						>← Back</button
-					>{/if}
+				{#if breadcrumbs.length}
+					<button onclick={close} aria-label="Back to parent definition">← Back</button>
+				{/if}
 				<button onclick={close} aria-label="Close editor">✕</button>
 			</div>
 		</header>
@@ -291,9 +291,9 @@
 		</div>
 		<div class="toolbar">
 			<div class="switch">
-				<button class:active={tab === 'structure'} onclick={() => (tab = 'structure')}
-					>Structure</button
-				>
+				<button class:active={tab === 'structure'} onclick={() => (tab = 'structure')}>
+					Structure
+				</button>
 				<button class:active={tab === 'css'} onclick={() => (tab = 'css')}>CSS</button>
 			</div>
 			{#if tab === 'structure'}
@@ -301,7 +301,6 @@
 					<button class:active={tool === 'edit'} onclick={() => (tool = 'edit')}>Edit</button>
 					<button class:active={tool === 'drag'} onclick={() => (tool = 'drag')}>Drag</button>
 				</div>
-				<button onclick={resetValues}>Reset values to defaults</button>
 			{/if}
 		</div>
 		<div class="body">
@@ -363,6 +362,7 @@
 						>
 					{/if}
 					<button
+						class="danger-button"
 						style="margin-top: 12px"
 						onclick={() => {
 							if (selected && editor) {
@@ -390,8 +390,10 @@
 			<section class="source-pane">
 				{#if tab === 'structure'}
 					<div class="source-actions">
-						<strong>Definition JSON</strong><button onclick={syncStructure}>From preview</button
-						><button onclick={applyJSON}>Apply JSON</button>
+						<strong>Definition JSON</strong>
+						<button class="danger-button" onclick={resetValues}>Reset values to defaults</button>
+						<button onclick={syncStructure}>From preview</button>
+						<button onclick={applyJSON}>Apply JSON</button>
 					</div>
 					<CodeEditor
 						language="json"
@@ -474,19 +476,6 @@
 		border-top: 1px solid #dedad4;
 		border-bottom: 0;
 	}
-	button {
-		border: 1px solid #d4c7b7;
-		background: #fdfaf5;
-		color: #5e4e3f;
-		padding: 8px 11px;
-		border-radius: 7px;
-		cursor: pointer;
-	}
-	button.primary {
-		background: #ddbd8c;
-		color: #242526;
-		font-weight: 800;
-	}
 	.properties {
 		display: flex;
 		gap: 15px;
@@ -510,21 +499,6 @@
 		gap: 15px;
 		padding: 8px 22px;
 		align-items: center;
-	}
-	.switch {
-		display: flex;
-		gap: 4px;
-		padding: 3px;
-		border-radius: 9px;
-		background: #eae4db;
-	}
-	.switch button {
-		border: 0;
-		background: transparent;
-	}
-	.switch button.active {
-		background: #ddbd8c;
-		font-weight: 800;
 	}
 	.body {
 		display: grid;
