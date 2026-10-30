@@ -249,11 +249,10 @@
 		outline: 1px dotted #d9c9b1;
 		outline-offset: 2px;
 	}
-	.playing .sheet-content :global(.tiptap section) {
-		outline: none;
-	}
-	.playing .sheet-content :global(.tiptap [data-rbb-hovered]) {
-		outline: none;
+	.playing .sheet-content {
+		:global(.tiptap section, .tiptap [data-rbb-hovered]) {
+			outline: none;
+		}
 	}
 	.status {
 		font-size: 0.73rem;
