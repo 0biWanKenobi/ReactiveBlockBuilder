@@ -46,7 +46,7 @@
 </div>
 
 {#if customBlocks.length}
-	<div class="heading">Custom blocks</div>
+	<div class="panel-heading heading">Custom blocks</div>
 	<div class="palette">
 		{#each customBlocks as definition (definition.typeId)}
 			<div class="custom-tile">
@@ -87,11 +87,6 @@
 		margin-top: 9px;
 	}
 	.heading {
-		color: #4c4034;
-		text-transform: uppercase;
-		letter-spacing: 0.09em;
-		font-weight: 800;
-		font-size: 0.72rem;
 		margin-top: 22px;
 	}
 	.tile {
