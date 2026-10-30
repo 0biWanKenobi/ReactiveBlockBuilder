@@ -46,9 +46,13 @@
 
   async function reloadBlockStyles() {
     const styles: Record<string, string> = {};
-    for (const definition of library.list()) {
-      styles[definition.typeId] = await repository.readBlockCSS(definition.typeId);
-    }
+
+    const promises = library
+      .list()
+      .map(
+        def => repository.readBlockCSS(def.typeId).then( style => styles[def.typeId] = style)
+      )
+    await Promise.all(promises)
     blockCSS = styles;
   }
 
