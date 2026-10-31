@@ -258,13 +258,8 @@
 				/></label
 			>
 		</div>
-		<div class="toolbar">
-			<Switch values={['structure', 'css']} labels={['Structure', 'CSS']} bind:active={tab} />
-			{#if tab === 'structure'}
-				<Switch values={['edit', 'drag']} labels={['Edit', 'Drag']} bind:active={tool} />
-			{/if}
-		</div>
-		<div class="body">
+
+		<div class="contents">
 			<aside class="palette-pane">
 				<div class="section-title">Blocks</div>
 				<BlockPalette
@@ -277,6 +272,10 @@
 					<Inspector block={selected} {editor} {nestedValues} {openNested} {syncStructure} />
 				{/if}
 			</aside>
+
+			<div class="editModeSwitch">
+				<Switch values={['edit', 'drag']} labels={['Edit', 'Drag']} bind:active={tool} />
+			</div>
 			<section class="preview-pane">
 				<div class="section-title">Live preview</div>
 				<Button
@@ -286,9 +285,14 @@
 					onclick={selectNestedFromPreview}
 				></Button>
 			</section>
-			<section class="source-pane">
+
+			<div class="codeViewSwitch">
+				<Switch values={['structure', 'css']} labels={['Structure', 'CSS']} bind:active={tab} />
+			</div>
+
+			<div class="code-pane">
 				{#if tab === 'structure'}
-					<div class="source-actions">
+					<div class="json-actions">
 						<strong>Definition JSON</strong>
 						<button class="danger-button" onclick={resetValues}>Reset values to defaults</button>
 						<button onclick={syncStructure}>From preview</button>
@@ -304,7 +308,7 @@
 						}}
 					/>
 				{:else}
-					<div class="source-actions"><strong>Custom block CSS</strong></div>
+					<div class="json-actions"><strong>Custom block CSS</strong></div>
 					<CodeEditor
 						language="css"
 						label="Custom block CSS"
@@ -312,8 +316,9 @@
 						onChange={(v) => (css = v)}
 					/>
 				{/if}
-			</section>
+			</div>
 		</div>
+
 		{#if error}<div role="alert" class="error">{error}</div>{/if}
 		<footer>
 			<button onclick={close}>Cancel</button><button class="primary" onclick={save}
@@ -344,6 +349,81 @@
 		box-shadow: 0 24px 85px #0007;
 		color: #312d2a;
 	}
+
+	.contents {
+		display: grid;
+		grid-template-columns: 215px minmax(0, 1fr) minmax(300px, 0.9fr);
+		grid-template-rows: min-content 1fr;
+		flex: 1;
+		min-height: 0;
+		row-gap: 8px;
+		padding-top: 8px;
+	}
+
+	.palette-pane {
+		grid-row: 2;
+		grid-column: 1;
+		padding: 12px;
+		border-right: 1px solid #dedad4;
+		overflow: auto;
+	}
+
+	.contents :global(.editModeSwitch) {
+		grid-row: 1;
+		grid-column: 2;
+		display: flex;
+		justify-content: left;
+	}
+
+	.preview-pane {
+		grid-row: 2;
+		grid-column: 2;
+		padding: 18px;
+		min-width: 0;
+		overflow: auto;
+		background: #f3efe8;
+		:global(.preview) {
+			background: #fdfaf4;
+			min-height: 300px;
+			padding: 16px;
+			border-radius: 10px;
+			:global(.tiptap) {
+				outline: none;
+				min-height: 260px;
+			}
+		}
+	}
+
+	.contents :global(.codeViewSwitch) {
+		grid-row: 1;
+		grid-column: 3;
+		display: flex;
+		justify-content: left;
+	}
+
+	.code-pane {
+		grid-row: 2;
+		grid-column: 3;
+		display: flex;
+		flex-direction: column;
+		min-width: 0;
+		min-height: 0;
+		background: white;
+	}
+
+	.json-actions {
+		display: flex;
+		align-items: center;
+		gap: 5px;
+		padding: 8px;
+		border-bottom: 1px solid #dedad4;
+
+		& strong {
+			margin-right: auto;
+			font-size: 0.75rem;
+		}
+	}
+
 	header,
 	footer {
 		display: flex;
@@ -390,72 +470,33 @@
 		padding: 7px;
 		min-width: 150px;
 	}
-	.toolbar {
-		display: flex;
-		gap: 15px;
-		padding: 8px 22px;
-		align-items: center;
-	}
-	.body {
-		display: grid;
-		grid-template-columns: 215px minmax(0, 1fr) minmax(300px, 0.9fr);
-		flex: 1;
-		min-height: 0;
-	}
-	.palette-pane {
-		padding: 12px;
-		border-right: 1px solid #dedad4;
-		overflow: auto;
-	}
 
 	.section-title {
 		font-size: 0.75rem;
 		font-weight: 800;
 		margin-bottom: 12px;
 	}
-	.preview-pane {
-		padding: 18px;
-		min-width: 0;
-		overflow: auto;
-		background: #f3efe8;
-		:global(.preview) {
-			background: #fdfaf4;
-			min-height: 300px;
-			padding: 16px;
-			border-radius: 10px;
-			:global(.tiptap) {
-				outline: none;
-				min-height: 260px;
-			}
-		}
-	}
-	.source-pane {
-		display: flex;
-		flex-direction: column;
-		min-width: 0;
-		min-height: 0;
-		background: white;
-	}
-	.source-actions {
-		display: flex;
-		align-items: center;
-		gap: 5px;
-		padding: 8px;
-		border-bottom: 1px solid #dedad4;
-	}
-	.source-actions strong {
-		margin-right: auto;
-		font-size: 0.75rem;
-	}
+
 	.error {
 		color: #a32a25;
 		padding: 8px 22px;
 	}
 	@media (max-width: 900px) {
-		.body {
+		.contents {
 			grid-template-columns: 180px minmax(0, 1fr);
+			grid-template-rows: min-content minmax(0, 1fr) 220px;
+			row-gap: 0;
 		}
-		.source-pane {
+		.contents :global(.editModeSwitch),
+		.contents :global(.codeViewSwitch) {
+			margin-bottom: 8px;
+		}
+		.contents :global(.codeViewSwitch) {
+			grid-column: 1;
+			justify-content: center;
+		}
+		.code-pane {
+			grid-row: 3;
 			grid-column: 1/-1;
 			min-height: 220px;
 		}
