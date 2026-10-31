@@ -10,7 +10,7 @@ function id(): string {
 	return crypto.randomUUID();
 }
 
-export function generateTypeId(name: string, existing: string[]): string {
+function generateTypeId(name: string, existing: string[]): string {
 	const stem =
 		name
 			.toLowerCase()

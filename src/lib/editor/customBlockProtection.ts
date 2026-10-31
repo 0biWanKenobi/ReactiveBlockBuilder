@@ -33,7 +33,7 @@ function outerBlocks(doc: ProseMirrorNode): Map<string, string> {
 	return blocks;
 }
 
-export function preservesCustomStructure(before: ProseMirrorNode, after: ProseMirrorNode): boolean {
+function preservesCustomStructure(before: ProseMirrorNode, after: ProseMirrorNode): boolean {
 	const existing = outerBlocks(before);
 	const updated = outerBlocks(after);
 	for (const [id, structure] of existing) {
