@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 	import '../editor/blockInteraction.css';
 	import { Editor, type JSONContent } from '@tiptap/core';
-	import { selectedBlock, updateBlockAttribute } from '../editor/selection.js';
+	import { selectedBlock } from '../editor/selection.js';
 	import { createSheetExtensions } from '../editor/nodes.js';
 	import { startPaletteDrag, endPaletteDrag } from '../editor/blockDragPreview.js';
 	import { setBlockDragMode } from '../editor/blockInteraction.js';
@@ -12,6 +12,7 @@
 	import type { CustomBlockDefinition, BlockLibrary } from './types.js';
 	import type { Sheet } from '../formula/engine.js';
 	import Button from '#lib/components/Button.svelte';
+	import Inspector, { type NestedValue, type SelectedBlock } from './modal-editor/Inspector.svelte';
 
 	let {
 		initial,
@@ -54,12 +55,11 @@
 	let structure = $state(JSON.stringify(initial.structure, null, 2));
 	let tab = $state<'structure' | 'css'>('structure');
 	let tool = $state<'edit' | 'drag'>('edit');
-	let selected = $state<{ pos: number; type: string; attrs: Record<string, unknown> } | null>(null);
-	type NestedValue = { pos: number; type: string; label: string; value: string; alt?: string };
+	let selected = $state<SelectedBlock | null>(null);
 	let nestedValues = $state<NestedValue[]>([]);
 	let error = $state('');
 	let canvas = $state<HTMLDivElement>();
-	let editor: Editor | null = null;
+	let editor = $state<Editor>();
 	let previewStyle: HTMLStyleElement | null = null;
 
 	function synchronizeSelection(instance: Editor) {
@@ -119,7 +119,7 @@
 		});
 		return () => {
 			editor?.destroy();
-			editor = null;
+			editor = undefined;
 			previewStyle?.remove();
 			previewStyle = null;
 		};
@@ -163,38 +163,6 @@
 		} catch {
 			// Click targets are allowed to disappear during ProseMirror updates.
 		}
-	}
-
-	function updateAttr(attribute: string, value: string) {
-		if (!editor || !selected) return;
-		const node = editor.state.doc.nodeAt(selected.pos);
-		if (!node) return;
-		updateBlockAttribute(editor, selected.pos, attribute, value);
-		syncStructure();
-	}
-
-	function updateNestedValue(
-		leaf: NestedValue,
-		value: string,
-		property: 'value' | 'alt' = 'value'
-	) {
-		if (!editor) return;
-		const node = editor.state.doc.nodeAt(leaf.pos);
-		if (!node || node.type.name !== leaf.type) return;
-		const transaction = editor.state.tr;
-		if (leaf.type === 'textBlock') {
-			const content = value ? editor.state.schema.text(value) : undefined;
-			transaction.replaceWith(
-				leaf.pos,
-				leaf.pos + node.nodeSize,
-				node.type.create(node.attrs, content)
-			);
-		} else {
-			const key = property === 'alt' ? 'alt' : leaf.type === 'formula' ? 'field' : 'src';
-			transaction.setNodeMarkup(leaf.pos, undefined, { ...node.attrs, [key]: value });
-		}
-		editor.view.dispatch(transaction);
-		syncStructure();
 	}
 
 	function applyJSON() {
@@ -312,70 +280,8 @@
 					onDragStart={dragStart}
 					onDragEnd={() => editor && endPaletteDrag(editor.view)}
 				/>
-				{#if selected}
-					<div class="section-title" style="margin-top: 10px;">Selected: {selected.type}</div>
-					{#if selected.type === 'customBlock'}
-						<p class="hint">Nested block: {String(selected.attrs.typeId ?? '')}</p>
-						<p class="hint">Values here override defaults only within this parent definition.</p>
-						{#each nestedValues as leaf (leaf.pos)}
-							<label
-								>{leaf.label} ({leaf.type})
-								<input
-									aria-label={`Nested ${leaf.label} value`}
-									value={leaf.value}
-									oninput={(event) => updateNestedValue(leaf, event.currentTarget.value)}
-								/>
-							</label>
-							{#if leaf.type === 'image'}
-								<label
-									>Image description
-									<input
-										aria-label={`Nested ${leaf.label} alt`}
-										value={leaf.alt ?? ''}
-										oninput={(event) => updateNestedValue(leaf, event.currentTarget.value, 'alt')}
-									/>
-								</label>
-							{/if}
-						{/each}
-						<button onclick={openNested}>Edit definition</button>
-					{:else if selected.type === 'formula'}
-						<label
-							>Field <input
-								value={String(selected.attrs.field ?? '')}
-								oninput={(e) => updateAttr('field', e.currentTarget.value)}
-							/></label
-						>
-					{:else if selected.type === 'image'}
-						<label
-							>Source <input
-								value={String(selected.attrs.src ?? '')}
-								oninput={(e) => updateAttr('src', e.currentTarget.value)}
-							/></label
-						>
-					{/if}
-					{#if selected.type !== 'customBlock'}
-						<label
-							>Classes <input
-								value={String(selected.attrs.class ?? '')}
-								oninput={(e) => updateAttr('class', e.currentTarget.value)}
-							/></label
-						>
-					{/if}
-					<button
-						class="danger-button"
-						style="margin-top: 12px"
-						onclick={() => {
-							if (selected && editor) {
-								const n = editor.state.doc.nodeAt(selected.pos);
-								if (n)
-									editor.commands.deleteRange({
-										from: selected.pos,
-										to: selected.pos + n.nodeSize
-									});
-								syncStructure();
-							}
-						}}>Delete selected</button
-					>
+				{#if selected && editor}
+					<Inspector block={selected} {editor} {nestedValues} {openNested} {syncStructure} />
 				{/if}
 			</aside>
 			<section class="preview-pane">
@@ -453,23 +359,22 @@
 		padding: 15px 22px;
 		border-bottom: 1px solid #dedad4;
 	}
-	header div {
-		display: flex;
-		flex-direction: column;
-		gap: 2px;
-	}
-	header span {
-		color: #8c8177;
-		font: 0.73rem monospace;
+	header {
+		div {
+			display: flex;
+			flex-direction: column;
+			gap: 2px;
+		}
+		span {
+			color: #8c8177;
+			font: 0.73rem monospace;
+		}
 	}
 	.nav-actions {
 		display: flex;
 		gap: 8px;
 	}
-	.hint {
-		font-size: 0.74rem;
-		color: #796d61;
-	}
+
 	footer {
 		justify-content: flex-end;
 		gap: 10px;
@@ -509,9 +414,7 @@
 		border-right: 1px solid #dedad4;
 		overflow: auto;
 	}
-	.palette-pane label {
-		margin-top: 12px;
-	}
+
 	.section-title {
 		font-size: 0.75rem;
 		font-weight: 800;
@@ -522,16 +425,16 @@
 		min-width: 0;
 		overflow: auto;
 		background: #f3efe8;
-	}
-	.preview-pane :global(.preview) {
-		background: #fdfaf4;
-		min-height: 300px;
-		padding: 16px;
-		border-radius: 10px;
-	}
-	.preview-pane :global(.preview .tiptap) {
-		outline: none;
-		min-height: 260px;
+		:global(.preview) {
+			background: #fdfaf4;
+			min-height: 300px;
+			padding: 16px;
+			border-radius: 10px;
+			:global(.tiptap) {
+				outline: none;
+				min-height: 260px;
+			}
+		}
 	}
 	.source-pane {
 		display: flex;
