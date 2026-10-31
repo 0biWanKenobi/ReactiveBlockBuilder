@@ -21,6 +21,7 @@
 	import MainPane from './components/mainPane/mainPane.svelte';
 	import Inspector from './components/inspector.svelte';
 	import SidePane from './components/sidePane/sidePane.svelte';
+	import Switch from '#lib/components/Switch.svelte';
 
 	let editor = $state<Editor | null>(null);
 	let mode = $state<'design' | 'play'>('design');
@@ -199,10 +200,12 @@
 			<h1>Reactive Block Builder</h1>
 			<p>Build a nested character sheet with your own CSS and reactive formulas.</p>
 		</div>
-		<div class="switch mode-switch" role="group" aria-label="Editor mode">
-			<button class:active={mode === 'design'} onclick={() => (mode = 'design')}>✎ Design</button>
-			<button class:active={mode === 'play'} onclick={() => (mode = 'play')}>▶ Play</button>
-		</div>
+		<Switch
+			values={['design', 'play']}
+			labels={['✎ Design', '▶ Play']}
+			bind:active={mode}
+			aria-label="Editor mode"
+		/>
 	</header>
 
 	<div

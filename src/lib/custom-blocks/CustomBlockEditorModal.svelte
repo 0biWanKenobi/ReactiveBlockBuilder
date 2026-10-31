@@ -13,6 +13,7 @@
 	import type { Sheet } from '../formula/engine.js';
 	import Button from '#lib/components/Button.svelte';
 	import Inspector, { type NestedValue, type SelectedBlock } from './modal-editor/Inspector.svelte';
+	import Switch from '#lib/components/Switch.svelte';
 
 	let {
 		initial,
@@ -258,17 +259,9 @@
 			>
 		</div>
 		<div class="toolbar">
-			<div class="switch">
-				<button class:active={tab === 'structure'} onclick={() => (tab = 'structure')}>
-					Structure
-				</button>
-				<button class:active={tab === 'css'} onclick={() => (tab = 'css')}>CSS</button>
-			</div>
+			<Switch values={['structure', 'css']} labels={['Structure', 'CSS']} bind:active={tab} />
 			{#if tab === 'structure'}
-				<div class="switch">
-					<button class:active={tool === 'edit'} onclick={() => (tool = 'edit')}>Edit</button>
-					<button class:active={tool === 'drag'} onclick={() => (tool = 'drag')}>Drag</button>
-				</div>
+				<Switch values={['edit', 'drag']} labels={['Edit', 'Drag']} bind:active={tool} />
 			{/if}
 		</div>
 		<div class="body">

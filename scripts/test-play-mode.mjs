@@ -25,7 +25,7 @@ try {
 
   await title.hover();
   assert.equal(await page.locator('.sheet-content [data-rbb-hovered]').count(), 1);
-  await page.locator('.mode-switch button').nth(1).click();
+  await page.locator('.topbar .switch button').nth(1).click();
   await page.waitForTimeout(650);
   assert.equal(await header.isVisible(), true);
   assert.equal(await title.isVisible(), true);

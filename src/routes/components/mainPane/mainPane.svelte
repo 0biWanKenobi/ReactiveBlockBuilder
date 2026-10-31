@@ -9,6 +9,7 @@
 	import { blockBoundary, setBlockDragMode } from '#lib/editor/blockInteraction.js';
 	import type { EditorMode } from '../leftSidebar.svelte';
 	import SourcePanels from './sourcePanels.svelte';
+	import Switch from '#lib/components/Switch.svelte';
 
 	let {
 		mode,
@@ -110,18 +111,7 @@
 		</div>
 		{#if mode === 'design'}
 			<div class="canvas-actions">
-				<div class="switch design-tools" role="group" aria-label="Design tool">
-					<button
-						class:active={designTool === 'edit'}
-						aria-pressed={designTool === 'edit'}
-						onclick={() => (designTool = 'edit')}>Edit</button
-					>
-					<button
-						class:active={designTool === 'drag'}
-						aria-pressed={designTool === 'drag'}
-						onclick={() => (designTool = 'drag')}>Drag</button
-					>
-				</div>
+				<Switch values={['edit', 'drag']} labels={['Edit', 'Drag']} bind:active={designTool} />
 				<button onclick={selectContainer}>Select parent container</button>
 			</div>
 		{/if}

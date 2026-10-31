@@ -33,8 +33,7 @@ button:disabled {
 	cursor: not-allowed;
 }
 
-button.primary,
-.switch > button.active {
+button.primary {
 	background: #ddbd8c;
 	color: #242526;
 	font-weight: 800;
@@ -44,19 +43,6 @@ button.primary,
 	border-color: #e5c8c0;
 	background: #fff5f3;
 	color: #a74335;
-}
-
-.switch {
-	display: flex;
-	gap: 4px;
-	padding: 3px;
-	border-radius: 9px;
-	background: #eae4db;
-}
-
-.switch > button {
-	border-color: transparent;
-	background: transparent;
 }
 
 /* Shared appearance; components keep their sizing and font overrides. */
