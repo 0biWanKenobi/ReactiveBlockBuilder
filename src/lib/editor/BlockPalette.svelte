@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { JSONContent } from '@tiptap/core';
-	import type { CustomBlockDefinition } from '../custom-blocks/types.js';
-	import { insertionSamples } from './nodes.js';
+	import type { CustomBlockDefinition } from '../custom-blocks/types';
+	import { insertionSamples } from './nodes';
 
 	let {
 		customBlocks = [],

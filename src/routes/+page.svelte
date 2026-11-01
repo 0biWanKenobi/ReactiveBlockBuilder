@@ -2,9 +2,9 @@
 	import { onMount } from 'svelte';
 	import '../styles/shared.css';
 	import CustomBlockEditorModal from '../lib/custom-blocks/CustomBlockEditorModal.svelte';
-	import { CustomBlockLibrary } from '../lib/custom-blocks/library.svelte.js';
-	import { CustomBlockRepository } from '../lib/custom-blocks/repository.js';
-	import { LocalStorageAdapter } from '../lib/storage/StorageAdapter.js';
+	import { CustomBlockLibrary } from '../lib/custom-blocks/library.svelte';
+	import { CustomBlockRepository } from '../lib/custom-blocks/repository';
+	import { LocalStorageAdapter } from '../lib/storage/StorageAdapter';
 	import {
 		createDefinition,
 		makeInstance,
@@ -12,11 +12,11 @@
 		collapseDocument,
 		captureInitialValues,
 		validateDefinition
-	} from '../lib/custom-blocks/model.js';
-	import type { CustomBlockDefinition } from '../lib/custom-blocks/types.js';
+	} from '../lib/custom-blocks/model';
+	import type { CustomBlockDefinition } from '../lib/custom-blocks/types';
 	import type { Editor } from '@tiptap/core';
-	import { initialFields } from '../lib/index.js';
-	import type { Sheet } from '../lib/index.js';
+	import { initialFields } from '../lib/index';
+	import type { Sheet } from '../lib/index';
 	import LeftSidebar from './components/leftSidebar.svelte';
 	import MainPane from './components/mainPane/mainPane.svelte';
 	import Inspector from './components/inspector.svelte';

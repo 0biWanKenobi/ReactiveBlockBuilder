@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { executeRoll, resolve, type Sheet, type RollOutcome } from '../formula/engine.js';
+	import { executeRoll, resolve, type Sheet, type RollOutcome } from '../formula/engine';
 
 	let { attrs, fields }: { attrs: { field: string }; fields: Sheet } = $props();
 	let evaluated = $derived.by(() => {

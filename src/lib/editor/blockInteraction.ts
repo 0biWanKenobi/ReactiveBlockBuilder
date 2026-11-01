@@ -1,7 +1,7 @@
 import { Extension } from '@tiptap/core';
 import { NodeSelection, Plugin, PluginKey, type EditorState } from '@tiptap/pm/state';
 import { Decoration, DecorationSet, type EditorView } from '@tiptap/pm/view';
-import { selectedBlock } from './selection.js';
+import { selectedBlock } from './selection';
 
 export const blockSelector =
 	'section[data-custom-block-type], section[data-sheet-container], p[data-sheet-text], [data-sheet-block]';

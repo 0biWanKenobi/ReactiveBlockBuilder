@@ -1,5 +1,5 @@
 import type { JSONContent } from '@tiptap/core';
-import type { Sheet } from './formula/engine.js';
+import type { Sheet } from './formula/engine';
 
 export const initialFields: Sheet = {
 	STR: { id: 'STR', formula: '16' },

@@ -8,8 +8,8 @@ import {
 	outermostCustomBlock,
 	pointerBlock,
 	setHoveredBlock
-} from './blockInteraction.js';
-import { endPaletteDrag } from './blockDragPreview.js';
+} from './blockInteraction';
+import { endPaletteDrag } from './blockDragPreview';
 
 interface HandleTarget {
 	element: HTMLElement;

@@ -1,19 +1,19 @@
-import type { StorageAdapter } from '../storage/StorageAdapter.js';
-import type { CustomBlockDefinition } from './types.js';
+import type { StorageAdapter } from '../storage/StorageAdapter';
+import type { CustomBlockDefinition } from './types';
 
 export const DEFAULT_THEME = 'default';
-const blockPath = (id: string) => `custom-blocks/${id}.json`;
+const blockPath = (id: string) => `custom-blocks/${id}on`;
 const stylePath = (theme: string, id: string) => `themes/${theme}/blocks/${id}.css`;
 const basePath = (theme: string) => `themes/${theme}/base.css`;
 
 export class CustomBlockRepository {
-	constructor(private storage: StorageAdapter) {}
+	constructor(private storage: StorageAdapter) { }
 
 	async list(): Promise<CustomBlockDefinition[]> {
 		const paths = await this.storage.list('custom-blocks');
 		const blocks = await Promise.all(
 			paths
-				.filter((path) => path.endsWith('.json'))
+				.filter((path) => path.endsWith('on'))
 				.map(async (path) => {
 					const content = await this.storage.read(path);
 					return content ? (JSON.parse(content) as CustomBlockDefinition) : null;

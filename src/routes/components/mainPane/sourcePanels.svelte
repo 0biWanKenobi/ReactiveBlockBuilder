@@ -2,9 +2,9 @@
 	import { onMount } from 'svelte';
 	import type { Editor, JSONContent } from '@tiptap/core';
 	import CodeEditor from '#lib/editor/CodeEditor.svelte';
-	import type { CustomBlockLibrary } from '#lib/custom-blocks/library.svelte.js';
-	import { collapseDocument, expandDocument } from '#lib/custom-blocks/model.js';
-	import { DEFAULT_THEME, type CustomBlockRepository } from '#lib/custom-blocks/repository.js';
+	import type { CustomBlockLibrary } from '#lib/custom-blocks/library.svelte';
+	import { collapseDocument, expandDocument } from '#lib/custom-blocks/model';
+	import { DEFAULT_THEME, type CustomBlockRepository } from '#lib/custom-blocks/repository';
 	import {
 		allowedNodeTypes,
 		defaultCSS,

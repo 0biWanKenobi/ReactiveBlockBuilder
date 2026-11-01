@@ -2,7 +2,7 @@
 	import '../../styles/shared.css';
 	import type { Editor } from '@tiptap/core';
 	import { allowedNodeTypes, type SheetNodeType } from '#lib';
-	import { selectedBlock, updateBlockAttribute } from '#lib/editor/selection.js';
+	import { selectedBlock, updateBlockAttribute } from '#lib/editor/selection';
 	import type { EditorMode } from './leftSidebar.svelte';
 
 	let { mode, editor }: { mode: EditorMode; editor: Editor | null } = $props();

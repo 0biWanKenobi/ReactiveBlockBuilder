@@ -1,15 +1,15 @@
 import { Node, mergeAttributes, type Extensions, type JSONContent } from '@tiptap/core';
-import { BlockDragPreview } from './blockDragPreview.js';
-import { BlockInteraction } from './blockInteraction.js';
-import { BlockDragHandle } from './blockDragHandle.js';
-import { CustomBlockProtection } from './customBlockProtection.js';
+import { BlockDragPreview } from './blockDragPreview';
+import { BlockInteraction } from './blockInteraction';
+import { BlockDragHandle } from './blockDragHandle';
+import { CustomBlockProtection } from './customBlockProtection';
 import Document from '@tiptap/extension-document';
 import Text from '@tiptap/extension-text';
 import { mount, unmount } from 'svelte';
 import FormulaBlock from '../blocks/FormulaBlock.svelte';
 import ImageBlock from '../blocks/ImageBlock.svelte';
-import { reactiveNodeAttrs } from './reactive.svelte.js';
-import type { Sheet } from '../formula/engine.js';
+import { reactiveNodeAttrs } from './reactive.svelte';
+import type { Sheet } from '../formula/engine';
 
 export type SheetNodeType = 'container' | 'textBlock' | 'formula' | 'image' | 'customBlock';
 export const allowedNodeTypes: SheetNodeType[] = [

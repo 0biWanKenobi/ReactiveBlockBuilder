@@ -10,7 +10,7 @@ import {
 	canDragBlocks,
 	isBlockDragMode,
 	outermostCustomBlock
-} from './blockInteraction.js';
+} from './blockInteraction';
 
 /**
  * A temporary, layout-participating drop placeholder. Unlike a thin drop
@@ -71,8 +71,8 @@ function draggedBlock(view: EditorView): NodeSelection | null {
 	// in EditorView.dragging's public type.
 	const dragging = view.dragging as
 		| (NonNullable<EditorView['dragging']> & {
-				node?: NodeSelection;
-		  })
+			node?: NodeSelection;
+		})
 		| null;
 	if (!dragging) return null;
 	return (
@@ -231,10 +231,10 @@ function decorations(preview: DragPreview | null, viewState: EditorView['state']
 		),
 		...(preview.source
 			? [
-					Decoration.node(preview.source.from, preview.source.to, {
-						class: 'rbb-drag-origin'
-					})
-				]
+				Decoration.node(preview.source.from, preview.source.to, {
+					class: 'rbb-drag-origin'
+				})
+			]
 			: [])
 	]);
 }

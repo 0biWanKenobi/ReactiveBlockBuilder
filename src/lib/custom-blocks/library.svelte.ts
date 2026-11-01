@@ -1,4 +1,4 @@
-import type { CustomBlockDefinition, BlockLibrary } from './types.js';
+import type { CustomBlockDefinition, BlockLibrary } from './types';
 
 export class CustomBlockLibrary implements BlockLibrary {
 	definitions = $state<CustomBlockDefinition[]>([]);

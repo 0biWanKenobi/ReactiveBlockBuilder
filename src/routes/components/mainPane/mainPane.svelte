@@ -3,10 +3,10 @@
 	import '#lib/editor/blockInteraction.css';
 	import { Editor } from '@tiptap/core';
 	import { createSheetExtensions, sampleDocument, type Sheet } from '#lib';
-	import type { CustomBlockLibrary } from '#lib/custom-blocks/library.svelte.js';
-	import type { CustomBlockRepository } from '#lib/custom-blocks/repository.js';
-	import { clickOutside } from '#lib/directives/clickOutside.js';
-	import { blockBoundary, setBlockDragMode } from '#lib/editor/blockInteraction.js';
+	import type { CustomBlockLibrary } from '#lib/custom-blocks/library.svelte';
+	import type { CustomBlockRepository } from '#lib/custom-blocks/repository';
+	import { clickOutside } from '#lib/directives/clickOutside';
+	import { blockBoundary, setBlockDragMode } from '#lib/editor/blockInteraction';
 	import type { EditorMode } from '../leftSidebar.svelte';
 	import SourcePanels from './sourcePanels.svelte';
 	import Switch from '#lib/components/Switch.svelte';
