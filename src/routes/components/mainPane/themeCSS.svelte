@@ -26,6 +26,7 @@
 
 	let drafts = $state<ThemeStylesheets>({ ...defaultThemeStylesheets });
 	let saved = $state<ThemeStylesheets>({ ...defaultThemeStylesheets });
+	let resetDefaults = $state<ThemeStylesheets>({ ...defaultThemeStylesheets });
 	let loading = $state(true);
 	let saving = $state(false);
 	let styleElement = $state.raw<HTMLStyleElement | null>(null);
@@ -41,6 +42,7 @@
 				(drafts[section] !== saved[section] ? ' *' : '')
 		}))
 	);
+	const btnDisabled = $derived(loading || saving);
 
 	onMount(() => {
 		const element = document.createElement('style');
@@ -52,9 +54,17 @@
 		void (async () => {
 			try {
 				const stored = await repository.readThemeStylesheets();
+				const defaults = { ...defaultThemeStylesheets };
+				await Promise.all(
+					themeStylesheetIds.flatMap((section) => [
+						format(stored, section),
+						format(defaults, section)
+					])
+				);
 				if (disposed) return;
 				drafts = { ...stored };
 				saved = { ...stored };
+				resetDefaults = defaults;
 				loading = false;
 			} catch (error) {
 				if (!disposed)
@@ -100,13 +110,15 @@
 	}
 
 	function reset() {
-		drafts[activeStylesheet] = defaultThemeStylesheets[activeStylesheet];
+		drafts[activeStylesheet] = resetDefaults[activeStylesheet];
 		onMessage(`${label} theme CSS reset to default. Save to keep it.`);
 	}
 
-	async function format() {
-		const section = activeStylesheet;
-		const css = drafts[section];
+	async function format(
+		styles: ThemeStylesheets = drafts,
+		section: ThemeStylesheet = activeStylesheet
+	) {
+		const css = styles[section];
 		try {
 			const [prettier, postcss] = await Promise.all([
 				import('prettier/standalone'),
@@ -117,12 +129,13 @@
 				plugins: [postcss],
 				tabWidth: 2
 			});
-			if (drafts[section] === css) {
-				drafts[section] = formatted;
-				onMessage('CSS formatted');
+			if (styles[section] === css) {
+				styles[section] = formatted;
+				if (styles === drafts) onMessage('CSS formatted');
 			}
 		} catch (error) {
-			onMessage(`Cannot format CSS: ${error instanceof Error ? error.message : String(error)}`);
+			if (styles === drafts)
+				onMessage(`Cannot format CSS: ${error instanceof Error ? error.message : String(error)}`);
 		}
 	}
 </script>
@@ -139,11 +152,14 @@
 	</div>
 	<div class="theme-actions">
 		<span>{loading ? 'Loading…' : dirty ? 'Live preview · unsaved' : 'Live preview · saved'}</span>
-		<button class="primary" disabled={loading || saving} onclick={save}>Save</button>
-		<button disabled={loading || saving} onclick={discard}>Discard</button>
-		<button disabled={loading || saving} onclick={reset}>Reset to default</button>
-		<button title="Format CSS" aria-label="Format CSS" disabled={loading || saving} onclick={format}
-			>Format</button
+		<button class="primary" disabled={btnDisabled} onclick={save}>Save</button>
+		<button disabled={btnDisabled} onclick={discard}>Discard</button>
+		<button disabled={btnDisabled} onclick={reset}>Reset to default</button>
+		<button
+			title="Format CSS"
+			aria-label="Format CSS"
+			disabled={btnDisabled}
+			onclick={() => format()}>Format</button
 		>
 	</div>
 </div>

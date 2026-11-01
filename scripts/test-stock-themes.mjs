@@ -25,6 +25,9 @@ export async function testStockThemes(page) {
 	const image = canvas.locator('.rbb-image').first();
 	const wrapper = canvas.locator('[data-sheet-block="image"]').first();
 	const css = '.sheet-content [data-sheet-block="image"] { border: 3px solid rgb(1, 2, 3); }';
+	const formattedCSS = `.sheet-content [data-sheet-block="image"] {
+  border: 3px solid rgb(1, 2, 3);
+}`;
 	const textCSS = '.sheet-content [data-sheet-text] { color: rgb(4, 5, 6); }';
 	const replace = async (value) => {
 		await source.click();
@@ -42,7 +45,7 @@ export async function testStockThemes(page) {
 	await canvas.locator('.sheet-title').waitFor();
 	assert.equal(await radius(), '8px');
 	await wrapper.click();
-	await page.getByRole('button', { name: 'Edit theme CSS', exact: true }).click();
+	await page.getByRole('button', { name: 'Edit Style', exact: true }).click();
 	assert.equal(await target.innerText(), 'Image');
 	assert.match(await source.innerText(), /rbb-image/);
 
@@ -73,7 +76,7 @@ export async function testStockThemes(page) {
 	// Save applies to this stylesheet only; other drafts do not survive reload.
 	await panel.getByRole('button', { name: 'Save', exact: true }).click();
 	await reload();
-	assert.equal(await source.innerText(), css);
+	assert.equal((await source.innerText()).trim(), formattedCSS);
 	assert.equal(await border(), '3px');
 	assert.equal(
 		await canvas.locator('.sheet-title').evaluate((el) => getComputedStyle(el).color),
