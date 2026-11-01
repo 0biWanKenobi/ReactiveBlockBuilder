@@ -44,7 +44,7 @@
 			editable: true,
 			autofocus: false,
 			editorProps: {
-				attributes: { 'aria-label': 'Character sheet block editor' }
+				attributes: { class: 'sheet-document', 'aria-label': 'Character sheet block editor' }
 			}
 		});
 		editor = instance;
@@ -212,7 +212,6 @@
 	}
 	.sheet-frame {
 		width: 100%;
-		background: #fdfaf4;
 		border: 1px solid #ded3c5;
 		border-radius: 14px;
 		box-shadow: 0 10px 30px #332c2410;
@@ -221,17 +220,9 @@
 	.sheet-content {
 		min-height: 310px;
 	}
-	/* Keep the canvas gutters inside the editor so they receive drag events. */
 	.sheet-content :global(.tiptap) {
 		outline: none;
-		padding: 28px;
 		min-height: 310px;
-	}
-	.sheet-content :global(.tiptap > *) {
-		margin-top: 0;
-	}
-	.sheet-content :global(.tiptap p) {
-		margin: 0;
 	}
 	/* Keep structural boundaries visible, without :hover styling ancestors.
      The pointer overlay alone marks the single active hover target. */
@@ -297,9 +288,6 @@
 	@media (max-width: 620px) {
 		.main-pane {
 			width: 100%;
-		}
-		.sheet-content :global(.tiptap) {
-			padding: 15px;
 		}
 	}
 </style>

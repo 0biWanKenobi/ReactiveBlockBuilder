@@ -89,9 +89,10 @@ export function createSheetExtensions(
 		content: 'text*',
 		defining: true,
 		addAttributes: () => classes('sheet-text'),
-		parseHTML: () => [{ tag: 'p[data-sheet-text]' }],
+		// Continue accepting previously serialized paragraph-based text items.
+		parseHTML: () => [{ tag: 'span[data-sheet-text]' }, { tag: 'p[data-sheet-text]' }],
 		renderHTML: ({ HTMLAttributes }) => [
-			'p',
+			'span',
 			mergeAttributes({ 'data-sheet-text': '' }, HTMLAttributes),
 			0
 		]

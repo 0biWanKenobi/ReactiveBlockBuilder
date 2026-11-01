@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { chromium } from 'playwright';
 import { testContainerContextMenu } from './test-container-context-menu.mjs';
+import { testTextSpans } from './test-text-spans.mjs';
 
 const browser = await chromium.launch({ headless: true });
 try {
@@ -11,6 +12,7 @@ try {
   page.on('response', response => { if(response.status() >= 400) console.error('BROWSER RESPONSE', response.status(), response.url()); });
   await page.goto('http://127.0.0.1:5189/', { waitUntil: 'networkidle' });
 
+  await testTextSpans(page);
   await testContainerContextMenu(page);
 
   const header = page.locator('.sheet-content .sheet-header').first();

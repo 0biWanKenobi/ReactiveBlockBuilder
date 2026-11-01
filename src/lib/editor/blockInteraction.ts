@@ -4,7 +4,7 @@ import { Decoration, DecorationSet, type EditorView } from '@tiptap/pm/view';
 import { selectedBlock } from './selection';
 
 export const blockSelector =
-	'section[data-custom-block-type], section[data-sheet-container], p[data-sheet-text], [data-sheet-block]';
+	'section[data-custom-block-type], section[data-sheet-container], [data-sheet-text], [data-sheet-block]';
 export const blockTypes = new Set(['container', 'textBlock', 'formula', 'image', 'customBlock']);
 const dragModeKey = new PluginKey<boolean>('rbbBlockDragMode');
 const hoverKey = new PluginKey<number | null>('rbbHoveredBlock');

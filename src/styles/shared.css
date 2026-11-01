@@ -7,8 +7,8 @@
 	font-size: 0.72rem;
 }
 
-/* Shared button variants and segmented switches. */
-button {
+/* Editor buttons; sheet buttons are styled by the theme. */
+button:where(:not(.sheet-content *), .rbb-block-drag-handle) {
 	border: 1px solid #d4c7b7;
 	border-radius: 7px;
 	background: #fdfaf5;
@@ -19,21 +19,21 @@ button {
 	cursor: pointer;
 }
 
-button:enabled:hover {
+button:where(:not(.sheet-content *), .rbb-block-drag-handle):enabled:hover {
 	filter: brightness(0.97);
 }
 
-button:focus-visible {
+button:where(:not(.sheet-content *), .rbb-block-drag-handle):focus-visible {
 	outline: 2px solid #987451;
 	outline-offset: 2px;
 }
 
-button:disabled {
+button:where(:not(.sheet-content *), .rbb-block-drag-handle):disabled {
 	opacity: 0.5;
 	cursor: not-allowed;
 }
 
-button.primary {
+button.primary:where(:not(.sheet-content *), .rbb-block-drag-handle) {
 	background: #ddbd8c;
 	color: #242526;
 	font-weight: 800;

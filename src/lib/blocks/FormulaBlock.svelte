@@ -44,23 +44,3 @@
 		<span>{String(evaluated.value?.value ?? '—')}</span>
 	{/if}
 </span>
-
-<style>
-	.rbb-formula {
-		display: inline-flex;
-		flex-wrap: wrap;
-		align-items: center;
-		gap: 6px;
-	}
-	.rbb-formula-error {
-		color: #bb3434;
-		font-size: 0.75rem;
-	}
-	.rbb-roll-total {
-		color: #655028;
-	}
-	.rbb-roll-detail {
-		font-size: 0.68rem;
-		color: #6f6559;
-	}
-</style>

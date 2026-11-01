@@ -112,6 +112,7 @@
 			element: canvas,
 			extensions: createSheetExtensions(fields),
 			content: expandDocument({ type: 'doc', content: [initial.structure] }, library),
+			editorProps: { attributes: { class: 'sheet-document' } },
 			onSelectionUpdate: ({ editor }) => synchronizeSelection(editor),
 			onTransaction: ({ editor }) => synchronizeSelection(editor),
 			onUpdate: () => {
@@ -321,9 +322,8 @@
 
 		{#if error}<div role="alert" class="error">{error}</div>{/if}
 		<footer>
-			<button onclick={close}>Cancel</button><button class="primary" onclick={save}
-				>Save definition</button
-			>
+			<button onclick={close}>Cancel</button>
+			<button class="primary" onclick={save}>Save definition</button>
 		</footer>
 	</div>
 </div>
@@ -383,9 +383,7 @@
 		overflow: auto;
 		background: #f3efe8;
 		:global(.preview) {
-			background: #fdfaf4;
 			min-height: 300px;
-			padding: 16px;
 			border-radius: 10px;
 			:global(.tiptap) {
 				outline: none;
