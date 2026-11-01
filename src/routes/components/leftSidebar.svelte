@@ -7,6 +7,7 @@
 	import type { CustomBlockDefinition } from '#lib/custom-blocks/types.ts';
 	import { endPaletteDrag, startPaletteDrag } from '#lib/editor/blockDragPreview.ts';
 	import BlockPalette from '#lib/editor/BlockPalette.svelte';
+	import Dropdown from '#lib/components/Dropdown.svelte';
 	import type { OpResult } from '#lib/types/shared.ts';
 	import type { Editor, JSONContent } from '@tiptap/core';
 
@@ -115,14 +116,19 @@
 		top-level placement. Click to insert at the cursor.
 	</p>
 	<div class="panel-heading">Stock blocks</div>
-	<label class="property">
+	<div class="property">
 		<span>After saving a custom block</span>
-		<select aria-label="After saving a custom block" bind:value={saveBehavior}>
-			<option value="ask">Ask every time</option>
-			<option value="replace">Replace original with custom block</option>
-			<option value="keep">Keep original unchanged</option>
-		</select>
-	</label>
+		<Dropdown
+			label="After saving a custom block"
+			bind:value={saveBehavior}
+			options={[
+				{ value: 'ask', label: 'Ask every time' },
+				{ value: 'replace', label: 'Replace original with custom block' },
+				{ value: 'keep', label: 'Keep original unchanged' }
+			]}
+			fullWidth
+		/>
+	</div>
 	<BlockPalette
 		customBlocks={library.definitions}
 		draggable={mode === 'design'}

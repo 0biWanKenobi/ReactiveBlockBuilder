@@ -1,18 +1,12 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import type { Editor, JSONContent } from '@tiptap/core';
 	import CodeEditor from '#lib/editor/CodeEditor.svelte';
+	import ThemeCSS from './themeCSS.svelte';
+	import type { ThemeStylesheet } from '#lib/themes/styles';
 	import type { CustomBlockLibrary } from '#lib/custom-blocks/library.svelte';
 	import { collapseDocument, expandDocument } from '#lib/custom-blocks/model';
 	import { DEFAULT_THEME, type CustomBlockRepository } from '#lib/custom-blocks/repository';
-	import {
-		allowedNodeTypes,
-		defaultCSS,
-		initialFields,
-		sampleDocument,
-		validateId,
-		type Sheet
-	} from '#lib';
+	import { allowedNodeTypes, initialFields, sampleDocument, validateId, type Sheet } from '#lib';
 	import type { EditorMode } from '../leftSidebar.svelte';
 
 	let {
@@ -22,6 +16,7 @@
 		library,
 		repository,
 		blockCSS,
+		activeStylesheet = $bindable('base'),
 		onMessage
 	}: {
 		mode: EditorMode;
@@ -30,6 +25,7 @@
 		library: CustomBlockLibrary;
 		repository: CustomBlockRepository;
 		blockCSS: Record<string, string>;
+		activeStylesheet: ThemeStylesheet;
 		onMessage: (message: string) => void;
 	} = $props();
 
@@ -52,76 +48,12 @@
 			2
 		)
 	);
-	let css = $state(defaultCSS);
-	let savedCSS = $state(defaultCSS);
-	let styleElement = $state.raw<HTMLStyleElement | null>(null);
-
-	onMount(() => {
-		const element = document.createElement('style');
-		element.dataset.reactiveBlockBuilder = 'sample';
-		element.textContent = css;
-		document.head.appendChild(element);
-		styleElement = element;
-
-		void (async () => {
-			try {
-				const stored = await repository.readBaseCSS();
-				if (stored !== null) {
-					css = stored;
-					savedCSS = stored;
-				} else await repository.writeBaseCSS(defaultCSS);
-			} catch (error) {
-				onMessage(
-					`Storage initialization failed: ${error instanceof Error ? error.message : String(error)}`
-				);
-			}
-		})();
-
-		return () => {
-			element.remove();
-			styleElement = null;
-		};
-	});
-
-	$effect(() => {
-		if (styleElement) styleElement.textContent = css + '\n' + Object.values(blockCSS).join('\n');
-	});
-
-	async function saveThemeCSS() {
-		await repository.writeBaseCSS(css);
-		savedCSS = css;
-		onMessage('Theme CSS saved');
-	}
-
-	function discardThemeCSS() {
-		css = savedCSS;
-		onMessage('Theme CSS discarded');
-	}
-
 	function formatJSON() {
 		try {
 			jsonSource = JSON.stringify(JSON.parse(jsonSource), null, 2) + '\n';
 			onMessage('JSON formatted');
 		} catch (error) {
 			onMessage(`Cannot format JSON: ${error instanceof Error ? error.message : String(error)}`);
-		}
-	}
-
-	async function formatCSS() {
-		try {
-			// Lazy-load Prettier only when the format action is requested.
-			const [prettier, postcss] = await Promise.all([
-				import('prettier/standalone'),
-				import('prettier/plugins/postcss')
-			]);
-			css = await prettier.format(css, {
-				parser: 'css',
-				plugins: [postcss],
-				tabWidth: 2
-			});
-			onMessage('CSS formatted');
-		} catch (error) {
-			onMessage(`Cannot format CSS: ${error instanceof Error ? error.message : String(error)}`);
 		}
 	}
 
@@ -204,16 +136,7 @@
 		/>
 	</section>
 	<section class="source-panel">
-		<div class="source-heading">
-			<strong>Theme CSS</strong>
-			<div class="source-actions">
-				<span>Live preview · draft</span>
-				<button class="primary" onclick={saveThemeCSS}>Save</button>
-				<button onclick={discardThemeCSS}>Discard</button>
-				<button title="Format CSS" aria-label="Format CSS" onclick={formatCSS}>Format</button>
-			</div>
-		</div>
-		<CodeEditor language="css" label="Theme CSS" value={css} onChange={(next) => (css = next)} />
+		<ThemeCSS {repository} {blockCSS} bind:activeStylesheet {onMessage} />
 	</section>
 </div>
 
@@ -250,9 +173,6 @@
 		padding: 11px 13px;
 		border-bottom: 1px solid #eee9e2;
 		font-size: 0.76rem;
-	}
-	.source-heading span {
-		color: #8a806f;
 	}
 	.source-actions {
 		display: flex;

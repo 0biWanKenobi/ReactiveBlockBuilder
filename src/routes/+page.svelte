@@ -22,6 +22,7 @@
 	import Inspector from './components/inspector.svelte';
 	import SidePane from './components/sidePane/sidePane.svelte';
 	import Switch from '#lib/components/Switch.svelte';
+	import type { ThemeStylesheet } from '#lib/themes/styles';
 
 	let editor = $state<Editor | null>(null);
 	let mode = $state<'design' | 'play'>('design');
@@ -40,6 +41,7 @@
 	let conversionPrompt = $state<{ pos: number; typeId: string } | null>(null);
 	let rememberChoice = $state(false);
 	let message = $state('');
+	let activeStylesheet = $state<ThemeStylesheet>('base');
 
 	onMount(() => {
 		void (async () => {
@@ -222,7 +224,7 @@
 		>
 			<LeftSidebar
 				{mode}
-				{saveBehavior}
+				bind:saveBehavior
 				{library}
 				{editor}
 				{repository}
@@ -250,6 +252,7 @@
 			{library}
 			{repository}
 			{blockCSS}
+			bind:activeStylesheet
 			bind:message
 			onSaveAsCustomBlock={startNewDefinition}
 		/>
@@ -261,7 +264,7 @@
 			{mode}
 			bind:collapsed={rightCollapsed}
 		>
-			<Inspector {mode} {editor} />
+			<Inspector {mode} {editor} onEditThemeCSS={(type) => (activeStylesheet = type)} />
 		</SidePane>
 	</div>
 </div>

@@ -10,6 +10,7 @@
 	import type { EditorMode } from '../leftSidebar.svelte';
 	import SourcePanels from './sourcePanels.svelte';
 	import Switch from '#lib/components/Switch.svelte';
+	import type { ThemeStylesheet } from '#lib/themes/styles';
 
 	let {
 		mode,
@@ -18,6 +19,7 @@
 		library,
 		repository,
 		blockCSS,
+		activeStylesheet = $bindable('base'),
 		message = $bindable(''),
 		onSaveAsCustomBlock
 	}: {
@@ -27,6 +29,7 @@
 		library: CustomBlockLibrary;
 		repository: CustomBlockRepository;
 		blockCSS: Record<string, string>;
+		activeStylesheet: ThemeStylesheet;
 		message: string;
 		onSaveAsCustomBlock: (position: number) => void;
 	} = $props();
@@ -130,6 +133,7 @@
 		{library}
 		{repository}
 		{blockCSS}
+		bind:activeStylesheet
 		onMessage={(next) => (message = next)}
 	/>
 </main>

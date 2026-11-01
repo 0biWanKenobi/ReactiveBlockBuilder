@@ -4,8 +4,17 @@
 	import { allowedNodeTypes, type SheetNodeType } from '#lib';
 	import { selectedBlock, updateBlockAttribute } from '#lib/editor/selection';
 	import type { EditorMode } from './leftSidebar.svelte';
+	import type { StockBlockType } from '#lib/themes/styles';
 
-	let { mode, editor }: { mode: EditorMode; editor: Editor | null } = $props();
+	let {
+		mode,
+		editor,
+		onEditThemeCSS
+	}: {
+		mode: EditorMode;
+		editor: Editor | null;
+		onEditThemeCSS: (type: StockBlockType) => void;
+	} = $props();
 
 	type SelectedBlock = {
 		type: SheetNodeType;
@@ -121,6 +130,13 @@
 			<p class="muted">
 				The container can hold other blocks. Select its inner blocks or edit its CSS layout rules.
 			</p>
+		{/if}
+		{#if selected.type !== 'customBlock'}
+			<button
+				onclick={() => selected && selected.type !== 'customBlock' && onEditThemeCSS(selected.type)}
+			>
+				Edit theme CSS
+			</button>
 		{/if}
 		<button class="danger-button" onclick={removeSelected}>
 			{selectedIsInsideCustomBlock() ? 'Delete custom block' : 'Delete selected block'}

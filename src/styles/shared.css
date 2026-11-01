@@ -46,8 +46,7 @@ button.primary:where(:not(.sheet-content *), .rbb-block-drag-handle) {
 }
 
 /* Shared appearance; components keep their sizing and font overrides. */
-input,
-select {
+input {
 	border: 1px solid #d8d2c9;
 	background: #fff;
 	border-radius: 6px;
@@ -57,8 +56,7 @@ select {
 }
 
 .confirmation input,
-.sidebar input,
-.sidebar select {
+.sidebar input {
 	width: 100%;
 	min-width: 0;
 }
