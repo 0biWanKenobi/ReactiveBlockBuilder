@@ -5,6 +5,8 @@
 	import { selectedBlock, updateBlockAttribute } from '#lib/editor/selection';
 	import type { EditorMode } from './leftSidebar.svelte';
 	import type { StockBlockType } from '#lib/themes/styles';
+	import paletteIcon from '#lib/icons/palette.svg';
+	import trashIcon from '#lib/icons/trash.svg';
 
 	let {
 		mode,
@@ -85,8 +87,35 @@
 	{#if mode !== 'design'}
 		<p class="muted">Switch to Design to modify nodes.</p>
 	{:else if selected}
+		{@const deleteLabel = selectedIsInsideCustomBlock()
+			? 'Delete custom block'
+			: 'Delete selected block'}
 		<div class="selection-heading">
-			<strong>{selected.type}</strong><span>node at {selected.pos}</span>
+			<strong>{selected.type}</strong>
+			<div class="selection-actions">
+				{#if selected.type !== 'customBlock'}
+					<button
+						type="button"
+						aria-label="Edit Style"
+						title="Edit Style"
+						onclick={() =>
+							selected && selected.type !== 'customBlock' && onEditThemeCSS(selected.type)}
+					>
+						<span class="action-icon" style:mask-image={`url("${paletteIcon}")`} aria-hidden="true"
+						></span>
+					</button>
+				{/if}
+				<button
+					type="button"
+					class="danger-button"
+					aria-label={deleteLabel}
+					title={deleteLabel}
+					onclick={removeSelected}
+				>
+					<span class="action-icon" style:mask-image={`url("${trashIcon}")`} aria-hidden="true"
+					></span>
+				</button>
+			</div>
 		</div>
 		{#if selected.type !== 'customBlock' && !selectedIsInsideCustomBlock()}
 			<label class="property">
@@ -131,16 +160,6 @@
 				The container can hold other blocks. Select its inner blocks or edit its CSS layout rules.
 			</p>
 		{/if}
-		{#if selected.type !== 'customBlock'}
-			<button
-				onclick={() => selected && selected.type !== 'customBlock' && onEditThemeCSS(selected.type)}
-			>
-				Edit theme CSS
-			</button>
-		{/if}
-		<button class="danger-button" onclick={removeSelected}>
-			{selectedIsInsideCustomBlock() ? 'Delete custom block' : 'Delete selected block'}
-		</button>
 	{:else}
 		<p class="muted">Select a text, formula, image or container block to edit its properties.</p>
 	{/if}
@@ -155,6 +174,7 @@
 <style>
 	.selection-heading {
 		display: flex;
+		align-items: center;
 		justify-content: space-between;
 		gap: 10px;
 		margin: 18px 0;
@@ -162,9 +182,35 @@
 	.selection-heading strong {
 		font-size: 0.85rem;
 	}
-	.selection-heading span {
-		color: #8c7f70;
-		font-size: 0.67rem;
+	.selection-actions {
+		display: flex;
+		align-items: center;
+		gap: 4px;
+		flex-shrink: 0;
+	}
+	.selection-actions button {
+		display: grid;
+		place-items: center;
+		box-sizing: border-box;
+		width: 32px;
+		height: 32px;
+		padding: 0;
+		color: #936a3e;
+		font-size: 12px;
+		line-height: 1;
+	}
+	.selection-actions .danger-button {
+		border-color: #e5c8c0;
+		background: #fff5f3;
+		color: #a74335;
+	}
+	.action-icon {
+		width: 16px;
+		height: 16px;
+		background: currentColor;
+		mask-position: center;
+		mask-size: contain;
+		mask-repeat: no-repeat;
 	}
 	.property input {
 		font-size: 0.77rem;
