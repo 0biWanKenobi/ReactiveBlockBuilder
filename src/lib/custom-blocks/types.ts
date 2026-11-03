@@ -15,7 +15,8 @@ export interface BlockLibrary {
 	list(): CustomBlockDefinition[];
 }
 
-export type PopulatedNode = JSONContent & {
+export type PopulatedNode<T = string> = JSONContent & {
+	type: T;
 	content: [JSONContent, ...JSONContent[]];
 };
 

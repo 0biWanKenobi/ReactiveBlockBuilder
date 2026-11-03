@@ -238,12 +238,9 @@ export function captureInitialValues(template: JSONContent, source: JSONContent)
 
 export function createDefinition(
 	name: string,
-	structure: JSONContent,
+	structure: JSONContent & { type: 'container', content: [JSONContent, ...JSONContent[]] },
 	library: BlockLibrary
 ): CustomBlockDefinition {
-	if (structure.type !== 'container' || !structure.content?.length) {
-		throw new Error('A custom block must contain a non-empty root container');
-	}
 	return {
 		typeId: generateTypeId(
 			name,

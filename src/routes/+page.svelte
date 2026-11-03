@@ -13,7 +13,7 @@
 		captureInitialValues,
 		validateDefinition
 	} from '../lib/custom-blocks/model';
-	import type { CustomBlockDefinition } from '../lib/custom-blocks/types';
+	import type { CustomBlockDefinition, PopulatedNode } from '../lib/custom-blocks/types';
 	import type { Editor } from '@tiptap/core';
 	import { initialFields } from '../lib/index';
 	import type { Sheet } from '../lib/index';
@@ -70,19 +70,20 @@
 		if (!editor) return;
 		const node = editor.state.doc.nodeAt(pos);
 		if (!node || node.type.name !== 'container' || !node.childCount) return;
+		const structure = node.toJSON() as PopulatedNode<'container'>;
 		const name =
-			String(node.attrs.class ?? '')
+			String(structure.attrs?.class ?? '')
 				.trim()
 				.split(/\s+/)[0] || 'Custom block';
 		try {
 			definitionTrail = [];
 			editedCSS = null;
-			editedBlock = createDefinition(name, node.toJSON(), library);
+			editedBlock = createDefinition(name, structure, library);
 			const expandedTemplate = expandDocument(
 				{ type: 'doc', content: [editedBlock.structure] },
 				library
 			).content[0];
-			pendingOriginalValues = captureInitialValues(expandedTemplate, node.toJSON());
+			pendingOriginalValues = captureInitialValues(expandedTemplate, structure);
 			pendingConversion = pos;
 		} catch (error) {
 			message = `Custom block creation failed: ${error instanceof Error ? error.message : String(error)}`;
