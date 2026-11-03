@@ -1,5 +1,5 @@
 import type { JSONContent } from '@tiptap/core';
-import type { BlockLibrary, BlockValues, CustomBlockDefinition, LeafValue } from './types';
+import type { BlockLibrary, BlockValues, CustomBlockDefinition, LeafValue, PopulatedDocument, PopulatedNode } from './types';
 
 function clone<T>(value: T): T {
 	// JSON definitions may be Svelte $state proxies, which structuredClone rejects.
@@ -146,6 +146,10 @@ function expandInstance(compact: JSONContent, library: BlockLibrary, stack: stri
 	};
 }
 
+export function expandDocument(node: PopulatedNode, library: BlockLibrary): PopulatedNode;
+
+export function expandDocument(node: JSONContent, library: BlockLibrary): JSONContent;
+
 export function expandDocument(node: JSONContent, library: BlockLibrary): JSONContent {
 	const visit = (current: JSONContent): JSONContent => {
 		if (current.type === 'customBlock') return expandInstance(current, library, []);
@@ -201,6 +205,10 @@ function collapseInstance(node: JSONContent, library: BlockLibrary): JSONContent
 	};
 }
 
+export function collapseDocument(node: PopulatedDocument, library: BlockLibrary): PopulatedDocument;
+
+export function collapseDocument(node: JSONContent, library: BlockLibrary): JSONContent;
+
 export function collapseDocument(node: JSONContent, library: BlockLibrary): JSONContent {
 	const visit = (current: JSONContent): JSONContent => {
 		if (current.type === 'customBlock')
@@ -244,7 +252,7 @@ export function createDefinition(
 		name,
 		rootClass: '',
 		structure: ensureNodeIds(
-			collapseDocument({ type: 'doc', content: [structure] }, library).content?.[0] ?? structure
+			collapseDocument({ type: 'doc' as const, content: [structure] }, library).content[0]
 		)
 	};
 }

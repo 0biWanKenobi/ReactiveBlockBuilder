@@ -68,8 +68,8 @@
 		}
 
 		try {
-			const expanded = expandDocument({ type: 'doc', content: [block] }, library).content?.[0];
-			if (expanded) startPaletteDrag(editor.view, event, expanded);
+			const expanded = expandDocument({ type: 'doc', content: [block] }, library).content[0];
+			startPaletteDrag(editor.view, event, expanded);
 			onDragPaletteBlock({ success: true });
 		} catch (error) {
 			event.preventDefault();

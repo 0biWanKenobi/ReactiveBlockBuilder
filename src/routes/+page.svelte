@@ -81,11 +81,8 @@
 			const expandedTemplate = expandDocument(
 				{ type: 'doc', content: [editedBlock.structure] },
 				library
-			).content?.[0];
-			pendingOriginalValues = captureInitialValues(
-				expandedTemplate ?? editedBlock.structure,
-				node.toJSON()
-			);
+			).content[0];
+			pendingOriginalValues = captureInitialValues(expandedTemplate, node.toJSON());
 			pendingConversion = pos;
 		} catch (error) {
 			message = `Custom block creation failed: ${error instanceof Error ? error.message : String(error)}`;
@@ -115,8 +112,8 @@
 				content: [compact]
 			},
 			library
-		).content?.[0];
-		if (!expanded) return;
+		).content[0];
+
 		const replacement = editor.state.schema.nodeFromJSON(expanded);
 		editor.view.dispatch(editor.state.tr.replaceWith(pos, pos + original.nodeSize, replacement));
 	}

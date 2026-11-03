@@ -14,3 +14,12 @@ export interface BlockLibrary {
 	get(typeId: string): CustomBlockDefinition | undefined;
 	list(): CustomBlockDefinition[];
 }
+
+export type PopulatedNode = JSONContent & {
+	content: [JSONContent, ...JSONContent[]];
+};
+
+export type PopulatedDocument = JSONContent & {
+	type: 'doc';
+	content: [JSONContent, ...JSONContent[]];
+};

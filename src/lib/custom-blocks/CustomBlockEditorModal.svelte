@@ -140,8 +140,8 @@
 			event.preventDefault();
 			return;
 		}
-		const expanded = expandDocument({ type: 'doc', content: [block] }, library).content?.[0];
-		if (expanded) startPaletteDrag(editor.view, event, ensureNodeIds(expanded));
+		const expanded = expandDocument({ type: 'doc', content: [block] }, library).content[0];
+		startPaletteDrag(editor.view, event, ensureNodeIds(expanded));
 	}
 
 	/**
