@@ -154,7 +154,7 @@ try {
   await page.getByRole('button', { name: 'Edit Test Header' }).click();
   const editModal = page.getByRole('dialog', { name: 'Custom block definition editor' });
   await editModal.waitFor();
-  const structureSource = editModal.locator('.source-pane .cm-content');
+  const structureSource = editModal.getByRole('textbox', { name: 'Custom block structure JSON', exact: true });
   await structureSource.click();
   await page.keyboard.press('ControlOrMeta+End');
   await page.keyboard.insertText(' ');
@@ -166,7 +166,7 @@ try {
   const originalColor = await page.locator('.sheet-content [data-custom-block-type="sheet-header"] .sheet-title')
     .first().evaluate(node => getComputedStyle(node).color);
   await editModal.getByRole('button', { name: 'CSS', exact: true }).click();
-  const cssSource = editModal.locator('.source-pane .cm-content');
+  const cssSource = editModal.getByRole('textbox', { name: 'Custom block CSS', exact: true });
   await cssSource.click();
   await page.keyboard.press('ControlOrMeta+A');
   await page.keyboard.insertText('.sheet-title { color: rgb(1, 2, 3) !important; }');
@@ -234,7 +234,7 @@ try {
   // while preserving the parent-only nested override in the open sheet.
   await page.getByRole('button', { name: 'Edit Nested Parent' }).click();
   const evolutionModal = page.getByRole('dialog', { name: 'Custom block definition editor' });
-  const definitionJSON = evolutionModal.locator('.source-pane .cm-content');
+  const definitionJSON = evolutionModal.getByRole('textbox', { name: 'Custom block structure JSON', exact: true });
   await definitionJSON.click();
   await page.keyboard.press('ControlOrMeta+A');
   await page.keyboard.press('ControlOrMeta+C');
