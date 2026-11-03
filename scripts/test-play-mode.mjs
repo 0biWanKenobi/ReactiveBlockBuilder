@@ -42,7 +42,7 @@ try {
   assert.equal(await page.locator('.sheet-content [data-rbb-hovered]').count(), 0);
   assert.equal(await page.locator('.sheet-header').first().evaluate(el => getComputedStyle(el).outlineStyle), 'none');
 
-  await page.locator('.mode-switch button').nth(0).click();
+  await page.locator('.topbar .switch button').nth(0).click();
   await page.waitForTimeout(650);
   assert.equal(await sidebar.isVisible(), true);
   assert.equal(await inspector.isVisible(), true);
