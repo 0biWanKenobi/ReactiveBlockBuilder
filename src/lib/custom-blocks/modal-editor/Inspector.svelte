@@ -35,7 +35,6 @@
 		value: string,
 		property: 'value' | 'alt' = 'value'
 	) {
-		if (!editor) return false;
 		const node = editor.state.doc.nodeAt(leaf.pos);
 		if (!node || node.type.name !== leaf.type) return false;
 		const transaction = editor.state.tr;
@@ -115,15 +114,13 @@
 	class="danger-button"
 	style="margin-top: 12px"
 	onclick={() => {
-		if (block && editor) {
-			const n = editor.state.doc.nodeAt(block.pos);
-			if (n)
-				editor.commands.deleteRange({
-					from: block.pos,
-					to: block.pos + n.nodeSize
-				});
-			syncStructure();
-		}
+		const n = editor.state.doc.nodeAt(block.pos);
+		if (n)
+			editor.commands.deleteRange({
+				from: block.pos,
+				to: block.pos + n.nodeSize
+			});
+		syncStructure();
 	}}>Delete selected</button
 >
 
