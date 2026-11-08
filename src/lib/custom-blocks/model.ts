@@ -24,9 +24,9 @@ function generateTypeId(name: string, existing: string[]): string {
 }
 
 /** Assign identity once. Classes and child positions must never act as identities. */
-export function ensureNodeIds(node: JSONContent, used = new Set<string>()): JSONContent {
+export function ensureNodeIds<T extends JSONContent>(node: T, used = new Set<string>()): T {
 	const copy = clone(node);
-	const visit = (current: JSONContent) => {
+	const visit = (current: T | JSONContent) => {
 		if (current.type !== 'text' && current.type !== 'doc') {
 			current.attrs ??= {};
 			const currentId = current.attrs.nodeId;
@@ -146,7 +146,7 @@ function expandInstance(compact: JSONContent, library: BlockLibrary, stack: stri
 	};
 }
 
-export function expandDocument(node: PopulatedNode, library: BlockLibrary): PopulatedNode;
+export function expandDocument<T = string, N = JSONContent>(node: PopulatedNode<T, N>, library: BlockLibrary): PopulatedNode<T, N>;
 
 export function expandDocument(node: JSONContent, library: BlockLibrary): JSONContent;
 
@@ -238,7 +238,7 @@ export function captureInitialValues(template: JSONContent, source: JSONContent)
 
 export function createDefinition(
 	name: string,
-	structure: JSONContent & { type: 'container', content: [JSONContent, ...JSONContent[]] },
+	structure: PopulatedNode<'container'>,
 	library: BlockLibrary
 ): CustomBlockDefinition {
 	return {
@@ -250,7 +250,7 @@ export function createDefinition(
 		rootClass: '',
 		structure: ensureNodeIds(
 			collapseDocument({ type: 'doc' as const, content: [structure] }, library).content[0]
-		)
+		) as PopulatedNode<'container'>
 	};
 }
 

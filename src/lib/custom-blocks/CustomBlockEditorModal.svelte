@@ -9,7 +9,7 @@
 	import BlockPalette from '../editor/BlockPalette.svelte';
 	import CodeEditor from '../editor/CodeEditor.svelte';
 	import { collapseDocument, ensureNodeIds, expandDocument, resetLeafDefaults } from './model';
-	import type { CustomBlockDefinition, BlockLibrary } from './types';
+	import type { CustomBlockDefinition, BlockLibrary, PopulatedNode, TypedNode } from './types';
 	import type { Sheet } from '../formula/engine';
 	import Button from '#lib/components/Button.svelte';
 	import Inspector, { type NestedValue, type SelectedBlock } from './modal-editor/Inspector.svelte';
@@ -87,14 +87,14 @@
 		}
 	}
 
-	function currentStructure(): JSONContent {
+	function currentStructure(): PopulatedNode<'container'> {
 		if (!editor) throw new Error('Preview is not initialized');
 		const doc = collapseDocument(editor.getJSON(), library);
 		const root = doc.content?.[0];
 		if (!root || root.type !== 'container' || !root.content?.length) {
 			throw new Error('Custom blocks require a non-empty root container');
 		}
-		return ensureNodeIds(root);
+		return ensureNodeIds(root as PopulatedNode<'container'>);
 	}
 
 	function syncStructure() {
@@ -135,7 +135,7 @@
 		if (previewStyle) previewStyle.textContent = `@scope (.rbb-definition-preview) {\n${css}\n}`;
 	});
 
-	function dragStart(event: DragEvent, block: JSONContent) {
+	function dragStart(event: DragEvent, block: TypedNode) {
 		if (!editor) {
 			event.preventDefault();
 			return;
@@ -199,7 +199,7 @@
 			name: name.trim() || initial.name,
 			rootClass: rootClass.trim(),
 			structure: currentStructure()
-		};
+		} satisfies CustomBlockDefinition;
 	}
 
 	function dirty(): boolean {

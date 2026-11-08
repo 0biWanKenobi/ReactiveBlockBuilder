@@ -7,7 +7,7 @@ export interface CustomBlockDefinition {
 	typeId: string;
 	name: string;
 	rootClass: string;
-	structure: JSONContent;
+	structure: PopulatedNode<'container'>;
 }
 
 export interface BlockLibrary {
@@ -15,12 +15,12 @@ export interface BlockLibrary {
 	list(): CustomBlockDefinition[];
 }
 
-export type PopulatedNode<T = string> = JSONContent & {
+export type TypedNode<T = string> = JSONContent & {
 	type: T;
-	content: [JSONContent, ...JSONContent[]];
 };
 
-export type PopulatedDocument = JSONContent & {
-	type: 'doc';
-	content: [JSONContent, ...JSONContent[]];
+export type PopulatedNode<T = string, N = JSONContent> = TypedNode<T> & {
+	content: [N, ...JSONContent[]];
 };
+
+export type PopulatedDocument = PopulatedNode<'doc'>;

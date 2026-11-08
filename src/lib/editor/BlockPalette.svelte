@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { JSONContent } from '@tiptap/core';
-	import type { CustomBlockDefinition } from '../custom-blocks/types';
+	import type { CustomBlockDefinition, TypedNode } from '../custom-blocks/types';
 	import { insertionSamples } from './nodes';
 
 	let {
@@ -13,7 +13,7 @@
 	}: {
 		customBlocks?: CustomBlockDefinition[];
 		draggable?: boolean;
-		onDragStart: (event: DragEvent, block: JSONContent) => void;
+		onDragStart: (event: DragEvent, block: TypedNode) => void;
 		onDragEnd: () => void;
 		onEdit?: (block: CustomBlockDefinition) => void;
 		onDelete?: (block: CustomBlockDefinition) => void;
@@ -26,7 +26,7 @@
 		{ key: 'image', icon: '▧', title: 'Image' }
 	] as const;
 
-	function instance(block: CustomBlockDefinition): JSONContent {
+	function instance(block: CustomBlockDefinition): TypedNode {
 		return {
 			type: 'customBlock',
 			attrs: { typeId: block.typeId, instanceId: crypto.randomUUID(), nodeId: crypto.randomUUID() }

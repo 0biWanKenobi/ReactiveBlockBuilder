@@ -11,6 +11,7 @@ import {
 	isBlockDragMode,
 	outermostCustomBlock
 } from './blockInteraction';
+import type { TypedNode } from '#lib/custom-blocks/types.ts';
 
 /**
  * A temporary, layout-participating drop placeholder. Unlike a thin drop
@@ -34,7 +35,7 @@ function canInsertFromPalette(view: EditorView): boolean {
 }
 
 /** Keep the node locally: browsers hide drag payloads until the drop event. */
-export function startPaletteDrag(view: EditorView, event: DragEvent, content: JSONContent): void {
+export function startPaletteDrag(view: EditorView, event: DragEvent, content: TypedNode): void {
 	if (
 		!canInsertFromPalette(view) ||
 		!event.dataTransfer ||

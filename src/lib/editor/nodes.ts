@@ -10,6 +10,7 @@ import FormulaBlock from '../blocks/FormulaBlock.svelte';
 import ImageBlock from '../blocks/ImageBlock.svelte';
 import { reactiveNodeAttrs } from './reactive.svelte';
 import type { Sheet } from '../formula/engine';
+import type { TypedNode } from '#lib/custom-blocks/types.ts';
 
 export type SheetNodeType = 'container' | 'textBlock' | 'formula' | 'image' | 'customBlock';
 export const allowedNodeTypes: SheetNodeType[] = [
@@ -193,7 +194,7 @@ export function createSheetExtensions(
 	];
 }
 
-export const insertionSamples: Record<SheetNodeType, JSONContent> = {
+export const insertionSamples: Record<SheetNodeType, TypedNode> = {
 	container: {
 		type: 'container',
 		attrs: { class: 'sheet-container' },
