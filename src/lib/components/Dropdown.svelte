@@ -44,9 +44,7 @@
 	}
 
 	function choose(index: number) {
-		const option = options[index];
-		if (!option) return;
-		value = option.value;
+		value = options[index].value;
 		close();
 		trigger.focus({ preventScroll: true });
 	}
