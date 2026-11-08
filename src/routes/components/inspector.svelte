@@ -66,8 +66,6 @@
 		if (!editor || !selected) return;
 		const node = editor.state.doc.nodeAt(selected.pos);
 		if (!node || node.type.name !== selected.type) return;
-		if (attribute === 'class' && (selected.type === 'customBlock' || selectedIsInsideCustomBlock()))
-			return;
 		updateBlockAttribute(editor, selected.pos, attribute, value);
 	}
 
