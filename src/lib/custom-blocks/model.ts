@@ -256,15 +256,27 @@ export function createDefinition(
 
 /** Validate the candidate against its dependencies before publishing it. */
 export function validateDefinition(definition: CustomBlockDefinition, library: BlockLibrary): void {
-	if (definition.structure.type !== 'container' || !definition.structure.content?.length) {
-		throw new Error('A custom block must contain a non-empty root container');
-	}
-	const candidate: BlockLibrary = {
-		get: (typeId) => (typeId === definition.typeId ? definition : library.get(typeId)),
-		list: () => [...library.list().filter((item) => item.typeId !== definition.typeId), definition]
+	const visiting = new Set<string>();
+	const validated = new Set<string>();
+	const visit = (node: JSONContent): void => {
+		if (node.type === 'customBlock') {
+			validateType(String(node.attrs?.typeId ?? ''));
+			return;
+		}
+		node.content?.forEach(visit);
 	};
-	// Expansion checks both missing dependencies and recursive type references.
-	expandDocument({ type: 'doc', content: [makeInstance(definition)] }, candidate);
+	const validateType = (typeId: string): void => {
+		if (visiting.has(typeId))
+			throw new Error(`Circular custom block reference: ${[...visiting, typeId].join(' → ')}`);
+		if (validated.has(typeId)) return;
+		const candidate = typeId === definition.typeId ? definition : library.get(typeId);
+		if (!candidate) throw new Error(`Missing custom block definition: ${typeId}`);
+		visiting.add(typeId);
+		visit(candidate.structure);
+		visiting.delete(typeId);
+		validated.add(typeId);
+	};
+	validateType(definition.typeId);
 }
 
 export function makeInstance(definition: CustomBlockDefinition): JSONContent {

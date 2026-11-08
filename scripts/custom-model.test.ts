@@ -101,6 +101,43 @@ test('definition validator rejects missing and cyclic dependencies', () => {
     }
   };
   expect(() => validateDefinition(recursive, library(child, parent))).toThrow(/Circular custom block reference/);
+  const selfReferencing = {
+    ...child,
+    structure: {
+      ...child.structure, content: [
+        { type: 'customBlock', attrs: { typeId: child.typeId } }
+      ]
+    }
+  };
+  expect(() => validateDefinition(selfReferencing, library(child)))
+    .toThrow(`Circular custom block reference: ${child.typeId} → ${child.typeId}`);
+});
+
+test('definition validator accepts shared dependencies and checks transitive references', () => {
+  const child = createDefinition('Child', {
+    type: 'container', content: [{ type: 'textBlock', content: [{ type: 'text', text: 'Child' }] }]
+  }, library());
+  const branch = createDefinition('Branch', {
+    type: 'container', content: [makeInstance(child)]
+  }, library(child));
+  const parent = createDefinition('Parent', {
+    type: 'container', content: [
+      makeInstance(child),
+      { type: 'container', content: [makeInstance(branch), makeInstance(branch)] }
+    ]
+  }, library(child, branch));
+
+  expect(() => validateDefinition(parent, library(child, branch))).not.toThrow();
+  expect(() => validateDefinition(branch, library()))
+    .toThrow(`Missing custom block definition: ${child.typeId}`);
+  const brokenChild = {
+    ...child,
+    structure: {
+      ...child.structure, content: [{ type: 'customBlock', attrs: { typeId: 'missing' } }]
+    }
+  };
+  expect(() => validateDefinition(parent, library(brokenChild, branch)))
+    .toThrow('Missing custom block definition: missing');
 });
 
 test('nested custom block values resolve child, parent and sheet overrides', () => {
