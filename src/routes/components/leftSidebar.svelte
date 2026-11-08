@@ -4,7 +4,7 @@
 	import type { CustomBlockLibrary } from '#lib/custom-blocks/library.svelte.ts';
 	import { expandDocument } from '#lib/custom-blocks/model.ts';
 	import type { CustomBlockRepository } from '#lib/custom-blocks/repository.ts';
-	import type { CustomBlockDefinition } from '#lib/custom-blocks/types.ts';
+	import type { CustomBlockDefinition, TypedNode } from '#lib/custom-blocks/types.ts';
 	import { endPaletteDrag, startPaletteDrag } from '#lib/editor/blockDragPreview.ts';
 	import BlockPalette from '#lib/editor/BlockPalette.svelte';
 	import Dropdown from '#lib/components/Dropdown.svelte';
@@ -57,7 +57,7 @@
 		fieldError = '';
 	}
 
-	function _onDragPaletteBlock(event: DragEvent, block: JSONContent) {
+	function _onDragPaletteBlock(event: DragEvent, block: TypedNode) {
 		if (!editor || mode !== 'design') {
 			event.preventDefault();
 			onDragPaletteBlock({
