@@ -39,8 +39,7 @@ export function blockBoundary(
 	const parent = element.parentNode;
 	if (!parent || !view.dom.contains(element)) return null;
 
-	const index = Array.prototype.indexOf.call(parent.childNodes, element) as number;
-	if (index < 0) return null;
+	const index = Array.prototype.indexOf.call(parent.childNodes, element);
 
 	try {
 		const from = view.posAtDOM(parent, index);

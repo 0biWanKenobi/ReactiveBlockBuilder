@@ -156,7 +156,7 @@
 		const parent = nested.parentNode;
 		if (!parent) return;
 		const index = Array.prototype.indexOf.call(parent.childNodes, nested);
-		if (index < 0) return;
+
 		try {
 			const pos = editor.view.posAtDOM(parent, index);
 			if (editor.state.doc.nodeAt(pos)?.type.name === 'customBlock') {
