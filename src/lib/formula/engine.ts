@@ -249,7 +249,6 @@ export function executeRoll(expression: string): RollOutcome {
 	}
 
 	const result: unknown = compiled(expression).evaluate(scope);
-	if (typeof result === 'boolean') throw Error('Roll expressions must produce a numeric result');
 	const total = baseValue(result);
 	if (typeof total !== 'number') throw Error('Roll expressions must produce a numeric result');
 	return { total, dice: diceLog };
