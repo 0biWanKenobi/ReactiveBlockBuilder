@@ -36,12 +36,7 @@ function canInsertFromPalette(view: EditorView): boolean {
 
 /** Keep the node locally: browsers hide drag payloads until the drop event. */
 export function startPaletteDrag(view: EditorView, event: DragEvent, content: TypedNode): void {
-	if (
-		!canInsertFromPalette(view) ||
-		!event.dataTransfer ||
-		!content.type ||
-		!blockTypes.has(content.type)
-	) {
+	if (!canInsertFromPalette(view) || !event.dataTransfer) {
 		event.preventDefault();
 		return;
 	}
