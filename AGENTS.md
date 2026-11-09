@@ -2,6 +2,7 @@
 - code changes must pass existing tests
 - use bun, not npm
 - Breaking changes target the current design only. Do not maintain backward compatibility or add migrations, legacy fallbacks, or compatibility shims.
+- After refactoring, remove temporary files created for the task before declaring the work complete.
 - semantic commits: 50 chars for message, list of changes w/ every line max 72 chars
 
 ## Agent skills
