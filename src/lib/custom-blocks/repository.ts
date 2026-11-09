@@ -8,7 +8,7 @@ import {
 } from '../themes/styles';
 
 export const DEFAULT_THEME = 'default';
-const blockPath = (id: string) => `custom-blocks/${id}on`;
+const blockPath = (id: string) => `custom-blocks/${id}.json`;
 const stylePath = (theme: string, id: string) => `themes/${theme}/blocks/${id}.css`;
 const basePath = (theme: string) => `themes/${theme}/base.css`;
 const themePath = (theme: string, section: ThemeStylesheet) =>
@@ -21,7 +21,7 @@ export class CustomBlockRepository {
 		const paths = await this.storage.list('custom-blocks');
 		const blocks = await Promise.all(
 			paths
-				.filter((path) => path.endsWith('on'))
+				.filter((path) => path.endsWith('.json'))
 				.map(async (path) => {
 					const content = await this.storage.read(path);
 					return content ? (JSON.parse(content) as CustomBlockDefinition) : null;

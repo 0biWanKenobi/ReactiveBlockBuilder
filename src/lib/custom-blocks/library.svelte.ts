@@ -9,6 +9,9 @@ export class CustomBlockLibrary implements BlockLibrary {
 	get(typeId: string) {
 		return this.definitions.find((item) => item.typeId === typeId);
 	}
+	clone(typeId: string): CustomBlockDefinition | undefined {
+		return $state.snapshot(this.get(typeId));
+	}
 	replace(definitions: CustomBlockDefinition[]) {
 		this.definitions = definitions;
 	}

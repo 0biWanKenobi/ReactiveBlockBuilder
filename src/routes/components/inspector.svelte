@@ -7,6 +7,7 @@
 	import type { StockBlockType } from '#lib/themes/styles';
 	import paletteIcon from '#lib/icons/palette.svg';
 	import trashIcon from '#lib/icons/trash.svg';
+	import { isBlockDragMode } from '#lib/editor/blockInteraction';
 
 	let {
 		mode,
@@ -22,6 +23,7 @@
 		type: SheetNodeType;
 		pos: number;
 		attrs: Record<string, unknown>;
+		customParent?: number;
 	};
 
 	let selected = $state<SelectedBlock | null>(null);
@@ -48,20 +50,6 @@
 		};
 	});
 
-	function selectedCustomBlockPosition() {
-		if (!editor || !selected) return null;
-		const resolved = editor.state.doc.resolve(selected.pos);
-		for (let depth = 1; depth <= resolved.depth; depth++) {
-			if (resolved.node(depth).type.name === 'customBlock') return resolved.before(depth);
-		}
-		return selected.type === 'customBlock' ? selected.pos : null;
-	}
-
-	function selectedIsInsideCustomBlock() {
-		const position = selectedCustomBlockPosition();
-		return position !== null && position !== selected?.pos;
-	}
-
 	function editAttribute(attribute: string, value: string) {
 		if (!editor || !selected) return;
 		const node = editor.state.doc.nodeAt(selected.pos);
@@ -71,8 +59,7 @@
 
 	function removeSelected() {
 		if (!editor || !selected) return;
-		// Descendants belong to the definition; delete their whole sheet instance.
-		const position = selectedCustomBlockPosition() ?? selected.pos;
+		const position = selected.pos;
 		const node = editor.state.doc.nodeAt(position);
 		if (!node) return;
 		editor.commands.deleteRange({ from: position, to: position + node.nodeSize });
@@ -85,37 +72,40 @@
 	{#if mode !== 'design'}
 		<p class="muted">Switch to Design to modify nodes.</p>
 	{:else if selected}
-		{@const deleteLabel = selectedIsInsideCustomBlock()
-			? 'Delete custom block'
-			: 'Delete selected block'}
+		{@const selectedType = selected.type}
+		{@const deleteLabel =
+			selected.attrs.customNode && editor && !isBlockDragMode(editor.state)
+				? 'Delete custom block'
+				: 'Delete selected block'}
 		<div class="selection-heading">
 			<strong>{selected.type}</strong>
 			<div class="selection-actions">
-				{#if selected.type !== 'customBlock'}
+				{#if !selected.attrs.customNode && selected.customParent === undefined}
 					<button
 						type="button"
 						aria-label="Edit Style"
 						title="Edit Style"
-						onclick={() =>
-							selected && selected.type !== 'customBlock' && onEditThemeCSS(selected.type)}
+						onclick={() => onEditThemeCSS(selectedType)}
 					>
 						<span class="action-icon" style:mask-image={`url("${paletteIcon}")`} aria-hidden="true"
 						></span>
 					</button>
 				{/if}
-				<button
-					type="button"
-					class="danger-button"
-					aria-label={deleteLabel}
-					title={deleteLabel}
-					onclick={removeSelected}
-				>
-					<span class="action-icon" style:mask-image={`url("${trashIcon}")`} aria-hidden="true"
-					></span>
-				</button>
+				{#if selected.customParent === undefined}
+					<button
+						type="button"
+						class="danger-button"
+						aria-label={deleteLabel}
+						title={deleteLabel}
+						onclick={removeSelected}
+					>
+						<span class="action-icon" style:mask-image={`url("${trashIcon}")`} aria-hidden="true"
+						></span>
+					</button>
+				{/if}
 			</div>
 		</div>
-		{#if selected.type !== 'customBlock' && !selectedIsInsideCustomBlock()}
+		{#if !selected.attrs.customNode && selected.customParent === undefined}
 			<label class="property">
 				<span>CSS classes</span>
 				<input
@@ -125,7 +115,9 @@
 				/>
 			</label>
 		{/if}
-		{#if selected.type === 'formula'}
+		{#if selected.attrs.customNode}
+			<p class="muted">Select inner blocks to edit their values.</p>
+		{:else if selected.type === 'formula'}
 			<label class="property">
 				<span>Field ID</span>
 				<input

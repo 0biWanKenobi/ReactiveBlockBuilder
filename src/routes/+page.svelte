@@ -8,13 +8,14 @@
 	import {
 		createDefinition,
 		makeInstance,
-		expandDocument,
-		collapseDocument,
-		captureInitialValues,
+		ensureNodeIds,
+		prepareDocument,
 		validateDefinition
 	} from '../lib/custom-blocks/model';
 	import type { CustomBlockDefinition, PopulatedNode } from '../lib/custom-blocks/types';
-	import type { Editor } from '@tiptap/core';
+	import { synchronizeCustomNodes } from '../lib/editor/customNodes';
+	import type { Editor, JSONContent } from '@tiptap/core';
+	import type { Transaction } from '@tiptap/pm/state';
 	import { initialFields } from '../lib/index';
 	import type { Sheet } from '../lib/index';
 	import LeftSidebar from './components/leftSidebar.svelte';
@@ -36,12 +37,26 @@
 	let editedCSS = $state<string | null>(null);
 	let definitionTrail = $state<{ definition: CustomBlockDefinition; css: string }[]>([]);
 	let pendingConversion = $state<number | null>(null);
-	let pendingOriginalValues = $state<Record<string, string | { src: string; alt: string }>>({});
+	let pendingOriginal = $state<JSONContent | null>(null);
 	let saveBehavior = $state<'ask' | 'replace' | 'keep'>('ask');
 	let conversionPrompt = $state<{ pos: number; typeId: string } | null>(null);
 	let rememberChoice = $state(false);
 	let message = $state('');
 	let activeStylesheet = $state<ThemeStylesheet>('base');
+
+	$effect(() => {
+		if (!editor) return;
+		const current = editor;
+		const mapConversion = ({ transaction }: { transaction: Transaction }) => {
+			if (pendingConversion !== null && transaction.docChanged) {
+				pendingConversion = transaction.mapping.map(pendingConversion);
+			}
+		};
+		current.on('transaction', mapConversion);
+		return () => {
+			current.off('transaction', mapConversion);
+		};
+	});
 
 	onMount(() => {
 		void (async () => {
@@ -70,7 +85,7 @@
 		if (!editor) return;
 		const node = editor.state.doc.nodeAt(pos);
 		if (!node || node.type.name !== 'container' || !node.childCount) return;
-		const structure = node.toJSON() as PopulatedNode<'container'>;
+		const structure = ensureNodeIds(node.toJSON() as PopulatedNode<'container'>);
 		const name =
 			String(structure.attrs?.class ?? '')
 				.trim()
@@ -79,11 +94,7 @@
 			definitionTrail = [];
 			editedCSS = null;
 			editedBlock = createDefinition(name, structure, library);
-			const expandedTemplate = expandDocument(
-				{ type: 'doc', content: [editedBlock.structure] },
-				library
-			).content[0];
-			pendingOriginalValues = captureInitialValues(expandedTemplate, structure);
+			pendingOriginal = structure;
 			pendingConversion = pos;
 		} catch (error) {
 			message = `Custom block creation failed: ${error instanceof Error ? error.message : String(error)}`;
@@ -95,27 +106,19 @@
 		if (rememberChoice) saveBehavior = replace ? 'replace' : 'keep';
 		if (replace) replaceOriginal(conversionPrompt.pos, conversionPrompt.typeId);
 		conversionPrompt = null;
-		pendingOriginalValues = {};
+		pendingOriginal = null;
 		rememberChoice = false;
 	}
 
 	function replaceOriginal(pos: number, typeId: string) {
 		if (!editor) return;
-		const definition = library.get(typeId);
-		if (!definition) return;
-		const original = editor.state.doc.nodeAt(pos);
-		if (!original || original.type.name !== 'container') return;
-		const compact = makeInstance(definition);
-		compact.attrs = { ...compact.attrs, values: pendingOriginalValues };
-		const expanded = expandDocument(
-			{
-				type: 'doc',
-				content: [compact]
-			},
-			library
-		).content[0];
-
-		const replacement = editor.state.schema.nodeFromJSON(expanded);
+		const definition = library.clone(typeId)!;
+		const original = editor.state.doc.nodeAt(pos)!;
+		const instance = makeInstance(definition);
+		const source = $state.snapshot(pendingOriginal!);
+		const replacement = editor.state.schema.nodeFromJSON(
+			prepareDocument({ ...source, attrs: { ...instance.attrs } }, library)
+		);
 		editor.view.dispatch(editor.state.tr.replaceWith(pos, pos + original.nodeSize, replacement));
 	}
 
@@ -144,25 +147,26 @@
 			editedBlock = null;
 			editedCSS = null;
 			pendingConversion = null;
-			pendingOriginalValues = {};
+			pendingOriginal = null;
 		}
 	}
 
 	async function saveDefinition(definition: CustomBlockDefinition, blockStyle: string) {
 		try {
-			// Capture changes against the old definition before it is replaced.
-			const compact = editor ? collapseDocument(editor.getJSON(), library) : null;
 			validateDefinition(definition, library);
 			await repository.save(definition);
 			await repository.writeBlockCSS(definition.typeId, blockStyle);
 			library.upsert(definition);
-			if (editor && compact) {
-				editor
-					.chain()
-					.setMeta('rbb:definition-reconcile', true)
-					.setContent(expandDocument(compact, library))
-					.run();
+			// Nested instances in saved definitions follow the same structural rules as sheets.
+			for (const entry of library.list()) {
+				const current = library.clone(entry.typeId)!;
+				const structure = prepareDocument(current.structure, library);
+				if (JSON.stringify(structure) === JSON.stringify(current.structure)) continue;
+				const synchronized = { ...current, structure };
+				await repository.save(synchronized);
+				library.upsert(synchronized);
 			}
+			if (editor) synchronizeCustomNodes(editor, library);
 			await reloadBlockStyles();
 			if (definitionTrail.length) {
 				const previous = definitionTrail.at(-1)!;

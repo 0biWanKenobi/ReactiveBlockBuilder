@@ -6,53 +6,20 @@
 		pos: number;
 		type: string;
 		attrs: Record<string, unknown>;
-	};
-
-	export type NestedValue = {
-		pos: number;
-		type: string;
-		label: string;
-		value: string;
-		alt?: string;
+		customParent?: number;
 	};
 
 	let {
 		block,
-		nestedValues,
 		editor,
 		openNested,
 		syncStructure
 	}: {
 		block: SelectedBlock;
-		nestedValues: NestedValue[];
 		editor: Editor;
 		openNested: () => void;
 		syncStructure: () => void;
 	} = $props();
-
-	function updateNestedValue(
-		leaf: NestedValue,
-		value: string,
-		property: 'value' | 'alt' = 'value'
-	) {
-		const node = editor.state.doc.nodeAt(leaf.pos);
-		if (!node || node.type.name !== leaf.type) return false;
-		const transaction = editor.state.tr;
-		if (leaf.type === 'textBlock') {
-			const content = value ? editor.state.schema.text(value) : undefined;
-			transaction.replaceWith(
-				leaf.pos,
-				leaf.pos + node.nodeSize,
-				node.type.create(node.attrs, content)
-			);
-		} else {
-			const key = property === 'alt' ? 'alt' : leaf.type === 'formula' ? 'field' : 'src';
-			transaction.setNodeMarkup(leaf.pos, undefined, { ...node.attrs, [key]: value });
-		}
-		editor.view.dispatch(transaction);
-		syncStructure();
-		return true;
-	}
 
 	function updateAttr(attribute: string, value: string) {
 		const node = editor.state.doc.nodeAt(block.pos);
@@ -63,29 +30,9 @@
 </script>
 
 <div class="section-title" style="margin-top: 10px;">Selected: {block.type}</div>
-{#if block.type === 'customBlock'}
+{#if block.attrs.customNode}
 	<p class="hint">Nested block: {String(block.attrs.typeId ?? '')}</p>
-	<p class="hint">Values here override defaults only within this parent definition.</p>
-	{#each nestedValues as leaf (leaf.pos)}
-		<label
-			>{leaf.label} ({leaf.type})
-			<input
-				aria-label={`Nested ${leaf.label} value`}
-				value={leaf.value}
-				oninput={(event) => updateNestedValue(leaf, event.currentTarget.value)}
-			/>
-		</label>
-		{#if leaf.type === 'image'}
-			<label
-				>Image description
-				<input
-					aria-label={`Nested ${leaf.label} alt`}
-					value={leaf.alt ?? ''}
-					oninput={(event) => updateNestedValue(leaf, event.currentTarget.value, 'alt')}
-				/>
-			</label>
-		{/if}
-	{/each}
+	<p class="hint">Select inner blocks to edit their values within this definition.</p>
 	<button onclick={openNested}>Edit definition</button>
 {:else if block.type === 'formula'}
 	<label
@@ -102,7 +49,7 @@
 		/></label
 	>
 {/if}
-{#if block.type !== 'customBlock'}
+{#if !block.attrs.customNode && block.customParent === undefined}
 	<label
 		>Classes <input
 			value={String(block.attrs.class ?? '')}
@@ -110,19 +57,21 @@
 		/></label
 	>
 {/if}
-<button
-	class="danger-button"
-	style="margin-top: 12px"
-	onclick={() => {
-		const n = editor.state.doc.nodeAt(block.pos);
-		if (n)
-			editor.commands.deleteRange({
-				from: block.pos,
-				to: block.pos + n.nodeSize
-			});
-		syncStructure();
-	}}>Delete selected</button
->
+{#if block.customParent === undefined}
+	<button
+		class="danger-button"
+		style="margin-top: 12px"
+		onclick={() => {
+			const n = editor.state.doc.nodeAt(block.pos);
+			if (n)
+				editor.commands.deleteRange({
+					from: block.pos,
+					to: block.pos + n.nodeSize
+				});
+			syncStructure();
+		}}>Delete selected</button
+	>
+{/if}
 
 <style>
 	.section-title {

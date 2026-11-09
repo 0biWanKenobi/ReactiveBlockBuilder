@@ -5,7 +5,7 @@ import { selectedBlock } from './selection';
 
 export const blockSelector =
 	'section[data-custom-block-type], section[data-sheet-container], [data-sheet-text], [data-sheet-block]';
-export const blockTypes = new Set(['container', 'textBlock', 'formula', 'image', 'customBlock']);
+export const blockTypes = new Set(['container', 'textBlock', 'formula', 'image']);
 const dragModeKey = new PluginKey<boolean>('rbbBlockDragMode');
 const hoverKey = new PluginKey<number | null>('rbbHoveredBlock');
 
@@ -184,7 +184,7 @@ export const BlockInteraction = Extension.create({
 							if (!blockTypes.has(node.type.name)) return;
 							decorations.push(Decoration.node(pos, pos + node.nodeSize, { draggable: 'true' }));
 							// A custom block's descendants are never individual drag targets.
-							if (node.type.name === 'customBlock') return false;
+							if (node.attrs.customNode) return false;
 						});
 						return DecorationSet.create(state.doc, decorations);
 					}

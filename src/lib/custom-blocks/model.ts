@@ -1,239 +1,134 @@
 import type { JSONContent } from '@tiptap/core';
-import type { BlockLibrary, BlockValues, CustomBlockDefinition, LeafValue, PopulatedDocument, PopulatedNode } from './types';
+import type { BlockLibrary, CustomBlockDefinition, PopulatedNode } from './types';
 
-function clone<T>(value: T): T {
-	// JSON definitions may be Svelte $state proxies, which structuredClone rejects.
-	return JSON.parse(JSON.stringify(value)) as T;
-}
+const id = () => crypto.randomUUID();
+const isCustomNode = (node: JSONContent): boolean => node.attrs?.customNode === true;
 
-function id(): string {
-	return crypto.randomUUID();
-}
-
-function generateTypeId(name: string, existing: string[]): string {
-	const stem =
-		name
-			.toLowerCase()
-			.normalize('NFKD')
-			.replace(/[\u0300-\u036f]/g, '')
-			.replace(/[^a-z0-9]+/g, '-')
-			.replace(/^-|-$/g, '') || 'custom-block';
-	let result = stem;
-	for (let suffix = 2; existing.includes(result); suffix++) result = `${stem}-${suffix}`;
-	return result;
-}
-
-/** Assign identity once. Classes and child positions must never act as identities. */
+/** Stable definition slots are scoped to each custom instance. */
 export function ensureNodeIds<T extends JSONContent>(node: T, used = new Set<string>()): T {
-	const copy = clone(node);
-	const visit = (current: T | JSONContent) => {
+	const copy = structuredClone(node);
+	const visit = (current: JSONContent, scope: Set<string>) => {
 		if (current.type !== 'text' && current.type !== 'doc') {
 			current.attrs ??= {};
 			const currentId = current.attrs.nodeId;
-			if (typeof currentId !== 'string' || !currentId || used.has(currentId)) {
+			if (typeof currentId !== 'string' || !currentId || scope.has(currentId))
 				current.attrs.nodeId = id();
-			}
-			used.add(current.attrs.nodeId as string);
+			scope.add(current.attrs.nodeId as string);
 		}
-		current.content?.forEach(visit);
+		const childrenScope = isCustomNode(current) ? new Set<string>() : scope;
+		current.content?.forEach((child) => visit(child, childrenScope));
 	};
-	visit(copy);
+	visit(copy, used);
 	return copy;
 }
 
 export function resetLeafDefaults(node: JSONContent): JSONContent {
-	const copy = clone(node);
+	const copy = structuredClone(node);
 	const visit = (current: JSONContent) => {
-		switch (current.type) {
-			case 'textBlock':
-				current.content = [{ type: 'text', text: '...' }];
-				break;
-			case 'formula':
-				current.attrs = { ...current.attrs, field: '' };
-				break;
-			case 'image':
-				current.attrs = { ...current.attrs, src: '', alt: '' };
-				break;
-			case 'customBlock':
-				current.attrs = { ...current.attrs, values: {} };
-				break;
-		}
-		current.content?.forEach(visit);
+		if (current.type === 'textBlock') current.content = [{ type: 'text', text: '...' }];
+		else if (current.type === 'formula') current.attrs = { ...current.attrs, field: '' };
+		else if (current.type === 'image') current.attrs = { ...current.attrs, src: '', alt: '' };
+		else current.content?.forEach(visit);
 	};
 	visit(copy);
 	return copy;
 }
 
-function valueOf(node: JSONContent): LeafValue | undefined {
-	if (node.type === 'textBlock')
-		return (node.content ?? []).map((part) => part.text ?? '').join('');
-	if (node.type === 'formula') return String(node.attrs?.field ?? '');
-	if (node.type === 'image')
-		return {
-			src: String(node.attrs?.src ?? ''),
-			alt: String(node.attrs?.alt ?? '')
-		};
+/** New instances copy definition values; later value edits never replace existing values. */
+export function makeInstance(definition: CustomBlockDefinition): PopulatedNode<'container'> {
+	const root = structuredClone(definition.structure);
+	root.attrs = {
+		...root.attrs,
+		customNode: true,
+		typeId: definition.typeId,
+		instanceId: id(),
+		nodeId: id()
+	};
+	return root;
 }
 
-function applyLeafValue(node: JSONContent, value: LeafValue): JSONContent {
-	const copy = clone(node);
-	if (copy.type === 'textBlock' && typeof value === 'string') {
-		copy.content = value ? [{ type: 'text', text: value }] : [];
-	} else if (copy.type === 'formula' && typeof value === 'string') {
-		copy.attrs = { ...copy.attrs, field: value };
-	} else if (copy.type === 'image' && typeof value === 'object') {
-		copy.attrs = { ...copy.attrs, src: value.src, alt: value.alt };
-	}
-	return copy;
-}
-
-function prefixedValues(values: BlockValues, prefix: string): BlockValues {
-	const result: BlockValues = {};
-	for (const [key, value] of Object.entries(values)) {
-		if (key.startsWith(prefix + '/')) result[key.slice(prefix.length + 1)] = value;
-	}
+/** Index one definition scope, stopping at nested instances. */
+function slots(root: JSONContent): Map<string, JSONContent> {
+	const result = new Map<string, JSONContent>();
+	const visit = (node: JSONContent) => {
+		if (node.attrs?.nodeId) result.set(String(node.attrs.nodeId), node);
+		if (node.type === 'container' && !isCustomNode(node)) node.content?.forEach(visit);
+	};
+	root.content?.forEach(visit);
 	return result;
 }
 
-function expandInstance(compact: JSONContent, library: BlockLibrary, stack: string[]): JSONContent {
-	const typeId = String(compact.attrs?.typeId ?? '');
-	if (stack.includes(typeId))
-		throw new Error(`Circular custom block reference: ${[...stack, typeId].join(' → ')}`);
-	const definition = library.get(typeId);
-	if (!definition) throw new Error(`Missing custom block definition: ${typeId}`);
-	const values = (compact.attrs?.values ?? {}) as BlockValues;
-	const chain = [...stack, typeId];
-	const resolve = (node: JSONContent, path: string): JSONContent => {
-		const nodeId = String(node.attrs?.nodeId ?? '');
-		const key = path && nodeId ? `${path}/${nodeId}` : nodeId;
-		if (node.type === 'customBlock') {
-			const nested = prefixedValues(values, key);
-			return expandInstance(
-				{
-					...node,
-					attrs: {
-						...node.attrs,
-						values: { ...((node.attrs?.values as BlockValues) ?? {}), ...nested }
-					},
-					content: undefined
-				},
-				library,
-				chain
-			);
-		}
-		const applied = Object.hasOwn(values, key) ? applyLeafValue(node, values[key]) : clone(node);
-		if (applied.content) applied.content = applied.content.map((child) => resolve(child, key));
-		return applied;
+/** Reconcile validated trees: definitions own structure, instances own surviving values. */
+export function prepareDocument<T extends JSONContent>(document: T, library: BlockLibrary): T {
+	// Definition snapshots and merged root classes are shared only within this synchronous pass.
+	const definitions = new Map<string, PopulatedNode<'container'>>();
+	const definitionRoot = (typeId: string): PopulatedNode<'container'> => {
+		const cached = definitions.get(typeId);
+		if (cached) return cached;
+		const definition = library.get(typeId);
+		if (!definition) throw new Error(`Missing custom block definition: ${typeId}`);
+		const root = copyTree(definition.structure);
+		root.attrs = {
+			...root.attrs,
+			class: [
+				...new Set(
+					`${root.attrs?.class ?? ''} ${definition.rootClass}`.split(/\s+/).filter(Boolean)
+				)
+			].join(' ')
+		};
+		definitions.set(typeId, root);
+		return root;
 	};
-	const root = resolve(definition.structure, '');
-	if (definition.rootClass.trim()) {
-		const current = String(root.attrs?.class ?? '')
-			.split(/\s+/)
-			.filter(Boolean);
-		for (const cls of definition.rootClass.trim().split(/\s+/))
-			if (!current.includes(cls)) current.push(cls);
-		root.attrs = { ...root.attrs, class: current.join(' ') };
-	}
-	return {
-		type: 'customBlock',
-		attrs: {
+	const visit = (node: JSONContent): JSONContent => {
+		if (!isCustomNode(node)) {
+			const copy = copyNode(node);
+			if (copy.content) copy.content = copy.content.map(visit);
+			return copy;
+		}
+		const typeId = String(node.attrs?.typeId ?? '');
+		const templateRoot = definitionRoot(typeId);
+		const existing = slots(node);
+		const merge = (template: JSONContent): JSONContent => {
+			const previous = existing.get(String(template.attrs?.nodeId ?? ''));
+			const same =
+				previous !== undefined &&
+				previous.type === template.type &&
+				(!isCustomNode(template) || previous.attrs?.typeId === template.attrs?.typeId);
+			if (isCustomNode(template)) return visit(same ? previous : template);
+			const result = copyNode(template);
+			if (same && template.type === 'textBlock') {
+				result.content = (previous.content ?? []).map(copyNode);
+			} else if (same && template.type === 'formula') {
+				result.attrs = { ...result.attrs, field: previous.attrs?.field };
+			} else if (same && template.type === 'image') {
+				result.attrs = { ...result.attrs, src: previous.attrs?.src, alt: previous.attrs?.alt };
+			} else if (result.content) result.content = result.content.map(merge);
+			return result;
+		};
+		const root = copyNode(templateRoot);
+		root.content = root.content.map(merge) as typeof root.content;
+		root.attrs = {
+			...root.attrs,
+			customNode: true,
 			typeId,
-			instanceId: compact.attrs?.instanceId ?? id(),
-			nodeId: compact.attrs?.nodeId ?? id(),
-			class: compact.attrs?.class ?? ''
-		},
-		content: [root]
+			instanceId: node.attrs?.instanceId || id(),
+			nodeId: node.attrs?.nodeId || id()
+		};
+		return root;
 	};
+	return visit(document) as T;
 }
 
-export function expandDocument<T = string, N = JSONContent>(node: PopulatedNode<T, N>, library: BlockLibrary): PopulatedNode<T, N>;
-
-export function expandDocument(node: JSONContent, library: BlockLibrary): JSONContent;
-
-export function expandDocument(node: JSONContent, library: BlockLibrary): JSONContent {
-	const visit = (current: JSONContent): JSONContent => {
-		if (current.type === 'customBlock') return expandInstance(current, library, []);
-		return { ...current, content: current.content?.map(visit) };
-	};
-	return visit(clone(node));
+/** Stock attributes are scalars; children are copied by the traversal, once per output node. */
+function copyNode<T extends JSONContent>(node: T): T {
+	return node.attrs ? { ...node, attrs: { ...node.attrs } } : { ...node };
 }
 
-function collectOverrides(
-	current: JSONContent,
-	baseline: JSONContent,
-	output: BlockValues,
-	path = ''
-) {
-	if (current.type !== baseline.type) return;
-	const nodeId = String(current.attrs?.nodeId ?? '');
-	const key = nodeId ? (path ? `${path}/${nodeId}` : nodeId) : path;
-	const value = valueOf(current);
-	const defaultValue = valueOf(baseline);
-	if (value !== undefined && JSON.stringify(value) !== JSON.stringify(defaultValue)) {
-		output[key] = value;
-	}
-	const defaults = new Map(
-		(baseline.content ?? [])
-			.filter((node) => node.attrs?.nodeId)
-			.map((node) => [String(node.attrs?.nodeId), node])
-	);
-	for (const child of current.content ?? []) {
-		const matching = defaults.get(String(child.attrs?.nodeId ?? ''));
-		if (matching) collectOverrides(child, matching, output, key);
-	}
-}
-
-function collapseInstance(node: JSONContent, library: BlockLibrary): JSONContent {
-	const typeId = String(node.attrs?.typeId ?? '');
-	const baseline = expandInstance(
-		{ type: 'customBlock', attrs: { typeId, values: {} } },
-		library,
-		[]
-	);
-	const values: BlockValues = {};
-	if (node.content?.[0] && baseline.content?.[0]) {
-		collectOverrides(node.content[0], baseline.content[0], values);
-	}
-	return {
-		type: 'customBlock',
-		attrs: {
-			typeId,
-			instanceId: node.attrs?.instanceId ?? id(),
-			nodeId: node.attrs?.nodeId ?? id(),
-			values
-		}
-	};
-}
-
-export function collapseDocument(node: PopulatedDocument, library: BlockLibrary): PopulatedDocument;
-
-export function collapseDocument(node: JSONContent, library: BlockLibrary): JSONContent;
-
-export function collapseDocument(node: JSONContent, library: BlockLibrary): JSONContent {
-	const visit = (current: JSONContent): JSONContent => {
-		if (current.type === 'customBlock')
-			return current.content ? collapseInstance(current, library) : clone(current);
-		return { ...current, content: current.content?.map(visit) };
-	};
-	return visit(clone(node));
-}
-
-/** Capture the original instance's leaf values before the user resets definition defaults. */
-export function captureInitialValues(template: JSONContent, source: JSONContent): BlockValues {
-	const values: BlockValues = {};
-	const visit = (reference: JSONContent, actual: JSONContent, prefix = '') => {
-		const nodeId = String(reference.attrs?.nodeId ?? '');
-		const key = nodeId ? (prefix ? `${prefix}/${nodeId}` : nodeId) : prefix;
-		const value = valueOf(actual);
-		if (value !== undefined && reference.type === actual.type) values[key] = value;
-		for (let i = 0; i < (reference.content?.length ?? 0); i++) {
-			const child = reference.content?.[i];
-			const corresponding = actual.content?.[i];
-			if (child && corresponding) visit(child, corresponding, key);
-		}
-	};
-	visit(template, source);
-	return values;
+/** Read reactive definition proxies once per type, rather than once per instance. */
+function copyTree<T extends JSONContent>(node: T): T {
+	const copy = copyNode(node);
+	if (node.content) copy.content = node.content.map(copyTree);
+	return copy;
 }
 
 export function createDefinition(
@@ -241,25 +136,31 @@ export function createDefinition(
 	structure: PopulatedNode<'container'>,
 	library: BlockLibrary
 ): CustomBlockDefinition {
-	return {
-		typeId: generateTypeId(
-			name,
-			library.list().map((block) => block.typeId)
-		),
-		name,
-		rootClass: '',
-		structure: ensureNodeIds(
-			collapseDocument({ type: 'doc' as const, content: [structure] }, library).content[0]
-		) as PopulatedNode<'container'>
-	};
+	const stem =
+		name
+			.toLowerCase()
+			.normalize('NFKD')
+			.replace(/[\u0300-\u036f]/g, '')
+			.replace(/[^a-z0-9]+/g, '-')
+			.replace(/^-|-$/g, '') || 'custom-block';
+	let typeId = stem;
+	for (let suffix = 2; library.get(typeId); suffix++) typeId = `${stem}-${suffix}`;
+	const root = ensureNodeIds(prepareDocument(structure, library));
+	root.attrs = { ...root.attrs, customNode: false, typeId: '', instanceId: '' };
+	return { typeId, name, rootClass: '', structure: root };
 }
 
-/** Validate the candidate against its dependencies before publishing it. */
 export function validateDefinition(definition: CustomBlockDefinition, library: BlockLibrary): void {
 	const visiting = new Set<string>();
 	const validated = new Set<string>();
 	const visit = (node: JSONContent): void => {
-		if (node.type === 'customBlock') {
+		if (!['container', 'textBlock', 'formula', 'image', 'text'].includes(node.type ?? ''))
+			throw new Error('Unsupported node: ' + node.type);
+		if (node.attrs?.customNode !== undefined && typeof node.attrs.customNode !== 'boolean') {
+			throw new Error('customNode must be a boolean');
+		}
+		if (isCustomNode(node)) {
+			if (node.type !== 'container') throw new Error('Custom nodes require a container root');
 			validateType(String(node.attrs?.typeId ?? ''));
 			return;
 		}
@@ -271,17 +172,16 @@ export function validateDefinition(definition: CustomBlockDefinition, library: B
 		if (validated.has(typeId)) return;
 		const candidate = typeId === definition.typeId ? definition : library.get(typeId);
 		if (!candidate) throw new Error(`Missing custom block definition: ${typeId}`);
+		if (
+			candidate.structure.type !== 'container' ||
+			!candidate.structure.content?.length ||
+			isCustomNode(candidate.structure)
+		)
+			throw new Error('Custom blocks require a non-empty stock root container');
 		visiting.add(typeId);
 		visit(candidate.structure);
 		visiting.delete(typeId);
 		validated.add(typeId);
 	};
 	validateType(definition.typeId);
-}
-
-export function makeInstance(definition: CustomBlockDefinition): JSONContent {
-	return {
-		type: 'customBlock',
-		attrs: { typeId: definition.typeId, instanceId: id(), values: {} }
-	};
 }

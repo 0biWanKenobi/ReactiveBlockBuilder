@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { JSONContent } from '@tiptap/core';
+	import { makeInstance } from '../custom-blocks/model';
 	import type { CustomBlockDefinition, TypedNode } from '../custom-blocks/types';
 	import { insertionSamples } from './nodes';
 
@@ -27,10 +27,7 @@
 	] as const;
 
 	function instance(block: CustomBlockDefinition): TypedNode {
-		return {
-			type: 'customBlock',
-			attrs: { typeId: block.typeId, instanceId: crypto.randomUUID(), nodeId: crypto.randomUUID() }
-		};
+		return makeInstance($state.snapshot(block));
 	}
 </script>
 

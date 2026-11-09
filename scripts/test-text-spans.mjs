@@ -5,11 +5,11 @@ export async function testTextSpans(page) {
 	const modal = page.getByRole('dialog', { name: 'Custom block definition editor' });
 	const original = await canvas.evaluate((element) => element.editor.getJSON());
 	try {
-		// Old HTML remains readable, while serialization and rendering use spans.
+		// Serialization and rendering use stock spans.
 		const html = await canvas.evaluate((element) => {
 			element.editor.commands.setContent(
 				'<section data-sheet-container class="span-test-row">' +
-					'<p data-sheet-text class="stat-label">VALUE</p>' +
+					'<span data-sheet-text class="stat-label">VALUE</span>' +
 					'<cs-formula class="stat-number" field="STR"></cs-formula>' +
 					'</section>'
 			);
@@ -64,7 +64,7 @@ export async function testTextSpans(page) {
 		assert.equal(layouts[0].tag, 'SPAN');
 		assert.equal(layouts[0].margin, '0px');
 		assert.deepEqual(layouts[0], layouts[1], 'Sheet and definition use the same text layout');
-		await modal.getByRole('button', { name: 'Cancel', exact: true }).click();
+		await modal.getByRole('button', { name: 'Close editor', exact: true }).click();
 
 		// Without a theme, text items keep native inline layout, without a reset.
 		const unthemed = await canvas.evaluate((element) => {
@@ -79,10 +79,10 @@ export async function testTextSpans(page) {
 			}
 		});
 		assert.deepEqual(unthemed, { display: 'inline', margin: '0px' });
-		console.log('Text spans: legacy HTML, editing, handles, and preview alignment passed');
+		console.log('Text spans: HTML, editing, handles, and preview alignment passed');
 	} finally {
 		if (await modal.isVisible()) {
-			await modal.getByRole('button', { name: 'Cancel', exact: true }).click();
+			await modal.getByRole('button', { name: 'Close editor', exact: true }).click();
 		}
 		await canvas.evaluate(
 			(element, document) => element.editor.commands.setContent(document),

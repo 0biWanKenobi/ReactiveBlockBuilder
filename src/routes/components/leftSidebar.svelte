@@ -2,14 +2,14 @@
 	import '../../styles/shared.css';
 	import { validateId, type Sheet } from '#lib';
 	import type { CustomBlockLibrary } from '#lib/custom-blocks/library.svelte.ts';
-	import { expandDocument } from '#lib/custom-blocks/model.ts';
+	import { prepareDocument } from '#lib/custom-blocks/model.ts';
 	import type { CustomBlockRepository } from '#lib/custom-blocks/repository.ts';
 	import type { CustomBlockDefinition, TypedNode } from '#lib/custom-blocks/types.ts';
 	import { endPaletteDrag, startPaletteDrag } from '#lib/editor/blockDragPreview.ts';
 	import BlockPalette from '#lib/editor/BlockPalette.svelte';
 	import Dropdown from '#lib/components/Dropdown.svelte';
 	import type { OpResult } from '#lib/types/shared.ts';
-	import type { Editor, JSONContent } from '@tiptap/core';
+	import type { Editor } from '@tiptap/core';
 
 	export type EditorMode = 'design' | 'play';
 	export type SaveBehavior = 'ask' | 'replace' | 'keep';
@@ -68,8 +68,7 @@
 		}
 
 		try {
-			const expanded = expandDocument({ type: 'doc', content: [block] }, library).content[0];
-			startPaletteDrag(editor.view, event, expanded);
+			startPaletteDrag(editor.view, event, prepareDocument(block, library));
 			onDragPaletteBlock({ success: true });
 		} catch (error) {
 			event.preventDefault();

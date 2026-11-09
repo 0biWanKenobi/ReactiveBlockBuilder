@@ -5,14 +5,14 @@
 	import { selectedBlock } from '../editor/selection';
 	import { createSheetExtensions } from '../editor/nodes';
 	import { startPaletteDrag, endPaletteDrag } from '../editor/blockDragPreview';
+	import { customNodeSync } from '../editor/customNodes';
 	import { setBlockDragMode } from '../editor/blockInteraction';
 	import BlockPalette from '../editor/BlockPalette.svelte';
 	import CodeEditor from '../editor/CodeEditor.svelte';
-	import { collapseDocument, ensureNodeIds, expandDocument, resetLeafDefaults } from './model';
+	import { prepareDocument, ensureNodeIds, resetLeafDefaults, validateDefinition } from './model';
 	import type { CustomBlockDefinition, BlockLibrary, PopulatedNode, TypedNode } from './types';
 	import type { Sheet } from '../formula/engine';
-	import Button from '#lib/components/Button.svelte';
-	import Inspector, { type NestedValue, type SelectedBlock } from './modal-editor/Inspector.svelte';
+	import Inspector, { type SelectedBlock } from './modal-editor/Inspector.svelte';
 	import Switch from '#lib/components/Switch.svelte';
 
 	let {
@@ -53,43 +53,25 @@
 	let css = $state(starterCSS);
 	let jsonDraftEdited = $state(false);
 	// svelte-ignore state_referenced_locally
-	let structure = $state(JSON.stringify(initial.structure, null, 2));
+	let structure = $state(
+		JSON.stringify(prepareDocument($state.snapshot(initial.structure), library), null, 2)
+	);
 	let tab = $state<'structure' | 'css'>('structure');
 	let tool = $state<'edit' | 'drag'>('edit');
 	let selected = $state<SelectedBlock | null>(null);
-	let nestedValues = $state<NestedValue[]>([]);
 	let error = $state('');
 	let canvas = $state<HTMLDivElement>();
 	let editor = $state<Editor>();
 	let previewStyle: HTMLStyleElement | null = null;
+	let initialStructure = '';
 
 	function synchronizeSelection(instance: Editor) {
-		const found = selectedBlock(instance);
-		selected = found;
-		nestedValues = [];
-		const node = found ? { pos: found.pos, node: instance.state.doc.nodeAt(found.pos) } : null;
-		if (node?.node?.type.name === 'customBlock') {
-			node.node.descendants((child, offset) => {
-				if (!['textBlock', 'formula', 'image'].includes(child.type.name)) return true;
-				const type = child.type.name;
-				nestedValues.push({
-					pos: node.pos + 1 + offset,
-					type,
-					label: String(child.attrs.class ?? type) || type,
-					value:
-						type === 'textBlock'
-							? child.textContent
-							: String(child.attrs[type === 'formula' ? 'field' : 'src'] ?? ''),
-					alt: type === 'image' ? String(child.attrs.alt ?? '') : undefined
-				});
-				return false;
-			});
-		}
+		selected = selectedBlock(instance);
 	}
 
 	function currentStructure(): PopulatedNode<'container'> {
 		if (!editor) throw new Error('Preview is not initialized');
-		const doc = collapseDocument(editor.getJSON(), library);
+		const doc = editor.getJSON();
 		const root = doc.content?.[0];
 		if (!root || root.type !== 'container' || !root.content?.length) {
 			throw new Error('Custom blocks require a non-empty root container');
@@ -111,7 +93,10 @@
 		editor = new Editor({
 			element: canvas,
 			extensions: createSheetExtensions(fields),
-			content: expandDocument({ type: 'doc', content: [initial.structure] }, library),
+			content: {
+				type: 'doc',
+				content: [prepareDocument($state.snapshot(initial.structure), library)]
+			},
 			editorProps: { attributes: { class: 'sheet-document' } },
 			onSelectionUpdate: ({ editor }) => synchronizeSelection(editor),
 			onTransaction: ({ editor }) => synchronizeSelection(editor),
@@ -119,6 +104,7 @@
 				if (!jsonDraftEdited) syncStructure();
 			}
 		});
+		initialStructure = JSON.stringify(currentStructure());
 		return () => {
 			editor?.destroy();
 			editor = undefined;
@@ -140,31 +126,7 @@
 			event.preventDefault();
 			return;
 		}
-		const expanded = expandDocument({ type: 'doc', content: [block] }, library).content[0];
-		startPaletteDrag(editor.view, event, ensureNodeIds(expanded));
-	}
-
-	/**
-	 * In the definition editor, clicking a nested custom block selects the
-	 * component instance rather than one of its implementation nodes.
-	 * Parent-specific values are then edited in the inspector.
-	 */
-	function selectNestedFromPreview(event: MouseEvent | KeyboardEvent) {
-		if (!editor || !(event.target instanceof Element)) return;
-		const nested = event.target.closest('section[data-custom-block-type]');
-		if (!nested || !canvas?.contains(nested)) return;
-		const parent = nested.parentNode;
-		if (!parent) return;
-		const index = Array.prototype.indexOf.call(parent.childNodes, nested);
-
-		try {
-			const pos = editor.view.posAtDOM(parent, index);
-			if (editor.state.doc.nodeAt(pos)?.type.name === 'customBlock') {
-				editor.commands.setNodeSelection(pos);
-			}
-		} catch {
-			// Click targets are allowed to disappear during ProseMirror updates.
-		}
+		startPaletteDrag(editor.view, event, ensureNodeIds(prepareDocument(block, library)));
 	}
 
 	function applyJSON() {
@@ -172,7 +134,21 @@
 			const parsed = ensureNodeIds(JSON.parse(structure) as JSONContent);
 			if (parsed.type !== 'container' || !parsed.content?.length)
 				throw new Error('Expected a non-empty container');
-			editor?.commands.setContent(expandDocument({ type: 'doc', content: [parsed] }, library));
+			validateDefinition(
+				{
+					...$state.snapshot(initial),
+					structure: parsed as PopulatedNode<'container'>
+				},
+				library
+			);
+			editor
+				?.chain()
+				.command(({ tr }) => {
+					tr.setMeta(customNodeSync, true);
+					return true;
+				})
+				.setContent(prepareDocument({ type: 'doc', content: [parsed] }, library))
+				.run();
 			syncStructure();
 			error = '';
 		} catch (cause) {
@@ -183,7 +159,7 @@
 	function resetValues() {
 		try {
 			const reset = resetLeafDefaults(currentStructure());
-			editor?.commands.setContent(expandDocument({ type: 'doc', content: [reset] }, library));
+			editor?.commands.setContent({ type: 'doc', content: [reset] });
 			structure = JSON.stringify(reset, null, 2);
 			error = '';
 		} catch (cause) {
@@ -208,7 +184,7 @@
 			rootClass !== initial.rootClass ||
 			css !== starterCSS ||
 			jsonDraftEdited ||
-			JSON.stringify(currentStructure()) !== JSON.stringify(initial.structure)
+			JSON.stringify(currentStructure()) !== initialStructure
 		);
 	}
 
@@ -217,7 +193,7 @@
 	}
 
 	function openNested() {
-		if (!selected || selected.type !== 'customBlock' || !onNavigate) return;
+		if (!selected || !selected.attrs.customNode || !onNavigate) return;
 		try {
 			onNavigate(String(selected.attrs.typeId ?? ''), currentDraft(), css);
 		} catch (cause) {
@@ -270,7 +246,7 @@
 					onDragEnd={() => editor && endPaletteDrag(editor.view)}
 				/>
 				{#if selected && editor}
-					<Inspector block={selected} {editor} {nestedValues} {openNested} {syncStructure} />
+					<Inspector block={selected} {editor} {openNested} {syncStructure} />
 				{/if}
 			</aside>
 
@@ -279,12 +255,7 @@
 			</div>
 			<section class="preview-pane">
 				<div class="section-title">Live preview</div>
-				<Button
-					type="div"
-					class="preview sheet-content rbb-definition-preview"
-					bind:to={canvas}
-					onclick={selectNestedFromPreview}
-				></Button>
+				<div class="preview sheet-content rbb-definition-preview" bind:this={canvas}></div>
 			</section>
 
 			<div class="codeViewSwitch">

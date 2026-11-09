@@ -52,7 +52,7 @@ export async function testContainerContextMenu(page) {
           JSON.stringify(children) !== JSON.stringify(testCase.children)) {
         throw new Error(`Context action captured wrong subtree for ${testCase.classes}: ${name}, ${JSON.stringify(children)}`);
       }
-      await modal.getByRole('button', { name: 'Cancel', exact: true }).click();
+      await modal.getByRole('button', { name: 'Close editor', exact: true }).click();
       await modal.waitFor({ state: 'hidden' });
     }
   }

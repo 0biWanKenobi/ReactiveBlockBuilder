@@ -1,4 +1,4 @@
-import { Extension, type JSONContent } from '@tiptap/core';
+import { Extension } from '@tiptap/core';
 import { DOMSerializer, Fragment, Slice, type Node as ProseMirrorNode } from '@tiptap/pm/model';
 import { Plugin, PluginKey, NodeSelection } from '@tiptap/pm/state';
 import { dropPoint } from '@tiptap/pm/transform';
@@ -67,8 +67,8 @@ function draggedBlock(view: EditorView): NodeSelection | null {
 	// in EditorView.dragging's public type.
 	const dragging = view.dragging as
 		| (NonNullable<EditorView['dragging']> & {
-			node?: NodeSelection;
-		})
+				node?: NodeSelection;
+		  })
 		| null;
 	if (!dragging) return null;
 	return (
@@ -127,7 +127,8 @@ function targetPosition(view: EditorView, event: DragEvent): number | null {
 	const container =
 		rawTarget === view.dom
 			? view.dom
-			: block?.matches('section[data-sheet-container]') && rawTarget === block
+			: block?.matches('section[data-sheet-container]:not([data-custom-block-type])') &&
+				  rawTarget === block
 				? block
 				: null;
 	if (container) {
@@ -227,10 +228,10 @@ function decorations(preview: DragPreview | null, viewState: EditorView['state']
 		),
 		...(preview.source
 			? [
-				Decoration.node(preview.source.from, preview.source.to, {
-					class: 'rbb-drag-origin'
-				})
-			]
+					Decoration.node(preview.source.from, preview.source.to, {
+						class: 'rbb-drag-origin'
+					})
+				]
 			: [])
 	]);
 }

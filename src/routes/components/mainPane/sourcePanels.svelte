@@ -4,7 +4,8 @@
 	import ThemeCSS from './themeCSS.svelte';
 	import type { ThemeStylesheet } from '#lib/themes/styles';
 	import type { CustomBlockLibrary } from '#lib/custom-blocks/library.svelte';
-	import { collapseDocument, expandDocument } from '#lib/custom-blocks/model';
+	import { customNodeSync } from '#lib/editor/customNodes';
+	import { prepareDocument } from '#lib/custom-blocks/model';
 	import { DEFAULT_THEME, type CustomBlockRepository } from '#lib/custom-blocks/repository';
 	import { allowedNodeTypes, initialFields, sampleDocument, validateId, type Sheet } from '#lib';
 	import type { EditorMode } from '../leftSidebar.svelte';
@@ -62,7 +63,7 @@
 		const saved: SavedSheet = {
 			version: 1,
 			themeId: DEFAULT_THEME,
-			document: collapseDocument(editor.getJSON(), library),
+			document: editor.getJSON(),
 			fields: structuredClone($state.snapshot(fields))
 		};
 		jsonSource = JSON.stringify(saved, null, 2);
@@ -76,6 +77,12 @@
 		}
 		if (type === 'text' && typeof node.text !== 'string') {
 			throw new Error('Text node is missing text');
+		}
+		if (node.attrs?.customNode !== undefined && typeof node.attrs.customNode !== 'boolean') {
+			throw new Error('customNode must be a boolean');
+		}
+		if (node.attrs?.customNode && type !== 'container') {
+			throw new Error('Custom nodes require a container root');
 		}
 		if (node.content !== undefined) {
 			if (!Array.isArray(node.content)) throw new Error('Invalid node children');
@@ -98,7 +105,7 @@
 				throw new Error('Expected version 1 sheet with document, fields and default themeId');
 			}
 			validateNode(imported.document);
-			const expanded = expandDocument(imported.document, library);
+			const document = prepareDocument(imported.document, library);
 			// Fully validate before mutating the existing sheet or its reactive fields.
 			for (const [key, value] of Object.entries(imported.fields)) {
 				if (validateId(key) || !value || typeof value.formula !== 'string') {
@@ -110,7 +117,14 @@
 			for (const [key, value] of Object.entries(imported.fields)) {
 				fields[key] = { id: key, formula: value.formula };
 			}
-			editor.chain().setMeta('rbb:definition-reconcile', true).setContent(expanded).run();
+			editor
+				.chain()
+				.command(({ tr }) => {
+					tr.setMeta(customNodeSync, true);
+					return true;
+				})
+				.setContent(document)
+				.run();
 			onMessage('Sheet loaded');
 		} catch (error) {
 			onMessage(`Import failed: ${error instanceof Error ? error.message : String(error)}`);

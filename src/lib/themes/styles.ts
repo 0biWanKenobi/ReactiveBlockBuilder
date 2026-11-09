@@ -1,6 +1,6 @@
 import type { SheetNodeType } from '../editor/nodes';
 
-export type StockBlockType = Exclude<SheetNodeType, 'customBlock'>;
+export type StockBlockType = SheetNodeType;
 export type ThemeStylesheet = 'base' | StockBlockType;
 
 /** Full editable defaults, shared by the canvas and definition preview. */

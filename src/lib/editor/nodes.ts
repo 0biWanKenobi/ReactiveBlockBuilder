@@ -1,8 +1,8 @@
-import { Node, mergeAttributes, type Extensions, type JSONContent } from '@tiptap/core';
+import { Node, mergeAttributes, type Extensions } from '@tiptap/core';
 import { BlockDragPreview } from './blockDragPreview';
 import { BlockInteraction } from './blockInteraction';
 import { BlockDragHandle } from './blockDragHandle';
-import { CustomBlockProtection } from './customBlockProtection';
+import { CustomNodeProtection } from './customNodes';
 import Document from '@tiptap/extension-document';
 import Text from '@tiptap/extension-text';
 import { mount, unmount } from 'svelte';
@@ -12,18 +12,18 @@ import { reactiveNodeAttrs } from './reactive.svelte';
 import type { Sheet } from '../formula/engine';
 import type { TypedNode } from '#lib/custom-blocks/types.ts';
 
-export type SheetNodeType = 'container' | 'textBlock' | 'formula' | 'image' | 'customBlock';
-export const allowedNodeTypes: SheetNodeType[] = [
-	'container',
-	'textBlock',
-	'formula',
-	'image',
-	'customBlock'
-];
+export type SheetNodeType = 'container' | 'textBlock' | 'formula' | 'image';
+export const allowedNodeTypes: SheetNodeType[] = ['container', 'textBlock', 'formula', 'image'];
 
 const classes = (defaultClass: string) => ({
 	class: { default: defaultClass },
-	nodeId: { default: '' }
+	nodeId: { default: '' },
+	customNode: {
+		default: false,
+		parseHTML: (element: HTMLElement) => element.dataset.customNode === 'true',
+		renderHTML: (attrs: Record<string, unknown>) =>
+			attrs.customNode ? { 'data-custom-node': 'true', 'data-custom-block-type': attrs.typeId } : {}
+	}
 });
 
 /** Update only document-owned classes; ProseMirror owns selection/decorations. */
@@ -45,41 +45,21 @@ function nodeViewClasses(dom: HTMLElement): (value: unknown) => void {
  * Creates the intentionally small sheet schema. The custom atom nodes mount Svelte 5
  * components directly, avoiding both runtime compilation and a third-party bridge.
  */
-export function createSheetExtensions(
-	fields: Sheet,
-	options: { protectCustomBlocks?: boolean } = {}
-): Extensions {
+export function createSheetExtensions(fields: Sheet): Extensions {
 	const Container = Node.create({
 		name: 'container',
 		group: 'block',
 		content: 'block+',
 		defining: true,
-		addAttributes: () => classes('sheet-container'),
+		addAttributes: () => ({
+			...classes('sheet-container'),
+			typeId: { default: '' },
+			instanceId: { default: '' }
+		}),
 		parseHTML: () => [{ tag: 'section[data-sheet-container]' }],
 		renderHTML: ({ HTMLAttributes }) => [
 			'section',
 			mergeAttributes({ 'data-sheet-container': '' }, HTMLAttributes),
-			0
-		]
-	});
-
-	const CustomBlock = Node.create({
-		name: 'customBlock',
-		group: 'block',
-		content: 'block+',
-		defining: true,
-		isolating: true,
-		selectable: true,
-		addAttributes: () => ({
-			...classes('sheet-custom-block'),
-			typeId: { default: '' },
-			instanceId: { default: '' },
-			nodeId: { default: '' }
-		}),
-		parseHTML: () => [{ tag: 'section[data-custom-block-type]' }],
-		renderHTML: ({ HTMLAttributes }) => [
-			'section',
-			mergeAttributes({ 'data-custom-block-type': HTMLAttributes.typeId }, HTMLAttributes),
 			0
 		]
 	});
@@ -90,8 +70,7 @@ export function createSheetExtensions(
 		content: 'text*',
 		defining: true,
 		addAttributes: () => classes('sheet-text'),
-		// Continue accepting previously serialized paragraph-based text items.
-		parseHTML: () => [{ tag: 'span[data-sheet-text]' }, { tag: 'p[data-sheet-text]' }],
+		parseHTML: () => [{ tag: 'span[data-sheet-text]' }],
 		renderHTML: ({ HTMLAttributes }) => [
 			'span',
 			mergeAttributes({ 'data-sheet-text': '' }, HTMLAttributes),
@@ -183,14 +162,13 @@ export function createSheetExtensions(
 		Document,
 		Text,
 		Container,
-		CustomBlock,
+		CustomNodeProtection,
 		TextBlock,
 		Formula,
 		ImageNode,
 		BlockInteraction,
 		BlockDragPreview,
-		BlockDragHandle,
-		...(options.protectCustomBlocks ? [CustomBlockProtection] : [])
+		BlockDragHandle
 	];
 }
 
@@ -212,15 +190,5 @@ export const insertionSamples: Record<SheetNodeType, TypedNode> = {
 		content: [{ type: 'text', text: 'Edit this text' }]
 	},
 	formula: { type: 'formula', attrs: { class: 'sheet-formula', field: 'STR_MOD' } },
-	image: { type: 'image', attrs: { class: 'sheet-image', src: '', alt: '' } },
-	customBlock: {
-		type: 'customBlock',
-		attrs: { class: 'sheet-custom-block', typeId: '', instanceId: '' },
-		content: [
-			{
-				type: 'container',
-				content: [{ type: 'textBlock', content: [{ type: 'text', text: '...' }] }]
-			}
-		]
-	}
+	image: { type: 'image', attrs: { class: 'sheet-image', src: '', alt: '' } }
 };

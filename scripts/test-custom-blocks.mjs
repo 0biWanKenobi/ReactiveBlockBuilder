@@ -58,7 +58,7 @@ try {
   const title = instance.locator('.sheet-title').first();
   assert.match(await title.innerText(), /THE WANDERING ARTIFICER/);
 
-  // Nested text remains editable as a value, without copying the structure into sheet JSON.
+  // Nested text remains editable as a value, inside the expanded Sheet JSON.
   await title.click();
   await page.keyboard.press('End');
   await page.keyboard.insertText('!');
@@ -67,11 +67,12 @@ try {
   // Custom block structure is protected in the sheet, but leaf values are editable.
   const beforeChildren = await instance.locator('[data-sheet-text], [data-sheet-block]').count();
   await title.click();
-  await page.keyboard.press('ControlOrMeta+A');
+  await page.keyboard.press('Home');
+  await page.keyboard.press('Shift+End');
   await page.keyboard.press('Backspace');
   const afterChildren = await instance.locator('[data-sheet-text], [data-sheet-block]').count();
   assert.equal(afterChildren, beforeChildren, 'Cannot delete custom block descendants individually');
-  // Restore the typed override for the export/import assertion.
+  // Restore the edited value for the export/import assertion.
   await title.click();
   await page.keyboard.press('End');
   await page.keyboard.insertText('!');
@@ -85,13 +86,14 @@ try {
   const serialized = JSON.parse(await page.evaluate(() => navigator.clipboard.readText()));
   assert.equal(serialized.themeId, 'default');
   assert.equal('css' in serialized, false);
-  const compact = serialized.document.content[0];
-  assert.equal(compact.type, 'customBlock');
-  assert.equal(compact.attrs.typeId, 'sheet-header');
-  assert.equal(compact.content, undefined);
-  assert(Object.keys(compact.attrs.values).length > 0, 'Edited child must create an instance override');
+  const expanded = serialized.document.content[0];
+  assert.equal(expanded.type, 'container');
+  assert.equal(expanded.attrs.customNode, true);
+  assert.equal(expanded.attrs.typeId, 'sheet-header');
+  assert(expanded.content.length > 0, 'Instance children are serialized');
+  assert.equal(expanded.attrs.values, undefined);
 
-  // Delete works in both tools, including from a child caret in Edit mode.
+  // Delete works in both tools, after selecting the instance root in Edit mode.
   for (const tool of ['Edit', 'Drag']) {
     await page.getByRole('button', { name: tool, exact: true }).click();
     await title.click();
@@ -99,9 +101,10 @@ try {
     const deleteCustom = page.getByRole('button', { name: 'Delete custom block', exact: true });
     if (tool === 'Edit') {
       assert.equal(await deleteSelected.count(), 0, 'Internal blocks cannot be deleted individually');
-      assert.equal(await deleteCustom.isVisible(), true, 'Edit mode can delete the enclosing instance');
+      await page.getByRole('button', { name: 'Select parent container', exact: true }).click();
+      assert.equal(await deleteCustom.isVisible(), true, 'Edit mode can delete the selected enclosing instance');
     } else {
-      assert.equal(await page.locator('.selection-heading strong').innerText(), 'customBlock');
+      assert.equal(await page.locator('.selection-heading strong').innerText(), 'container');
       assert.equal(await deleteSelected.isVisible(), true, 'Drag mode can delete the selected instance');
     }
     assert.equal(await page.getByLabel('Selected block CSS classes').count(), 0,
@@ -178,8 +181,8 @@ try {
   await editModal.waitFor({ state: 'hidden', timeout: 2500 });
   console.log('Import atomicity, unapplied JSON protection, CSS draft containment passed');
 
-  // End-to-end nested definitions: parent-specific defaults survive save,
-  // while the referenced child definition retains its shared default.
+  // End-to-end nested definitions: definition value changes leave existing
+  // instances unchanged. New instances copy the saved definition values.
   const childDefinition = {
     typeId: 'test-nested-child', name: 'Nested Child', rootClass: '',
     structure: { type: 'container', attrs: { nodeId: 'child-root', class: 'child-root' },
@@ -189,9 +192,8 @@ try {
   const parentDefinition = {
     typeId: 'test-nested-parent', name: 'Nested Parent', rootClass: '',
     structure: { type: 'container', attrs: { nodeId: 'parent-root', class: 'parent-root' },
-      content: [{ type: 'customBlock', attrs: {
-        nodeId: 'nested-slot', typeId: 'test-nested-child', instanceId: 'definition-nested-slot',
-        values: {}
+      content: [{ ...structuredClone(childDefinition.structure), attrs: {
+        ...childDefinition.structure.attrs, customNode: true, nodeId: 'nested-slot', typeId: 'test-nested-child', instanceId: 'definition-nested-slot'
       } }] }
   };
   await page.evaluate(([child, parent]) => {
@@ -202,8 +204,8 @@ try {
   const nestedSheet = {
     version: 1, themeId: 'default', fields: serialized.fields,
     document: { type: 'doc', content: [
-      { type: 'customBlock', attrs: { typeId: 'test-nested-parent', instanceId: 'sheet-parent', values: {} } },
-      { type: 'customBlock', attrs: { typeId: 'test-nested-child', instanceId: 'sheet-child', values: {} } }
+      { ...structuredClone(parentDefinition.structure), attrs: { ...parentDefinition.structure.attrs, customNode: true, typeId: 'test-nested-parent', instanceId: 'sheet-parent' } },
+      { ...structuredClone(childDefinition.structure), attrs: { ...childDefinition.structure.attrs, customNode: true, typeId: 'test-nested-child', instanceId: 'sheet-child' } }
     ] }
   };
   const nestedSource = page.locator('.source-panel').first().locator('.cm-content');
@@ -222,16 +224,13 @@ try {
 
   await page.getByRole('button', { name: 'Edit Nested Parent' }).click();
   const parentModal = page.getByRole('dialog', { name: 'Custom block definition editor' });
-  await parentModal.locator('.preview .child-label').click();
-  const nestedInput = parentModal.getByLabel('Nested child-label value');
-  await nestedInput.waitFor();
-  await nestedInput.fill('Parent-only default');
+  await parentModal.locator('.preview .child-label').fill('Parent definition value');
   await parentModal.getByRole('button', { name: 'Save definition' }).click();
   await parentModal.waitFor({ state: 'hidden' });
-  assert.equal(await page.locator('.sheet-content .parent-root .child-label').first().innerText(), 'Parent-only default');
+  assert.equal(await page.locator('.sheet-content .parent-root .child-label').first().innerText(), 'Global child default');
 
   // Live definition evolution: insert a sibling before the nested component
-  // while preserving the parent-only nested override in the open sheet.
+  // while preserving existing instance values in the open sheet.
   await page.getByRole('button', { name: 'Edit Nested Parent' }).click();
   const evolutionModal = page.getByRole('dialog', { name: 'Custom block definition editor' });
   const definitionJSON = evolutionModal.getByRole('textbox', { name: 'Custom block structure JSON', exact: true });
@@ -251,11 +250,12 @@ try {
   await evolutionModal.getByRole('button', { name: 'Save definition' }).click();
   await evolutionModal.waitFor({ state: 'hidden' });
   assert.equal(await page.locator('.sheet-content .parent-root .new-sibling').first().innerText(), 'Added later');
-  assert.equal(await page.locator('.sheet-content .parent-root .child-label').first().innerText(), 'Parent-only default');
+  assert.equal(await page.locator('.sheet-content .parent-root .child-label').first().innerText(), 'Global child default');
   assert.equal(await page.locator('.sheet-content > div .child-root').last().locator('.child-label').innerText(), 'Global child default');
 
   await page.getByRole('button', { name: 'Edit Nested Parent' }).click();
   const parentAgain = page.getByRole('dialog', { name: 'Custom block definition editor' });
+  await parentAgain.getByRole('button', { name: 'Drag', exact: true }).click();
   await parentAgain.locator('.preview .child-label').click();
   await parentAgain.getByRole('button', { name: 'Edit definition' }).click();
   await page.getByRole('dialog', { name: 'Custom block definition editor' })
@@ -265,8 +265,8 @@ try {
   await page.getByRole('dialog', { name: 'Custom block definition editor' })
     .getByText('Nested Parent').waitFor();
   await page.getByRole('dialog', { name: 'Custom block definition editor' })
-    .getByRole('button', { name: 'Cancel' }).click();
-  console.log('Nested definition editing, inherited values and navigation passed');
+    .getByRole('button', { name: 'Close editor' }).click();
+  console.log('Nested definition editing, preserved instance values and navigation passed');
 
 } finally {
   await browser.close();

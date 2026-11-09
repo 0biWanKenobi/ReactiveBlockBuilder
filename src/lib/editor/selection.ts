@@ -5,6 +5,7 @@ export interface SelectedEditorBlock {
 	pos: number;
 	type: string;
 	attrs: Record<string, unknown>;
+	customParent?: number;
 }
 
 /** Shared block identity and position resolution for both editor surfaces. */
@@ -19,9 +20,21 @@ export function selectedBlock(editor: Pick<Editor, 'state'>): SelectedEditorBloc
 						block: selection.$from.parent
 					}
 				: null;
-	return node
-		? { pos: node.pos, type: node.block.type.name, attrs: { ...node.block.attrs } }
-		: null;
+	if (!node) return null;
+	let customParent: number | undefined;
+	const resolved = editor.state.doc.resolve(node.pos);
+	for (let depth = resolved.depth; depth > 0; depth--) {
+		if (resolved.node(depth).attrs.customNode) {
+			customParent = resolved.before(depth);
+			break;
+		}
+	}
+	return {
+		pos: node.pos,
+		type: node.block.type.name,
+		attrs: { ...node.block.attrs },
+		customParent
+	};
 }
 
 /** Update attributes without replacing the selected node or stealing input focus. */

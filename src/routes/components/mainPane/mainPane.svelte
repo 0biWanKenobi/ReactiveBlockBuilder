@@ -42,7 +42,7 @@
 	onMount(() => {
 		const instance = new Editor({
 			element: canvas,
-			extensions: createSheetExtensions(fields, { protectCustomBlocks: true }),
+			extensions: createSheetExtensions(fields),
 			content: sampleDocument,
 			editable: true,
 			autofocus: false,
@@ -64,7 +64,7 @@
 			event.target instanceof Element
 				? event.target.closest('section[data-sheet-container]')
 				: null;
-		if (!target) {
+		if (!target || target.closest('[data-custom-block-type]')) {
 			contextPosition = null;
 			return;
 		}
