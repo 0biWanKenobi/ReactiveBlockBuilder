@@ -89,6 +89,8 @@ export const BlockInteraction = Extension.create({
 	name: 'blockInteraction',
 
 	addProseMirrorPlugins() {
+		let decoratedDocument: EditorState['doc'] | undefined;
+		let dragDecorations = DecorationSet.empty;
 		return [
 			new Plugin<number | null>({
 				key: hoverKey,
@@ -179,6 +181,8 @@ export const BlockInteraction = Extension.create({
 					},
 					decorations(state) {
 						if (!isBlockDragMode(state)) return DecorationSet.empty;
+						// Hover and selection transactions keep the same immutable document.
+						if (decoratedDocument === state.doc) return dragDecorations;
 						const decorations: Decoration[] = [];
 						state.doc.descendants((node, pos) => {
 							if (!blockTypes.has(node.type.name)) return;
@@ -186,7 +190,9 @@ export const BlockInteraction = Extension.create({
 							// A custom block's descendants are never individual drag targets.
 							if (node.attrs.customNode) return false;
 						});
-						return DecorationSet.create(state.doc, decorations);
+						decoratedDocument = state.doc;
+						dragDecorations = DecorationSet.create(state.doc, decorations);
+						return dragDecorations;
 					}
 				}
 			})

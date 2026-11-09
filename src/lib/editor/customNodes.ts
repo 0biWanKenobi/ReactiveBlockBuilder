@@ -7,11 +7,23 @@ import type { BlockLibrary } from '../custom-blocks/types';
 /** Only definition synchronization and validated full imports may change instance structure. */
 export const customNodeSync = 'rbbCustomNodeSync';
 
-function structure(node: Node): unknown {
-	const attrs = Object.fromEntries(
-		Object.entries(node.attrs).filter(([key]) => !['field', 'src', 'alt'].includes(key))
-	);
-	return [node.type.name, attrs, node.isTextblock ? [] : node.content.content.map(structure)];
+function sameStructure(before: Node, after: Node): boolean {
+	// ProseMirror shares unchanged subtrees. Typing only needs to check the changed path.
+	if (before === after) return true;
+	if (before.type !== after.type) return false;
+	// Stock attributes are scalars, with the same keys for every node of a given type.
+	if (before.attrs !== after.attrs) {
+		for (const key in before.attrs) {
+			if (key === 'field' || key === 'src' || key === 'alt') continue;
+			if (before.attrs[key] !== after.attrs[key]) return false;
+		}
+	}
+	if (before.isTextblock || before.content === after.content) return true;
+	if (before.childCount !== after.childCount) return false;
+	for (let i = 0; i < before.childCount; i++) {
+		if (!sameStructure(before.child(i), after.child(i))) return false;
+	}
+	return true;
 }
 
 export const CustomNodeProtection = Extension.create({
@@ -21,10 +33,7 @@ export const CustomNodeProtection = Extension.create({
 			new Plugin({
 				filterTransaction(transaction, state) {
 					if (!transaction.docChanged || transaction.getMeta(customNodeSync)) return true;
-					const previous = new Map<
-						string,
-						{ structure: string; count: number; selected: number }
-					>();
+					const previous = new Map<string, { node: Node; count: number; selected: number }>();
 					const nextCounts = new Map<string, number>();
 					state.doc.descendants((node, pos) => {
 						if (!node.attrs.customNode) return;
@@ -37,7 +46,7 @@ export const CustomNodeProtection = Extension.create({
 							existing.selected += selected;
 						} else
 							previous.set(node.attrs.instanceId, {
-								structure: JSON.stringify(structure(node)),
+								node,
 								count: 1,
 								selected
 							});
@@ -47,7 +56,7 @@ export const CustomNodeProtection = Extension.create({
 					transaction.doc.descendants((node) => {
 						if (!node.attrs.customNode) return;
 						const old = previous.get(node.attrs.instanceId);
-						if (old && old.structure !== JSON.stringify(structure(node))) valid = false;
+						if (old && !sameStructure(old.node, node)) valid = false;
 						nextCounts.set(node.attrs.instanceId, (nextCounts.get(node.attrs.instanceId) ?? 0) + 1);
 						return false;
 					});

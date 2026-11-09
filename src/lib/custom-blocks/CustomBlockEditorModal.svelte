@@ -64,6 +64,7 @@
 	let editor = $state<Editor>();
 	let previewStyle: HTMLStyleElement | null = null;
 	let initialStructure = '';
+	let synchronizedDocument: Editor['state']['doc'] | undefined;
 
 	function synchronizeSelection(instance: Editor) {
 		selected = selectedBlock(instance);
@@ -81,7 +82,10 @@
 
 	function syncStructure() {
 		if (!editor) return;
+		// Inspector actions also trigger onUpdate; serialize each document only once.
+		if (editor.state.doc === synchronizedDocument && !jsonDraftEdited) return;
 		structure = JSON.stringify(currentStructure(), null, 2);
+		synchronizedDocument = editor.state.doc;
 		jsonDraftEdited = false;
 	}
 
