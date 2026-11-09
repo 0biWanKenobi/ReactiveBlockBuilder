@@ -96,13 +96,18 @@ export function prepareDocument<T extends JSONContent>(document: T, library: Blo
 				(!isCustomNode(template) || previous.attrs?.typeId === template.attrs?.typeId);
 			if (isCustomNode(template)) return visit(same ? previous : template);
 			const result = copyNode(template);
-			if (same && template.type === 'textBlock') {
+			if (!same) {
+				if (result.content) result.content = result.content.map(merge);
+			} else if (template.type === 'textBlock') {
 				result.content = (previous.content ?? []).map(copyNode);
-			} else if (same && template.type === 'formula') {
+			} else if (template.type === 'formula') {
 				result.attrs = { ...result.attrs, field: previous.attrs?.field };
-			} else if (same && template.type === 'image') {
+			} else if (template.type === 'image') {
 				result.attrs = { ...result.attrs, src: previous.attrs?.src, alt: previous.attrs?.alt };
-			} else if (result.content) result.content = result.content.map(merge);
+			} else if (result.content) {
+				result.content = result.content.map(merge);
+			}
+
 			return result;
 		};
 		const root = copyNode(templateRoot);
