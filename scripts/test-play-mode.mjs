@@ -24,7 +24,8 @@ try {
   assert.equal(await sources.isVisible(), true);
 
   await title.hover();
-  assert.equal(await page.locator('.sheet-content [data-rbb-hovered]').count(), 1);
+  assert.equal(await page.locator('.sheet-content [data-rbb-hovered]').count(), 0);
+  assert.notEqual(await title.evaluate(el => getComputedStyle(el).outlineStyle), 'none');
   await page.locator('.topbar .switch button').nth(1).click();
   await page.waitForTimeout(650);
   assert.equal(await header.isVisible(), true);

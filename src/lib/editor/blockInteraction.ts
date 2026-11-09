@@ -3,28 +3,76 @@ import { NodeSelection, Plugin, PluginKey, type EditorState } from '@tiptap/pm/s
 import { Decoration, DecorationSet, type EditorView } from '@tiptap/pm/view';
 import { selectedBlock } from './selection';
 
-export const blockSelector =
-	'section[data-custom-block-type], section[data-sheet-container], [data-sheet-text], [data-sheet-block]';
+export const blockSelector = 'section[data-sheet-container], [data-sheet-text], [data-sheet-block]';
 export const blockTypes = new Set(['container', 'textBlock', 'formula', 'image']);
 const dragModeKey = new PluginKey<boolean>('rbbBlockDragMode');
 const hoverKey = new PluginKey<number | null>('rbbHoveredBlock');
 
-/** ProseMirror-managed decoration prevents its DOM observer from reverting hover styles. */
-export function setHoveredBlock(view: EditorView, element: Element | null): void {
-	const boundary = element ? blockBoundary(view, element) : null;
-	const pos = boundary?.from ?? null;
+/** Gutter hover uses known handle positions; ordinary sheet hover stays in CSS. */
+function setGutterHover(view: EditorView, pos: number | null): void {
 	if (hoverKey.getState(view.state) === pos) return;
 	view.dispatch(view.state.tr.setMeta(hoverKey, pos).setMeta('addToHistory', false));
 }
 
-export function isBlockDragMode(state: EditorState): boolean {
-	return dragModeKey.getState(state) === true;
+/** The rail and block are separate subtrees; their physical gap is still a hover target. */
+function withinGutterBridge(event: MouseEvent, rail: HTMLElement, block: HTMLElement): boolean {
+	const grip = rail.getBoundingClientRect();
+	const rect = block.getBoundingClientRect();
+	return (
+		event.clientX >= grip.left - 4 &&
+		event.clientX < rect.left &&
+		event.clientY >= Math.min(grip.top, rect.top) - 6 &&
+		event.clientY <= Math.max(grip.bottom, rect.bottom) + 6
+	);
 }
 
-export function canDragBlocks(view: EditorView): boolean {
-	// Tiptap remains editable in Design/Edit mode, but block dragging is
-	// intentionally enabled only by the dedicated Drag tool.
-	return isBlockDragMode(view.state);
+/** Gutter listeners reuse the handle's targets without keeping a second anchor. */
+export function createGutterHover(
+	view: EditorView,
+	rail: HTMLElement,
+	getTarget: (event: Event) => { from: number } | null,
+	getAnchor: () => { element: HTMLElement; from: number } | undefined
+) {
+	function clear() {
+		setGutterHover(view, null);
+	}
+
+	function handleOver(event: Event) {
+		if (rail.hidden || !isBlockDragMode(view.state)) return;
+		setGutterHover(view, getTarget(event)?.from ?? getAnchor()?.from ?? null);
+	}
+
+	function handleOut(event: MouseEvent) {
+		if (rail.hidden || !isBlockDragMode(view.state)) return;
+		if (event.relatedTarget instanceof Node && rail.contains(event.relatedTarget)) return;
+		setGutterHover(view, getAnchor()?.from ?? null);
+	}
+
+	function keepVisible(event: MouseEvent): boolean {
+		if (rail.hidden || !isBlockDragMode(view.state)) return false;
+		if (event.target instanceof Node && rail.contains(event.target)) return true;
+		const anchor = getAnchor();
+		if (!anchor || !withinGutterBridge(event, rail, anchor.element)) return false;
+		setGutterHover(view, anchor.from);
+		return true;
+	}
+
+	rail.addEventListener('mouseover', handleOver);
+	rail.addEventListener('mouseout', handleOut);
+	return {
+		handleOver,
+		keepVisible,
+		clear,
+		destroy() {
+			rail.removeEventListener('mouseover', handleOver);
+			rail.removeEventListener('mouseout', handleOut);
+			clear();
+		}
+	};
+}
+
+export function isBlockDragMode(state: EditorState): boolean {
+	return dragModeKey.getState(state) === true;
 }
 
 export function setBlockDragMode(view: EditorView, enabled: boolean): void {
@@ -77,11 +125,16 @@ export function pointerBlock(view: EditorView, target: EventTarget | null): HTML
 	return block instanceof HTMLElement && view.dom.contains(block) ? block : null;
 }
 
-function pointerSelection(view: EditorView, target: EventTarget | null): NodeSelection | null {
+function selectPointerBlock(view: EditorView, target: EventTarget | null): boolean {
 	const block = pointerBlock(view, target);
-	const boundary = block && blockBoundary(view, block);
-	if (!boundary) return null;
-	return NodeSelection.create(view.state.doc, boundary.from);
+	if (!block) return false;
+	// Edit keeps native text/formula/image behavior and selects container surfaces only.
+	if (!isBlockDragMode(view.state) && !block.matches('section[data-sheet-container]')) return false;
+	const boundary = blockBoundary(view, block);
+	if (!boundary) return false;
+	const selection = NodeSelection.create(view.state.doc, boundary.from);
+	if (!selection.eq(view.state.selection)) view.dispatch(view.state.tr.setSelection(selection));
+	return true;
 }
 
 /** Disable native content editing while keeping block drag events available. */
@@ -141,40 +194,13 @@ export const BlockInteraction = Extension.create({
 					attributes: (state) => ({ 'data-rbb-drag-mode': String(isBlockDragMode(state)) }),
 					handleDOMEvents: {
 						mousedown(view, event) {
-							if (event.button !== 0) return false;
-							const block = pointerBlock(view, event.target);
-							if (!block) return false;
-							const dragMode = isBlockDragMode(view.state);
-							// In Edit mode, only intercept clicks on container surfaces.
-							// Text, formula and image clicks retain their native editing behavior.
-							if (
-								!dragMode &&
-								!block.matches('section[data-sheet-container], section[data-custom-block-type]')
-							) {
-								return false;
-							}
-							const selection = pointerSelection(view, event.target);
-							if (!selection) return false;
-							if (!dragMode) event.preventDefault();
-							view.dispatch(view.state.tr.setSelection(selection));
-							// Crucial: do not let ProseMirror's own mousedown handler
-							// overwrite our block selection, causing flickering.
-							// In Drag mode leave native mousedown defaults intact so HTML
-							// draggable elements can still start a drag gesture.
+							if (event.button !== 0 || !selectPointerBlock(view, event.target)) return false;
+							// Keep native drag gestures, but stop ProseMirror replacing our selection.
+							if (!isBlockDragMode(view.state)) event.preventDefault();
 							return true;
 						},
 						click(view, event) {
-							const block = pointerBlock(view, event.target);
-							if (!block) return false;
-							if (
-								!isBlockDragMode(view.state) &&
-								!block.matches('section[data-sheet-container], section[data-custom-block-type]')
-							) {
-								return false;
-							}
-							const selection = pointerSelection(view, event.target);
-							if (!selection) return false;
-							view.dispatch(view.state.tr.setSelection(selection));
+							if (!selectPointerBlock(view, event.target)) return false;
 							event.preventDefault();
 							return true;
 						}

@@ -7,7 +7,6 @@ import {
 	blockSelector,
 	blockTypes,
 	blockBoundary,
-	canDragBlocks,
 	isBlockDragMode,
 	outermostCustomBlock
 } from './blockInteraction';
@@ -31,7 +30,7 @@ const paletteDrags = new WeakMap<EditorView, ProseMirrorNode>();
 
 /** Palette insertion is allowed in either design tool, but never in Play. */
 function canInsertFromPalette(view: EditorView): boolean {
-	return canDragBlocks(view) || view.editable;
+	return isBlockDragMode(view.state) || view.editable;
 }
 
 /** Keep the node locally: browsers hide drag payloads until the drop event. */
@@ -159,7 +158,7 @@ function calculatePreview(view: EditorView, event: DragEvent): DragPreview | nul
 	const palette = paletteBlock(view, event);
 	const source = palette ? null : draggedBlock(view);
 	if (
-		!(palette ? canInsertFromPalette(view) : canDragBlocks(view)) ||
+		!(palette ? canInsertFromPalette(view) : isBlockDragMode(view.state)) ||
 		(!palette && (!source || !dragging))
 	)
 		return null;
@@ -206,12 +205,21 @@ function calculatePreview(view: EditorView, event: DragEvent): DragPreview | nul
 
 function updatePreview(view: EditorView, next: DragPreview | null): void {
 	const old = previewKey.getState(view.state);
-	if (JSON.stringify(old) === JSON.stringify(next)) return;
+	if (
+		old === next ||
+		(old &&
+			next &&
+			old.pos === next.pos &&
+			old.width === next.width &&
+			old.height === next.height &&
+			old.source?.from === next.source?.from &&
+			old.source?.to === next.source?.to)
+	)
+		return;
 	view.dispatch(view.state.tr.setMeta(previewKey, next).setMeta('addToHistory', false));
 }
 
-function decorations(preview: DragPreview | null, viewState: EditorView['state']): DecorationSet {
-	if (!preview) return DecorationSet.empty;
+function decorations(preview: DragPreview, viewState: EditorView['state']): DecorationSet {
 	return DecorationSet.create(viewState.doc, [
 		Decoration.widget(
 			preview.pos,
@@ -238,7 +246,7 @@ function decorations(preview: DragPreview | null, viewState: EditorView['state']
 
 function dropBlock(view: EditorView, event: DragEvent, slice: Slice, moved: boolean): boolean {
 	const palette = paletteBlock(view, event);
-	if (!(palette ? canInsertFromPalette(view) : canDragBlocks(view))) return false;
+	if (!(palette ? canInsertFromPalette(view) : isBlockDragMode(view.state))) return false;
 	const preview = previewKey.getState(view.state) ?? calculatePreview(view, event);
 	const source = palette ? null : draggedBlock(view);
 	if (
@@ -283,6 +291,9 @@ export const BlockDragPreview = Extension.create({
 	name: 'blockDragPreview',
 
 	addProseMirrorPlugins() {
+		let decoratedDocument: EditorView['state']['doc'] | undefined;
+		let decoratedPreview: DragPreview | undefined;
+		let previewDecorations = DecorationSet.empty;
 		return [
 			new Plugin<DragPreview | null>({
 				key: previewKey,
@@ -299,14 +310,21 @@ export const BlockDragPreview = Extension.create({
 				},
 				props: {
 					decorations(state) {
-						return decorations(previewKey.getState(state) ?? null, state);
+						const preview = previewKey.getState(state);
+						if (!preview) return DecorationSet.empty;
+						if (decoratedDocument !== state.doc || decoratedPreview !== preview) {
+							decoratedDocument = state.doc;
+							decoratedPreview = preview;
+							previewDecorations = decorations(preview, state);
+						}
+						return previewDecorations;
 					},
 					handleDOMEvents: {
 						dragover(view, event) {
 							const palette = paletteBlock(view, event);
 							if (!palette && !draggedBlock(view)) return false;
 							updatePreview(view, calculatePreview(view, event));
-							if (palette ? canInsertFromPalette(view) : canDragBlocks(view)) {
+							if (palette ? canInsertFromPalette(view) : isBlockDragMode(view.state)) {
 								event.preventDefault();
 								if (event.dataTransfer) {
 									event.dataTransfer.dropEffect =
@@ -328,7 +346,7 @@ export const BlockDragPreview = Extension.create({
 						},
 						drop(view, event) {
 							const palette = paletteBlock(view, event);
-							const canvasDrag = !palette && canDragBlocks(view) && !!view.dragging;
+							const canvasDrag = !palette && isBlockDragMode(view.state) && !!view.dragging;
 							if (!palette && !canvasDrag) return false;
 
 							// The same preview position, insertion transaction and cleanup

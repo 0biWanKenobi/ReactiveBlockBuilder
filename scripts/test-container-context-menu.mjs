@@ -27,7 +27,8 @@ export async function testContainerContextMenu(page) {
       const x = testCase.gap ? rect.x + rect.width + 7 : rect.x + 5;
       const y = testCase.edge === 'bottom' ? rect.y + rect.height - 5 : rect.y + 5;
       await page.mouse.move(x, y);
-      if (await container.getAttribute('data-rbb-hovered') !== '') {
+      if (!(await container.evaluate((element) =>
+        ['dashed', 'solid'].includes(getComputedStyle(element).outlineStyle)))) {
         throw new Error(`Expected container hover: ${testCase.classes} (${testCase.edge})`);
       }
 

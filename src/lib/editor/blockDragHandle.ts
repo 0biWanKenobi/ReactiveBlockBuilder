@@ -1,13 +1,13 @@
 import { Extension } from '@tiptap/core';
-import { NodeSelection, Plugin } from '@tiptap/pm/state';
+import { NodeSelection, Plugin, type EditorState } from '@tiptap/pm/state';
 import type { EditorView } from '@tiptap/pm/view';
 import {
 	blockBoundary,
 	blockSelector,
-	canDragBlocks,
+	isBlockDragMode,
+	createGutterHover,
 	outermostCustomBlock,
-	pointerBlock,
-	setHoveredBlock
+	pointerBlock
 } from './blockInteraction';
 import { endPaletteDrag } from './blockDragPreview';
 
@@ -37,25 +37,15 @@ function createHandles(view: EditorView) {
 	rail.hidden = true;
 	view.dom.parentElement!.appendChild(rail);
 	let targets: HandleTarget[] = [];
+	const gutterHover = createGutterHover(view, rail, targetFromEvent, () => targets.at(-1));
 	let hovered: HTMLElement | null = null;
-	let highlighted: HTMLElement | null = null;
 	let dragging = false;
 	let pressed = false;
 
-	function clearHighlight() {
-		highlighted = null;
-		setHoveredBlock(view, null);
-	}
-
-	function highlight(target: HandleTarget | null) {
-		const next = target?.element ?? null;
-		highlighted = next;
-		setHoveredBlock(view, next);
-	}
-
 	function hide(force = false) {
 		if (!force && (dragging || pressed)) return;
-		clearHighlight();
+		if (!hovered && rail.hidden) return;
+		gutterHover.clear();
 		hovered = null;
 		targets = [];
 		rail.hidden = true;
@@ -90,7 +80,7 @@ function createHandles(view: EditorView) {
 	function position() {
 		// The outline is the block's own CSS outline. Only drag handles
 		// need repositioning; they exist exclusively in Drag mode.
-		if (!hovered || !canDragBlocks(view) || !view.dom.contains(hovered)) {
+		if (!hovered || !view.dom.contains(hovered)) {
 			rail.hidden = true;
 			return;
 		}
@@ -111,7 +101,6 @@ function createHandles(view: EditorView) {
 		button.className = 'rbb-block-drag-handle';
 		button.draggable = true;
 		button.innerHTML = gripSvg;
-		button.dataset.blockPosition = String(target.from);
 		const kind = target.type === 'textBlock' ? 'text' : target.type;
 		const label = `${kind} ${target.classes ? `.${target.classes.trim().split(/\s+/).join('.')}` : '(no class)'}`;
 		button.title = label;
@@ -143,49 +132,23 @@ function createHandles(view: EditorView) {
 		position();
 	}
 
-	function withinGutterBridge(event: MouseEvent): boolean {
-		if (!hovered || rail.hidden) return false;
-		const grip = rail.getBoundingClientRect();
-		const block = hovered.getBoundingClientRect();
-		// The rail and the block are separate DOM subtrees. When moving between
-		// them the browser may report the page itself as the target. Keep the
-		// handles visible across this physical space, without covering the sheet.
-		return (
-			event.clientX >= grip.left - 4 &&
-			event.clientX < block.left &&
-			event.clientY >= Math.min(grip.top, block.top) - 6 &&
-			event.clientY <= Math.max(grip.bottom, block.bottom) + 6
-		);
-	}
-
 	function mousemove(event: MouseEvent) {
-		if (view.dom.closest('.playing')) {
+		if (!isBlockDragMode(view.state)) {
 			hide(true);
 			return;
 		}
 		if (dragging || pressed) return;
 		const target = event.target;
-		if (target instanceof Node && rail.contains(target)) return;
 
-		// Hover and click resolve the very same pointer target. Only this
-		// single block gets a visible outline; ancestors retain optional grips.
+		// Resolve the same block as click selection to position its ancestor grips.
 		const block = pointerBlock(view, target);
 		if (block) {
-			highlight({ element: block, from: 0, type: '', classes: '' });
-			if (canDragBlocks(view)) {
-				if (hovered !== block || rail.hidden) show(block);
-			} else {
-				hovered = null;
-				targets = [];
-				rail.hidden = true;
-				rail.replaceChildren();
-			}
+			gutterHover.clear();
+			if (hovered !== block || rail.hidden) show(block);
 			return;
 		}
 
-		// Crossing from the hovered block to its gutter handles is not
-		// leaving the target. Do not hide handles in that narrow bridge.
-		if (canDragBlocks(view) && withinGutterBridge(event)) return;
+		if (gutterHover.keepVisible(event)) return;
 		hide();
 	}
 
@@ -198,11 +161,11 @@ function createHandles(view: EditorView) {
 	}
 
 	function select(target: HandleTarget | null): NodeSelection | null {
-		if (!target || !canDragBlocks(view)) return null;
+		if (!target || !isBlockDragMode(view.state)) return null;
 		const boundary = blockBoundary(view, target.element);
 		if (!boundary) return null;
 		const selection = NodeSelection.create(view.state.doc, boundary.from);
-		view.dispatch(view.state.tr.setSelection(selection));
+		if (!selection.eq(view.state.selection)) view.dispatch(view.state.tr.setSelection(selection));
 		return selection;
 	}
 
@@ -224,17 +187,6 @@ function createHandles(view: EditorView) {
 		}
 	}
 
-	function handleOver(event: MouseEvent) {
-		highlight(targetFromEvent(event));
-	}
-
-	function handleOut(event: MouseEvent) {
-		const next = event.relatedTarget;
-		if (!(next instanceof Node && rail.contains(next))) {
-			highlight(hovered ? { element: hovered, from: 0, type: '', classes: '' } : null);
-		}
-	}
-
 	function dragstart(event: DragEvent) {
 		const target = targetFromEvent(event);
 		const selection = select(target);
@@ -242,7 +194,7 @@ function createHandles(view: EditorView) {
 			event.preventDefault();
 			return;
 		}
-		highlight(target);
+		gutterHover.handleOver(event);
 		const { dom, text, slice } = view.serializeForClipboard(selection.content());
 		event.dataTransfer.setData('text/html', dom.innerHTML);
 		event.dataTransfer.setData('text/plain', text);
@@ -263,8 +215,6 @@ function createHandles(view: EditorView) {
 
 	// Follow the pointer across the DOM gap between canvas and fixed gutter.
 	window.addEventListener('mousemove', mousemove);
-	rail.addEventListener('mouseover', handleOver);
-	rail.addEventListener('mouseout', handleOut);
 	rail.addEventListener('click', click);
 	rail.addEventListener('mousedown', mousedown);
 	rail.addEventListener('dragstart', dragstart);
@@ -274,28 +224,20 @@ function createHandles(view: EditorView) {
 	window.addEventListener('mouseup', mouseup);
 
 	return {
-		update() {
-			if (view.dom.closest('.playing')) {
+		update(_view: EditorView, previousState: EditorState) {
+			if (!isBlockDragMode(view.state)) {
 				hide(true);
 				return;
 			}
-			if (highlighted && !view.dom.contains(highlighted)) clearHighlight();
+			if (view.state.doc === previousState.doc) return;
+			if (hovered && !view.dom.contains(hovered)) hide(true);
 			if (hovered && !dragging && !pressed) {
 				// A changed document may replace elements or move positions.
-				const next = ancestors(hovered);
-				if (
-					next.length !== targets.length ||
-					next.some((item, i) => item.from !== targets[i].from)
-				) {
-					show(hovered);
-				}
-			}
-			position();
+				show(hovered);
+			} else position();
 		},
 		destroy() {
 			window.removeEventListener('mousemove', mousemove);
-			rail.removeEventListener('mouseover', handleOver);
-			rail.removeEventListener('mouseout', handleOut);
 			rail.removeEventListener('click', click);
 			rail.removeEventListener('mousedown', mousedown);
 			rail.removeEventListener('dragstart', dragstart);
@@ -303,7 +245,7 @@ function createHandles(view: EditorView) {
 			window.removeEventListener('scroll', position, true);
 			window.removeEventListener('resize', position);
 			window.removeEventListener('mouseup', mouseup);
-			clearHighlight();
+			gutterHover.destroy();
 			rail.remove();
 		}
 	};

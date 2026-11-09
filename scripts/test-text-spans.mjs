@@ -32,7 +32,8 @@ export async function testTextSpans(page) {
 		await page.keyboard.insertText('!');
 		assert.equal(await label.innerText(), 'VALUE!');
 		await label.hover();
-		assert.equal(await label.getAttribute('data-rbb-hovered'), '');
+		assert.equal(await label.getAttribute('data-rbb-hovered'), null);
+		assert.equal(await label.evaluate((element) => getComputedStyle(element).outlineStyle), 'solid');
 		await page.getByRole('button', { name: 'Drag', exact: true }).click();
 		await label.hover();
 		const handles = page.locator('.main-pane .rbb-block-drag-rail button');

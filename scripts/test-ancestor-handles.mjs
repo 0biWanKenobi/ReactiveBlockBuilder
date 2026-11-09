@@ -52,8 +52,8 @@ try {
   assert.equal(initialOutline.width, '1px');
   assert.equal(await page.locator('.rbb-block-highlight-overlay').count(), 0,
     'Hover must use the block outline, not a separate overlay');
-  assert.equal(await page.locator('.sheet-content [data-rbb-hovered]').count(), 1);
-  assert.equal(await title.getAttribute('data-rbb-hovered'), '');
+  assert.equal(await page.locator('.sheet-content [data-rbb-hovered]').count(), 0,
+    'Sheet hover must use CSS without editor decorations');
   assert.equal(await title.evaluate((element) => getComputedStyle(element).outlineStyle), 'dashed');
   const parentWhileHovering = await defaultBoundary.evaluate((element) => {
     const computed = getComputedStyle(element);
@@ -64,8 +64,7 @@ try {
   const cr = await container.boundingBox();
   assert(cr);
   await page.mouse.move(cr.x + cr.width - 5, cr.y + cr.height - 5);
-  assert.equal(await page.locator('.sheet-content [data-rbb-hovered]').count(), 1);
-  assert.equal(await container.getAttribute('data-rbb-hovered'), '');
+  assert.equal(await page.locator('.sheet-content [data-rbb-hovered]').count(), 0);
   assert.equal(await container.evaluate((element) => getComputedStyle(element).outlineStyle), 'dashed');
   assert.equal(await title.getAttribute('data-rbb-hovered'), null);
   await page.mouse.click(cr.x + cr.width - 5, cr.y + cr.height - 5);
