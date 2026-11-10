@@ -14,6 +14,8 @@
 	import type { Sheet } from '../formula/engine';
 	import Inspector, { type SelectedBlock } from './modal-editor/Inspector.svelte';
 	import Switch from '#lib/components/Switch.svelte';
+	import type { DialogMode } from './modal-editor/ConfirmDialog.svelte';
+	import ConfirmDialog from './modal-editor/ConfirmDialog.svelte';
 
 	let {
 		initial,
@@ -51,17 +53,45 @@
 	);
 	// svelte-ignore state_referenced_locally
 	let css = $state(starterCSS);
+	// true when the user has edited the JSON directly, so we don't overwrite their changes with the editor's state.
 	let jsonDraftEdited = $state(false);
 	// svelte-ignore state_referenced_locally
 	let structure = $state(
 		JSON.stringify(prepareDocument($state.snapshot(initial.structure), library), null, 2)
 	);
-	let tab = $state<'structure' | 'css'>('structure');
+	let tab = $state<'structure' | 'css'>('css');
 	let tool = $state<'edit' | 'drag'>('edit');
 	let selected = $state<SelectedBlock | null>(null);
 	let error = $state('');
+	let confirmationMode = $state<DialogMode | null>(null);
+	const confirmation = $derived({
+		open: confirmationMode !== null,
+		mode: confirmationMode as DialogMode,
+		action: (mode: DialogMode) => {
+			if (mode === 'replaceJSON') syncStructure();
+			else if (mode === 'replacePreview') applyJSON();
+			else if (mode === 'discardChanges') onClose();
+		}
+	});
 	let canvas = $state<HTMLDivElement>();
-	let editor = $state<Editor>();
+	// Editor intentionally captures props once per modal instance.
+	// svelte-ignore state_referenced_locally
+	const editor = new Editor({
+		element: null,
+		extensions: createSheetExtensions(fields),
+		content: {
+			type: 'doc',
+			content: [prepareDocument($state.snapshot(initial.structure), library)]
+		},
+		editorProps: { attributes: { class: 'sheet-document' } },
+		onSelectionUpdate: ({ editor }) => synchronizeSelection(editor),
+		onTransaction: ({ editor }) => synchronizeSelection(editor),
+		onUpdate() {
+			// jsonDraftEdited is set to true when the user edits the JSON directly, so we only sync structure if they haven't done that.
+			if (!jsonDraftEdited && tab === 'structure') syncStructure();
+		}
+	});
+
 	let previewStyle: HTMLStyleElement | null = null;
 	let initialStructure = '';
 	let synchronizedDocument: Editor['state']['doc'] | undefined;
@@ -71,7 +101,6 @@
 	}
 
 	function currentStructure(): PopulatedNode<'container'> {
-		if (!editor) throw new Error('Preview is not initialized');
 		const doc = editor.getJSON();
 		const root = doc.content?.[0];
 		if (!root || root.type !== 'container' || !root.content?.length) {
@@ -81,12 +110,23 @@
 	}
 
 	function syncStructure() {
-		if (!editor) return;
-		// Inspector actions also trigger onUpdate; serialize each document only once.
+		// Serialize each document only once, unless replacing an unapplied JSON draft.
 		if (editor.state.doc === synchronizedDocument && !jsonDraftEdited) return;
 		structure = JSON.stringify(currentStructure(), null, 2);
 		synchronizedDocument = editor.state.doc;
 		jsonDraftEdited = false;
+	}
+
+	function fromPreview() {
+		if (jsonDraftEdited) {
+			confirmationMode = 'replaceJSON';
+		} else syncStructure();
+	}
+
+	function requestApplyJSON() {
+		if (jsonDraftEdited && synchronizedDocument && !editor.state.doc.eq(synchronizedDocument)) {
+			confirmationMode = 'replacePreview';
+		} else applyJSON();
 	}
 
 	onMount(() => {
@@ -94,31 +134,24 @@
 		previewStyle.dataset.customBlockDraft = initial.typeId;
 		document.head.appendChild(previewStyle);
 		previewStyle.textContent = `@scope (.rbb-definition-preview) {\n${css}\n}`;
-		editor = new Editor({
-			element: canvas,
-			extensions: createSheetExtensions(fields),
-			content: {
-				type: 'doc',
-				content: [prepareDocument($state.snapshot(initial.structure), library)]
-			},
-			editorProps: { attributes: { class: 'sheet-document' } },
-			onSelectionUpdate: ({ editor }) => synchronizeSelection(editor),
-			onTransaction: ({ editor }) => synchronizeSelection(editor),
-			onUpdate: () => {
-				if (!jsonDraftEdited) syncStructure();
-			}
-		});
+		if (canvas) editor.mount(canvas);
 		initialStructure = JSON.stringify(currentStructure());
 		return () => {
-			editor?.destroy();
-			editor = undefined;
+			editor.destroy();
 			previewStyle?.remove();
 			previewStyle = null;
 		};
 	});
 
 	$effect(() => {
-		if (editor) setBlockDragMode(editor.view, tool === 'drag');
+		// on tab switch, if the user hasn't edited the JSON directly, we want to sync the structure from the editor to the JSON view.
+		if (tab == 'structure' && !jsonDraftEdited) {
+			syncStructure();
+		}
+	});
+
+	$effect(() => {
+		setBlockDragMode(editor.view, tool === 'drag');
 	});
 
 	$effect(() => {
@@ -126,10 +159,6 @@
 	});
 
 	function dragStart(event: DragEvent, block: TypedNode) {
-		if (!editor) {
-			event.preventDefault();
-			return;
-		}
 		startPaletteDrag(editor.view, event, ensureNodeIds(prepareDocument(block, library)));
 	}
 
@@ -164,7 +193,7 @@
 		try {
 			const reset = resetLeafDefaults(currentStructure());
 			editor?.commands.setContent({ type: 'doc', content: [reset] });
-			structure = JSON.stringify(reset, null, 2);
+			syncStructure();
 			error = '';
 		} catch (cause) {
 			error = cause instanceof Error ? cause.message : String(cause);
@@ -193,7 +222,8 @@
 	}
 
 	function close() {
-		if (!dirty() || window.confirm('Discard unsaved changes to this definition?')) onClose();
+		if (!dirty()) onClose();
+		else confirmationMode = 'discardChanges';
 	}
 
 	function openNested() {
@@ -247,10 +277,10 @@
 					customBlocks={library.list().filter((item) => item.typeId !== initial.typeId)}
 					draggable={true}
 					onDragStart={dragStart}
-					onDragEnd={() => editor && endPaletteDrag(editor.view)}
+					onDragEnd={() => endPaletteDrag(editor.view)}
 				/>
 				{#if selected && editor}
-					<Inspector block={selected} {editor} {openNested} {syncStructure} />
+					<Inspector block={selected} {editor} {openNested} />
 				{/if}
 			</aside>
 
@@ -263,7 +293,7 @@
 			</section>
 
 			<div class="codeViewSwitch">
-				<Switch values={['structure', 'css']} labels={['Structure', 'CSS']} bind:active={tab} />
+				<Switch values={['css', 'structure']} labels={['CSS', 'Structure']} bind:active={tab} />
 			</div>
 
 			<div class="code-pane">
@@ -271,8 +301,8 @@
 					<div class="json-actions">
 						<strong>Definition JSON</strong>
 						<button class="danger-button" onclick={resetValues}>Reset values to defaults</button>
-						<button onclick={syncStructure}>From preview</button>
-						<button onclick={applyJSON}>Apply JSON</button>
+						<button onclick={fromPreview}>From preview</button>
+						<button onclick={requestApplyJSON}>Apply JSON</button>
 					</div>
 					<CodeEditor
 						language="json"
@@ -302,6 +332,12 @@
 		</footer>
 	</div>
 </div>
+
+<ConfirmDialog
+	bind:open={() => confirmation.open, (v) => (confirmationMode = v ? confirmation.mode : null)}
+	mode={confirmation.mode}
+	action={confirmation.action}
+/>
 
 <style>
 	.overlay {

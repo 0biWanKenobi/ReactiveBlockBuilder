@@ -33,13 +33,24 @@ C1 and C2 overlap: narrowing propagation first reduces the amount of work availa
 
 ## Baseline and measured evidence
 
+These measurements help choose which refactorings to investigate first. They cover three separate application paths: refreshing custom-block instances, updating the definition editor's JSON panel, and checking edits against custom-block protection rules. All timings describe the existing implementation reviewed on **2026-11-09**. No proposed optimization was implemented or timed.
+
+### Existing tests and type checks
+
 Commands executed against unchanged application source:
 
 - `bun test`: **27 passed, 0 failed; 144 assertions across five files**.
 - `bun run check`: **0 errors, 0 warnings**.
-- `bun scripts/benchmark-prepare-document.mjs`: results below.
 
-Existing benchmark uses plain JSON definitions and includes three warmups followed by 15 samples, reporting the median. Fixture construction is outside the timed region; node counts include text nodes. Source: [scripts/benchmark-prepare-document.mjs:62](C:/Users/stefano.laterra/Documents/Coding/ReactiveBlockBuilder/scripts/benchmark-prepare-document.mjs:62), measurement loop at [scripts/benchmark-prepare-document.mjs:80](C:/Users/stefano.laterra/Documents/Coding/ReactiveBlockBuilder/scripts/benchmark-prepare-document.mjs:80).
+These checks establish that the reviewed code passes its existing automated checks. They do not validate the proposed refactorings.
+
+### 1. Refreshing custom-block instances — supports C1 and C2
+
+**Application path.** When a custom-block definition changes, its existing instances need the new layout/classes while keeping their entered text, formula-field references, and image values. `prepareDocument` performs that reconciliation. Definition saving invokes it across stored definitions, and live-editor synchronization invokes it across sheet instances. Sheet import also uses it. The first row below, containing only stock blocks, is a traversal/copying control workload.
+
+**Proposed change.** C1 narrows save propagation to affected definitions; C2 narrows live synchronization to affected instances. Both aim to avoid preparing unrelated trees. This table measures the cost of one existing preparation pass; it does not measure the full Save action or the savings from either proposal.
+
+**Measurement.** `bun scripts/benchmark-prepare-document.mjs` uses plain JSON definitions, with three warmups followed by 15 samples, reporting the median. Fixture construction is outside the timed region; node counts include text nodes. Source: [scripts/benchmark-prepare-document.mjs:62](C:/Users/stefano.laterra/Documents/Coding/ReactiveBlockBuilder/scripts/benchmark-prepare-document.mjs:62), measurement loop at [scripts/benchmark-prepare-document.mjs:80](C:/Users/stefano.laterra/Documents/Coding/ReactiveBlockBuilder/scripts/benchmark-prepare-document.mjs:80).
 
 | Reconciliation workload                       | JSON nodes |  Median |
 | --------------------------------------------- | ---------: | ------: |
@@ -47,7 +58,15 @@ Existing benchmark uses plain JSON definitions and includes three warmups follow
 | 100 instances, 60 leaves each                 |      8,101 | 0.60 ms |
 | 60 parent instances, six nested children each |     12,901 | 1.08 ms |
 
-Additional inline Bun probes used existing ProseMirror fixtures, without creating files:
+**Interpretation.** A single pass is inexpensive in these fixtures: roughly 0.5–1.1 ms for 6,361–12,901 nodes. That supports first reducing how often preparation runs and how much unrelated data it receives. It does not establish that reconciliation is the main source of save latency; the complete save path also snapshots, compares, persists, and updates editor state.
+
+### 2. Updating Definition JSON after preview edits — supports U1
+
+**Application path.** In the custom-block definition modal, typing into the preview or changing a block attribute automatically regenerates the Definition JSON text. That work also runs while the modal's CSS tab is selected and Definition JSON is hidden. Each changed document is converted to JSON, copied/normalized by `ensureNodeIds`, and pretty-printed.
+
+**Proposed change.** U1 separates tracking preview changes from generating the JSON text: mark generated JSON stale while hidden, then regenerate when needed. Coalescing visible updates is a further option to measure. Save and navigation must still read the current preview, and unapplied user-written JSON must remain protected.
+
+**Measurement.** An inline Bun probe reproduced the conversion/copying/stringification pipeline using existing ProseMirror fixtures, without creating files. Each row is one complete JSON regeneration at the stated definition size. CodeMirror updates and browser rendering are outside the timed region.
 
 | Modal serialization pipeline | Generated JSON characters |    Median |
 | ---------------------------- | ------------------------: | --------: |
@@ -57,7 +76,15 @@ Additional inline Bun probes used existing ProseMirror fixtures, without creatin
 
 Pipeline: `JSON.stringify(ensureNodeIds(doc.toJSON().content[0]), null, 2)`, matching the conversion/normalization/stringification within modal synchronization. Each text block had a unique stable ID and the same 62-character string (`Editable text long enough to represent sheet labels and values`); root was a container. Ten warmups, 51 samples, median. The fixture schema supplies default scalar attrs. Sources: [src/lib/custom-blocks/CustomBlockEditorModal.svelte:73](C:/Users/stefano.laterra/Documents/Coding/ReactiveBlockBuilder/src/lib/custom-blocks/CustomBlockEditorModal.svelte:73), [scripts/fixtures/editor.ts:13](C:/Users/stefano.laterra/Documents/Coding/ReactiveBlockBuilder/scripts/fixtures/editor.ts:13).
 
-A second probe compared identical `EditorState.applyTransaction(state.tr.insertText('!', 2))` calls with and without `CustomNodeProtection`. Each sample started from the same immutable state; 20 warmups, 101 samples:
+**Interpretation.** Regenerating the complete JSON takes about 2 ms at 1,000 text blocks and 10.4 ms at 5,000 in this CPU-only probe. Because the modal repeats this after content edits, avoiding hidden-panel regeneration is a concrete performance candidate. These numbers are the cost of the current pipeline, not measured savings or end-to-end typing latency. They do not measure U3's separate CodeMirror string-echo overhead.
+
+### 3. Checking edits against custom-block protection — supports deferring C7
+
+**Application path.** Ordinary document edits pass through `CustomNodeProtection`, which allows value edits while rejecting changes to a custom instance's protected structure/classes. It discovers outer custom instances in the old and new documents on each ordinary document change. The workloads below type one character either in a stock-only sheet or in a stock text block preceding unchanged custom instances.
+
+**Proposed change.** C7 would retain these protection rules while using an incremental index/changed ranges to reduce repeated instance-discovery scans. This is a larger, higher-risk refactoring. The table tests whether the current overhead is large enough to prioritize that work.
+
+**Measurement.** An inline Bun probe compared identical `EditorState.applyTransaction(state.tr.insertText('!', 2))` calls with the protection plugin enabled and disabled. Disabling it is an experimental control to isolate its cost; removing protection is not the proposed change. Each sample started from the same immutable state; 20 warmups, 101 samples:
 
 | Edit workload                                                      | Without protection | With protection |
 | ------------------------------------------------------------------ | -----------------: | --------------: |
@@ -67,7 +94,11 @@ A second probe compared identical `EditorState.applyTransaction(state.tr.insertT
 | Stock edit before 100 unchanged custom instances, 60 leaves each   |          0.0027 ms |       0.0423 ms |
 | Stock edit before 1,000 unchanged custom instances, 60 leaves each |          0.0027 ms |       0.1441 ms |
 
-These are single-machine **Bun 1.3.14 / Windows CPU microbenchmarks**, not browser latency or before/after results. No DOM updates, Svelte scheduling, CodeMirror replacement, layout, paint, or reactive library proxies are included. Sub-millisecond results are sensitive to runtime noise. They support prioritizing serialization over a new protection index, not a promised speedup. Browser behavior suites and production build were not run for this report.
+**Interpretation.** Discovery overhead grows with sheet size, but even the 5,000-stock-block case takes about 0.178 ms with protection here. Its small absolute cost supports deferring C7 until browser profiling shows a problem. The comparison does not predict the performance of an incremental index.
+
+### Limits of these measurements
+
+These are single-machine **Bun 1.3.14 / Windows CPU microbenchmarks**. No DOM updates, Svelte scheduling, CodeMirror replacement, layout, paint, or reactive library proxies are included. Sub-millisecond results are sensitive to runtime noise. The tables measure different operations and workloads, so their times should not be added together or treated as components of one measured user action. Together they motivate investigating U1 before a protection-index rewrite; they supply no before/after speedup claim. Browser behavior suites and production build were not run for this report.
 
 ## Detailed UI findings
 

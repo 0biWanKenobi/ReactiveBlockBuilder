@@ -12,20 +12,17 @@
 	let {
 		block,
 		editor,
-		openNested,
-		syncStructure
+		openNested
 	}: {
 		block: SelectedBlock;
 		editor: Editor;
 		openNested: () => void;
-		syncStructure: () => void;
 	} = $props();
 
 	function updateAttr(attribute: string, value: string) {
 		const node = editor.state.doc.nodeAt(block.pos);
 		if (!node) return false;
 		updateBlockAttribute(editor, block.pos, attribute, value);
-		syncStructure();
 	}
 </script>
 
@@ -68,7 +65,6 @@
 					from: block.pos,
 					to: block.pos + n.nodeSize
 				});
-			syncStructure();
 		}}>Delete selected</button
 	>
 {/if}
