@@ -27,51 +27,65 @@
 	class:playing={mode === 'play'}
 	inert={mode === 'play'}
 >
-	<div class="pane-toolbar">
-		<svg class="pane-tab-shape" viewBox="0 0 88 56" fill="none" aria-hidden="true">
-			<!-- Offset the button's rounded corner to the stroke centerline:
-			     radius = 17px, center = (49.5, 38.5). The 45-degree midpoint
-			     lies on the button's corner diagonal, x + y = 88. -->
-			<path d="M0 .5H87.5V55.5H49.5A17 17 0 0 1 32.5 38.5V21.5C32.5 .5 16.25 .5 0 .5Z" />
-		</svg>
-		<button
-			type="button"
-			class="pane-toggle"
-			aria-label={`${collapsed ? 'Show' : 'Hide'} ${label}`}
-			title={`${collapsed ? 'Show' : 'Hide'} ${label}`}
-			aria-expanded={!collapsed}
-			aria-controls={id}
-			onclick={() => (collapsed = !collapsed)}
-		>
-			<svg
-				width="18"
-				height="18"
-				viewBox="0 0 24 24"
-				fill="none"
-				stroke="currentColor"
-				stroke-width="2"
-				stroke-linecap="round"
-				aria-hidden="true"
-			>
-				<path d="M4 6h16M4 12h16M4 18h16" />
+	<div class="pane-wrapper">
+		<div class="pane-toolbar">
+			<svg class="pane-tab-shape" viewBox="0 0 88 56" fill="none" aria-hidden="true">
+				<!-- Offset the button's rounded corner to the stroke centerline:
+					 radius = 17px, center = (49.5, 38.5). The 45-degree midpoint
+					 lies on the button's corner diagonal, x + y = 88. -->
+				<path d="M0 .5H87.5V55.5H49.5A17 17 0 0 1 32.5 38.5V21.5C32.5 .5 16.25 .5 0 .5Z" />
 			</svg>
-		</button>
-	</div>
-	<div {id} class="pane-content" inert={collapsed || mode === 'play'}>
-		{@render children()}
+			<button
+				type="button"
+				class="pane-toggle"
+				aria-label={`${collapsed ? 'Show' : 'Hide'} ${label}`}
+				title={`${collapsed ? 'Show' : 'Hide'} ${label}`}
+				aria-expanded={!collapsed}
+				aria-controls={id}
+				onclick={() => (collapsed = !collapsed)}
+			>
+				<svg
+					width="18"
+					height="18"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2"
+					stroke-linecap="round"
+					aria-hidden="true"
+				>
+					<path d="M4 6h16M4 12h16M4 18h16" />
+				</svg>
+			</button>
+		</div>
+		<div {id} class="pane-content" inert={collapsed || mode === 'play'}>
+			{@render children()}
+		</div>
 	</div>
 </div>
 
 <style>
+	.pane-wrapper {
+		position: sticky;
+		top: 0;
+		z-index: 5;
+		display: grid;
+		grid-template-columns: minmax(0, 1fr);
+		grid-template-rows: 44px minmax(0, 1fr);
+		height: 100vh;
+		/* The collapsed tab must extend beyond the pane's zero-width column. */
+		overflow: visible;
+		transition:
+			height 460ms ease,
+			grid-template-rows 460ms ease;
+	}
+
 	.side-pane {
 		--pane-tab-width: 88px;
 		--pane-tab-height: 56px;
 		--pane-hide-delay: 460ms;
 		/* Average of the previous 8px side inset and 15px bottom inset. */
 		--pane-toggle-inset: 11.5px;
-		display: grid;
-		grid-template-columns: minmax(0, 1fr);
-		grid-template-rows: 44px 1fr;
 		min-width: 0;
 		min-height: 0;
 		/* The collapsed tab extends into the canvas without reserving a column. */
@@ -79,7 +93,6 @@
 		background: #fbfaf8;
 		border-right: 1px solid #dedad4;
 		transition:
-			grid-template-rows 460ms ease,
 			opacity 240ms ease,
 			border-color 460ms ease,
 			visibility 0s linear;
@@ -89,8 +102,7 @@
 		border-left: 1px solid #dedad4;
 	}
 	.pane-toolbar {
-		position: sticky;
-		top: 0;
+		position: relative;
 		z-index: 5;
 		display: flex;
 		align-items: center;
@@ -129,15 +141,21 @@
 	.pane-content {
 		min-width: 0;
 		min-height: 0;
-		overflow: hidden;
+		overflow-x: hidden;
+		overflow-y: auto;
+		overscroll-behavior-y: contain;
 		opacity: 1;
 		/* Fade throughout expansion, after enough width is available to see it. */
 		transition: opacity 460ms ease-in;
 	}
 	.collapsed {
-		grid-template-rows: 0px 0fr;
 		border-width: 0;
 		background: transparent;
+	}
+	.collapsed .pane-wrapper,
+	.playing .pane-wrapper {
+		height: 0;
+		grid-template-rows: 0px 0fr;
 	}
 	.collapsed .pane-toolbar {
 		width: var(--pane-tab-width);
@@ -173,7 +191,6 @@
 	}
 	.playing {
 		transition-delay: 0s, 0s, 0s, var(--pane-hide-delay);
-		grid-template-rows: 0px 0fr;
 		opacity: 0;
 		visibility: hidden;
 		border-color: transparent;
@@ -204,6 +221,7 @@
 			--pane-hide-delay: 0ms;
 		}
 		.side-pane,
+		.pane-wrapper,
 		.side-pane .pane-content {
 			transition-duration: 0ms;
 		}

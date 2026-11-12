@@ -112,7 +112,7 @@
 	<div class="panel-heading">Block palette</div>
 	<p class="muted">
 		Drag blocks onto the sheet, inside containers or between blocks. Use the canvas gutters for
-		top-level placement. Click to insert at the cursor.
+		top-level placement.
 	</p>
 	<div class="panel-heading">Stock blocks</div>
 	<div class="property">
