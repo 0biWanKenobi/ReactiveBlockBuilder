@@ -12,9 +12,10 @@
 	let lastRoll = $state<RollOutcome | null>(null);
 	let rollError = $state('');
 
-	function roll(exp: string) {
+	function roll() {
+		if (!evaluated.value) return;
 		try {
-			lastRoll = executeRoll(exp);
+			lastRoll = executeRoll(fields, attrs.field);
 			rollError = '';
 		} catch (error) {
 			rollError = error instanceof Error ? error.message : String(error);
@@ -26,20 +27,18 @@
 	{#if evaluated.error}
 		<span class="rbb-formula-error" title={evaluated.error}>⚠ {evaluated.error}</span>
 	{:else if evaluated.value?.rollable}
-		<button class="rbb-roll" type="button" onclick={() => roll(evaluated.value.expression)}
-			>🎲 Roll {attrs.field}</button
-		>
+		<button class="rbb-roll" type="button" onclick={roll}>🎲 Roll {attrs.field}</button>
 		{#if rollError}
 			<span class="rbb-formula-error" title={rollError}>⚠ {rollError}</span>
 		{/if}
 		{#if lastRoll}
 			<strong class="rbb-roll-total">{lastRoll.total}</strong>
 			<small class="rbb-roll-detail">
-				{#each lastRoll.dice as pool, p}
+				{#each lastRoll.dice as pool, p (p)}
 					{#if p > 0}
 						·
 					{/if}
-					[{#each pool.rolls as value, i}{#if i > 0},
+					[{#each pool.rolls as value, i (i)}{#if i > 0},
 						{/if}{#if pool.kept[i]}{value}{:else}<s>{value}</s>{/if}{/each}]
 				{/each}
 			</small>

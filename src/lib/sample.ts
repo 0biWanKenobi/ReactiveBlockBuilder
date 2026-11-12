@@ -6,11 +6,11 @@ export const initialFields: Sheet = {
 	STR: { id: 'STR', formula: '16' },
 	DEX: { id: 'DEX', formula: '12' },
 	PROF: { id: 'PROF', formula: '2' },
-	STR_MOD: { id: 'STR_MOD', formula: 'floor((STR - 10) / 2)' },
-	DEX_MOD: { id: 'DEX_MOD', formula: 'floor((DEX - 10) / 2)' },
-	ATTACK: { id: 'ATTACK', formula: 'STR_MOD + PROF' },
-	DAMAGE: { id: 'DAMAGE', formula: 'kh(4d6, 3) + STR_MOD' },
-	BOOLEAN: { id: 'BOOLEAN', formula: 'STR >= 16' }
+	STR_MOD: { id: 'STR_MOD', formula: 'floor(({STR} - 10) / 2)' },
+	DEX_MOD: { id: 'DEX_MOD', formula: 'floor(({DEX} - 10) / 2)' },
+	ATTACK: { id: 'ATTACK', formula: '{STR_MOD} + {PROF}' },
+	DAMAGE: { id: 'DAMAGE', formula: 'kh(4d6, 3) + {STR_MOD}' },
+	BOOLEAN: { id: 'BOOLEAN', formula: '{STR} >= 16' }
 };
 
 const text = (value: string, classes = 'sheet-text'): JSONContent => ({
