@@ -71,6 +71,11 @@
 		updateBlockAttribute(editor, selected.pos, attribute, value);
 	}
 
+	function setBlockFormula(formulaId: string) {
+		if (!sheet[formulaId]) return;
+		editAttribute('field', formulaId);
+	}
+
 	function removeSelected() {
 		if (!editor || !selected) return;
 		const position = selected.pos;
@@ -135,7 +140,7 @@
 				<input
 					aria-label="Selected formula field"
 					value={String(selected.attrs.field ?? '')}
-					oninput={(event) => editAttribute('field', event.currentTarget.value)}
+					oninput={(event) => setBlockFormula(event.currentTarget.value)}
 				/>
 			</label>
 			<label class="property">
