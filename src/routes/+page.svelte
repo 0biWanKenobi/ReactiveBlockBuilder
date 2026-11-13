@@ -266,7 +266,12 @@
 			{mode}
 			bind:collapsed={rightCollapsed}
 		>
-			<Inspector {mode} {editor} onEditThemeCSS={(type) => (activeStylesheet = type)} />
+			<Inspector
+				{mode}
+				{editor}
+				sheet={fields}
+				onEditThemeCSS={(type) => (activeStylesheet = type)}
+			/>
 		</SidePane>
 	</div>
 </div>

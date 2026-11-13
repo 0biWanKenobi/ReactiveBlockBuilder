@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { executeRoll, resolve, type Sheet, type RollOutcome } from '../formula/engine';
-	type Attrs = { field: string };
+	type Attrs = { field: string; label: string; showLabel: boolean };
 
 	let { attrs, sheet }: { attrs: Attrs; sheet: Sheet } = $props();
 	let evaluated = $derived.by(() => {
@@ -45,6 +45,7 @@
 			</small>
 		{/if}
 	{:else}
-		<span>{String(evaluated.value?.value ?? '—')}</span>
+		{#if attrs.showLabel && attrs.label}<span class="rbb-formula-label">{attrs.label}:</span>{/if}
+		<span class="rbb-formula-value">{String(evaluated.value?.value ?? '—')}</span>
 	{/if}
 </span>

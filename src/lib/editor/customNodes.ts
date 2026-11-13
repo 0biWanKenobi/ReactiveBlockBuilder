@@ -14,7 +14,14 @@ function sameStructure(before: Node, after: Node): boolean {
 	// Stock attributes are scalars, with the same keys for every node of a given type.
 	if (before.attrs !== after.attrs) {
 		for (const key in before.attrs) {
-			if (key === 'field' || key === 'src' || key === 'alt') continue;
+			if (
+				key === 'field' ||
+				key === 'label' ||
+				key === 'showLabel' ||
+				key === 'src' ||
+				key === 'alt'
+			)
+				continue;
 			if (before.attrs[key] !== after.attrs[key]) return false;
 		}
 	}

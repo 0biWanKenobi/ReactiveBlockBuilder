@@ -16,9 +16,9 @@ export function selectedBlock(editor: Pick<Editor, 'state'>): SelectedEditorBloc
 			? { pos: selection.from, block: selection.node }
 			: selection.$from.depth > 0
 				? {
-						pos: selection.$from.before(selection.$from.depth),
-						block: selection.$from.parent
-					}
+					pos: selection.$from.before(selection.$from.depth),
+					block: selection.$from.parent
+				}
 				: null;
 	if (!node) return null;
 	let customParent: number | undefined;
@@ -42,7 +42,7 @@ export function updateBlockAttribute(
 	editor: Editor,
 	pos: number,
 	attribute: string,
-	value: string
+	value: string | boolean
 ): void {
 	const node = editor.state.doc.nodeAt(pos);
 	if (!node) return;

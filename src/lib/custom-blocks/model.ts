@@ -101,7 +101,12 @@ export function prepareDocument<T extends JSONContent>(document: T, library: Blo
 			} else if (template.type === 'textBlock') {
 				result.content = (previous.content ?? []).map(copyNode);
 			} else if (template.type === 'formula') {
-				result.attrs = { ...result.attrs, field: previous.attrs?.field };
+				result.attrs = {
+					...result.attrs,
+					field: previous.attrs?.field,
+					label: previous.attrs?.label,
+					showLabel: previous.attrs?.showLabel
+				};
 			} else if (template.type === 'image') {
 				result.attrs = { ...result.attrs, src: previous.attrs?.src, alt: previous.attrs?.alt };
 			} else if (result.content) {

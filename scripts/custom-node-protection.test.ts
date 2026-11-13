@@ -48,6 +48,30 @@ test('nested custom node structure remains protected', () => {
 	).toHaveLength(0);
 });
 
+test('formula labels and visibility are editable inside direct and nested custom nodes', () => {
+	for (const nested of [false, true]) {
+		const child = schema.node('container', { customNode: true, instanceId: 'child' }, [
+			schema.node('formula', { field: 'STR', showLabel: false })
+		]);
+		let state = stateWith(
+			nested ? schema.node('container', { customNode: true, instanceId: 'parent' }, [child]) : child
+		);
+		const position = nested ? 2 : 1;
+		const edited = state.applyTransaction(state.tr.setNodeAttribute(position, 'label', 'Power'));
+		expect(edited.transactions).toHaveLength(1);
+		state = edited.state;
+		expect(state.doc.nodeAt(position)!.attrs.label).toBe('Power');
+		for (const showLabel of [true, false]) {
+			const result = state.applyTransaction(
+				state.tr.setNodeAttribute(position, 'showLabel', showLabel)
+			);
+			expect(result.transactions).toHaveLength(1);
+			state = result.state;
+			expect(state.doc.nodeAt(position)!.attrs.showLabel).toBe(showLabel);
+		}
+	}
+});
+
 test('only whole selected instances may be removed, including copies with duplicate IDs', () => {
 	const node = instance();
 	const state = stateWith(node, node);

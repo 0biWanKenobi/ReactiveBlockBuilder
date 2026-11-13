@@ -20,7 +20,7 @@ const text = (value: string, classes = 'sheet-text'): JSONContent => ({
 });
 const formula = (field: string, classes = 'sheet-formula'): JSONContent => ({
 	type: 'formula',
-	attrs: { field, class: classes }
+	attrs: { field, label: '', showLabel: false, class: classes }
 });
 const container = (classes: string, children: JSONContent[]): JSONContent => ({
 	type: 'container',

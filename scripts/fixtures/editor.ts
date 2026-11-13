@@ -17,7 +17,16 @@ export const schema = new Schema({
 			content: 'block+',
 			attrs: { ...attrs, typeId: { default: '' }, instanceId: { default: '' } }
 		},
-		formula: { group: 'block', atom: true, attrs: { ...attrs, field: { default: '' } } },
+		formula: {
+			group: 'block',
+			atom: true,
+			attrs: {
+				...attrs,
+				field: { default: '' },
+				label: { default: '' },
+				showLabel: { default: false }
+			}
+		},
 		image: {
 			group: 'block',
 			atom: true,

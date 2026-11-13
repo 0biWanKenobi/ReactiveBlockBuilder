@@ -86,6 +86,35 @@ test('reset values keeps structure and stable identities, including nested nodes
 	expect(reset.content![2].attrs).toMatchObject({ nodeId: 'image', src: '', alt: '' });
 });
 
+test('formula labels and visibility survive custom reconciliation and JSON roundtrips', () => {
+	for (const showLabel of [true, false]) {
+		const child = createDefinition(
+			'Child formula',
+			root({
+				type: 'formula',
+				attrs: { nodeId: 'formula', field: 'STR', label: 'Definition label', showLabel: !showLabel }
+			}),
+			library()
+		);
+		const direct = makeInstance(child);
+		expect(direct.content[0].attrs?.label).toBe('Definition label');
+		const label = showLabel ? 'Power' : '';
+		direct.content[0].attrs!.label = label;
+		direct.content[0].attrs!.showLabel = showLabel;
+		const parent = createDefinition('Parent formula', root(makeInstance(child)), library(child));
+		const nested = makeInstance(parent);
+		nested.content[0].content![0].attrs!.label = label;
+		nested.content[0].content![0].attrs!.showLabel = showLabel;
+		const definitions = library(child, parent);
+		for (const instance of [direct, nested]) {
+			const restored = prepareDocument(JSON.parse(JSON.stringify(instance)), definitions);
+			const formula = instance === direct ? restored.content[0] : restored.content[0].content![0];
+			expect(formula.attrs?.showLabel).toBe(showLabel);
+			expect(formula.attrs?.label).toBe(label);
+		}
+	}
+});
+
 test('definition validator rejects missing, cyclic and invalid references', () => {
 	const child = createDefinition('Child', root(text('label', 'Child')), library());
 	const parent = createDefinition('Parent', root(makeInstance(child)), library(child));

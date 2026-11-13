@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { updateBlockAttribute } from '#lib/editor/selection.ts';
 	import type { Editor } from '@tiptap/core';
+	import Checkbox from '#lib/components/Checkbox.svelte';
 
 	export type SelectedBlock = {
 		pos: number;
@@ -19,7 +20,7 @@
 		openNested: () => void;
 	} = $props();
 
-	function updateAttr(attribute: string, value: string) {
+	function updateAttr(attribute: string, value: string | boolean) {
 		const node = editor.state.doc.nodeAt(block.pos);
 		if (!node) return false;
 		updateBlockAttribute(editor, block.pos, attribute, value);
@@ -38,6 +39,17 @@
 			oninput={(e) => updateAttr('field', e.currentTarget.value)}
 		/></label
 	>
+	<label
+		>Label <input
+			aria-label="Selected formula label"
+			value={String(block.attrs.label ?? '')}
+			oninput={(e) => updateAttr('label', e.currentTarget.value)}
+		/></label
+	>
+	<Checkbox
+		label="Show Label"
+		bind:checked={() => !!block.attrs.showLabel, (value) => updateAttr('showLabel', value)}
+	/>
 {:else if block.type === 'image'}
 	<label
 		>Source <input

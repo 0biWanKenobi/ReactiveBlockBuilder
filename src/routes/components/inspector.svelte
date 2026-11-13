@@ -1,21 +1,24 @@
 <script lang="ts">
 	import '../../styles/shared.css';
 	import type { Editor } from '@tiptap/core';
-	import { allowedNodeTypes, type SheetNodeType } from '#lib';
+	import { allowedNodeTypes, type Sheet, type SheetNodeType } from '#lib';
 	import { selectedBlock, updateBlockAttribute } from '#lib/editor/selection';
 	import type { EditorMode } from './leftSidebar.svelte';
 	import type { StockBlockType } from '#lib/themes/styles';
 	import paletteIcon from '#lib/icons/palette.svg';
 	import trashIcon from '#lib/icons/trash.svg';
 	import { isBlockDragMode } from '#lib/editor/blockInteraction';
+	import Checkbox from '#lib/components/Checkbox.svelte';
 
 	let {
 		mode,
 		editor,
+		sheet,
 		onEditThemeCSS
 	}: {
 		mode: EditorMode;
 		editor: Editor | null;
+		sheet: Sheet;
 		onEditThemeCSS: (type: StockBlockType) => void;
 	} = $props();
 
@@ -27,6 +30,17 @@
 	};
 
 	let selected = $state<SelectedBlock | null>(null);
+
+	const fieldId = $derived(String(selected?.attrs.field));
+	const fieldValue = $derived.by(() => {
+		if (!fieldId) return null;
+		return sheet[fieldId].formula;
+	});
+
+	function updateFieldValue(v: string) {
+		if (!fieldId) return;
+		sheet[fieldId].formula = v;
+	}
 
 	$effect(() => {
 		const current = editor;
@@ -50,7 +64,7 @@
 		};
 	});
 
-	function editAttribute(attribute: string, value: string) {
+	function editAttribute(attribute: string, value: string | boolean) {
 		if (!editor || !selected) return;
 		const node = editor.state.doc.nodeAt(selected.pos);
 		if (!node || node.type.name !== selected.type) return;
@@ -69,9 +83,7 @@
 
 <aside class="sidebar" inert={mode === 'play'}>
 	<div class="panel-heading">Properties</div>
-	{#if mode !== 'design'}
-		<p class="muted">Switch to Design to modify nodes.</p>
-	{:else if selected}
+	{#if selected}
 		{@const selectedType = selected.type}
 		{@const deleteLabel =
 			selected.attrs.customNode && editor && !isBlockDragMode(editor.state)
@@ -126,6 +138,27 @@
 					oninput={(event) => editAttribute('field', event.currentTarget.value)}
 				/>
 			</label>
+			<label class="property">
+				<span>Field Value</span>
+				<input
+					aria-label="Selected formula value"
+					bind:value={() => fieldValue ?? '', updateFieldValue}
+				/>
+			</label>
+			<label class="property">
+				<span>Label</span>
+				<input
+					aria-label="Selected formula label"
+					value={String(selected.attrs.label ?? '')}
+					oninput={(event) => editAttribute('label', event.currentTarget.value)}
+				/>
+			</label>
+			<Checkbox
+				label="Show Label"
+				bind:checked={
+					() => !!selected?.attrs.showLabel, (value) => editAttribute('showLabel', value)
+				}
+			/>
 		{:else if selected.type === 'image'}
 			<label class="property">
 				<span>Image URL</span>

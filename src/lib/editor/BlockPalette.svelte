@@ -53,7 +53,7 @@
 					ondragstart={(event) => onDragStart(event, instance(definition))}
 					ondragend={onDragEnd}
 				>
-					<span class="symbol">◇</span>{definition.name}
+					<span class="symbol">⬡</span>{definition.name}
 				</button>
 				{#if onEdit}
 					<button

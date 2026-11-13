@@ -85,24 +85,33 @@ export function createSheetExtensions(fields: Sheet): Extensions {
 		selectable: true,
 		addAttributes: () => ({
 			...classes('sheet-formula'),
-			field: { default: 'STR_MOD' }
+			field: { default: 'STR_MOD' },
+			label: { default: '' },
+			showLabel: { default: false }
 		}),
 		parseHTML: () => [{ tag: 'cs-formula' }],
 		renderHTML: ({ HTMLAttributes }) => ['cs-formula', HTMLAttributes],
 		addNodeView() {
 			return ({ node }) => {
 				const dom = document.createElement('div');
-				const attrs = reactiveNodeAttrs({ field: String(node.attrs.field ?? '') });
+				const attrs = reactiveNodeAttrs({
+					field: String(node.attrs.field ?? ''),
+					label: String(node.attrs.label ?? ''),
+					showLabel: !!node.attrs.showLabel
+				});
+
 				const updateClasses = nodeViewClasses(dom);
 				updateClasses(node.attrs.class);
 				dom.dataset.sheetBlock = 'formula';
 				dom.contentEditable = 'false';
-				const component = mount(FormulaBlock, { target: dom, props: { attrs, fields } });
+				const component = mount(FormulaBlock, { target: dom, props: { attrs, sheet: fields } });
 				return {
 					dom,
 					update(next) {
 						if (next.type.name !== 'formula') return false;
 						attrs.field = String(next.attrs.field ?? '');
+						attrs.label = String(next.attrs.label ?? '');
+						attrs.showLabel = !!next.attrs.showLabel;
 						updateClasses(next.attrs.class);
 						return true;
 					},
