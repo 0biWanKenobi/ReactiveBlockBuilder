@@ -20,7 +20,7 @@
 	import type { Sheet } from '../lib/index';
 	import LeftSidebar from './components/leftSidebar.svelte';
 	import MainPane from './components/mainPane/mainPane.svelte';
-	import Inspector from './components/inspector.svelte';
+	import Inspector from './components/rightSidebar.svelte';
 	import SidePane from './components/sidePane/sidePane.svelte';
 	import Switch from '#lib/components/Switch.svelte';
 	import type { ThemeStylesheet } from '#lib/themes/styles';
