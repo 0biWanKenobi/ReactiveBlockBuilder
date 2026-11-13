@@ -1,10 +1,11 @@
 <script lang="ts">
 	import { executeRoll, resolve, type Sheet, type RollOutcome } from '../formula/engine';
+	type Attrs = { field: string };
 
-	let { attrs, fields }: { attrs: { field: string }; fields: Sheet } = $props();
+	let { attrs, sheet }: { attrs: Attrs; sheet: Sheet } = $props();
 	let evaluated = $derived.by(() => {
 		try {
-			return { value: resolve(fields, attrs.field), error: '' };
+			return { value: resolve(sheet, attrs.field), error: '' };
 		} catch (error) {
 			return { value: null, error: error instanceof Error ? error.message : String(error) };
 		}
@@ -15,7 +16,7 @@
 	function roll() {
 		if (!evaluated.value) return;
 		try {
-			lastRoll = executeRoll(fields, attrs.field);
+			lastRoll = executeRoll(sheet, attrs.field);
 			rollError = '';
 		} catch (error) {
 			rollError = error instanceof Error ? error.message : String(error);
