@@ -1,22 +1,24 @@
 <script lang="ts">
+	import type { Snippet } from 'svelte';
+
 	export type DialogButton = {
 		text: string;
 		primary?: boolean;
 		danger?: boolean;
+		keepOpen?: boolean;
 		action?: () => void;
 	};
 
-	let {
-		open = $bindable(false),
-		title,
-		message,
-		buttons
-	}: {
+	type BaseDialogProps = {
 		open?: boolean;
 		title: string;
-		message: string;
-		buttons: readonly DialogButton[];
-	} = $props();
+		buttons?: readonly DialogButton[];
+	};
+
+	type DialogProps = BaseDialogProps &
+		({ message: string; children?: never } | { message?: never; children: Snippet });
+
+	let { open = $bindable(false), title, message, children, buttons = [] }: DialogProps = $props();
 
 	const id = $props.id();
 	let dialog = $state<HTMLDialogElement>();
@@ -33,7 +35,7 @@
 	}
 
 	function choose(button: DialogButton) {
-		close();
+		if (!button.keepOpen) close();
 		button.action?.();
 	}
 </script>
@@ -55,10 +57,11 @@
 		<div class="dialog-icon" aria-hidden="true">?</div>
 		<div class="dialog-copy">
 			<h2 id={`${id}-title`}>{title}</h2>
-			<p id={`${id}-message`}>{message}</p>
+			<p id={`${id}-message`} class:hidden={!message}>{message}</p>
 		</div>
+		{@render children?.()}
 	</div>
-	<div class="dialog-actions">
+	<div class="dialog-actions" class:hidden={!buttons.length}>
 		{#each buttons as button, index (index)}
 			<button
 				type="button"
@@ -71,6 +74,9 @@
 </dialog>
 
 <style>
+	.hidden {
+		display: none;
+	}
 	.confirmation-dialog {
 		box-sizing: border-box;
 		width: min(480px, calc(100vw - 32px));
@@ -160,6 +166,7 @@
 		font-size: 0.8rem;
 		font-weight: 600;
 		cursor: pointer;
+		user-select: none;
 	}
 	button:hover {
 		filter: brightness(0.97);
