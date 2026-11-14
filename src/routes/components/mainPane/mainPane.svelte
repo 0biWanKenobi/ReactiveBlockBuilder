@@ -157,6 +157,8 @@
 		margin: 8px;
 	}
 	.main-pane {
+		/* The collapsed inspector tab shares this cell at tablet widths. */
+		grid-area: 1 / 2;
 		display: flex;
 		flex-direction: column;
 		padding: 23px;
