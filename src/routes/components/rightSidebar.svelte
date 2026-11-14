@@ -185,12 +185,6 @@
 	{:else}
 		<p class="muted">Select a text, formula, image or container block to edit its properties.</p>
 	{/if}
-	<div class="separator"></div>
-	<div class="panel-heading">Notes</div>
-	<p class="muted">
-		The editor uses only our registered nodes. The formulas are shared reactive state, not copied
-		into Tiptap nodes.
-	</p>
 </aside>
 
 <style>
