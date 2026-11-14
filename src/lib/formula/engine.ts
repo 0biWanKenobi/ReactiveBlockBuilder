@@ -75,13 +75,14 @@ function synchronize(sheet: Sheet, id: string): FormulaContext {
 	return wasm;
 }
 
+/** @public */
 export function deleteField(sheet: Sheet, id: string) {
 	const context = contexts.get(sheet);
 	context?.wasm.remove(id);
 	context?.sources.delete(id);
 	delete sheet[id];
 }
-
+/** @public */
 export function releaseSheet(sheet: Sheet) {
 	contexts.get(sheet)?.wasm.free();
 	contexts.delete(sheet);
