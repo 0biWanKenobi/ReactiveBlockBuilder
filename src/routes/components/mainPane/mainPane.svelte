@@ -14,7 +14,7 @@
 
 	let {
 		mode,
-		editor = $bindable(null),
+		editor,
 		fields = $bindable(),
 		library,
 		repository,
@@ -24,7 +24,7 @@
 		onSaveAsCustomBlock
 	}: {
 		mode: EditorMode;
-		editor: Editor | null;
+		editor: Editor;
 		fields: Sheet;
 		library: CustomBlockLibrary;
 		repository: CustomBlockRepository;
@@ -40,26 +40,15 @@
 	let contextCoords = $state({ x: 0, y: 0 });
 
 	onMount(() => {
-		const instance = new Editor({
-			element: canvas,
-			extensions: createSheetExtensions(fields),
-			content: sampleDocument,
-			editable: true,
-			autofocus: false,
-			editorProps: {
-				attributes: { class: 'sheet-document', 'aria-label': 'Character sheet block editor' }
-			}
-		});
-		editor = instance;
+		editor.mount(canvas);
 
 		return () => {
-			instance.destroy();
-			editor = null;
+			editor.destroy();
 		};
 	});
 
 	function contextMenu(event: MouseEvent) {
-		if (!editor || mode !== 'design') return;
+		if (mode !== 'design') return;
 		const target =
 			event.target instanceof Element
 				? event.target.closest('section[data-sheet-container]')
@@ -82,13 +71,11 @@
 	}
 
 	$effect(() => {
-		if (!editor) return;
 		setBlockDragMode(editor.view, mode === 'design' && designTool === 'drag');
 		editor.setEditable(mode === 'design');
 	});
 
 	function selectContainer() {
-		if (!editor) return;
 		const from = editor.state.selection.$from;
 		for (let depth = from.depth; depth > 0; depth--) {
 			if (from.node(depth).type.name === 'container') {

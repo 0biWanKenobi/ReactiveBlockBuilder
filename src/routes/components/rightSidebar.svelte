@@ -17,7 +17,7 @@
 		onEditThemeCSS
 	}: {
 		mode: EditorMode;
-		editor: Editor | null;
+		editor: Editor;
 		sheet: Sheet;
 		onEditThemeCSS: (type: StockBlockType) => void;
 	} = $props();
@@ -43,14 +43,8 @@
 	}
 
 	$effect(() => {
-		const current = editor;
-		if (!current) {
-			selected = null;
-			return;
-		}
-
 		const synchronizeSelection = () => {
-			const found = selectedBlock(current);
+			const found = selectedBlock(editor);
 			selected =
 				found && allowedNodeTypes.includes(found.type as SheetNodeType)
 					? { ...found, type: found.type as SheetNodeType }
@@ -58,14 +52,14 @@
 		};
 
 		synchronizeSelection();
-		current.on('transaction', synchronizeSelection);
+		editor.on('transaction', synchronizeSelection);
 		return () => {
-			current.off('transaction', synchronizeSelection);
+			editor.off('transaction', synchronizeSelection);
 		};
 	});
 
 	function editAttribute(attribute: string, value: string | boolean) {
-		if (!editor || !selected) return;
+		if (!selected) return;
 		const node = editor.state.doc.nodeAt(selected.pos);
 		if (!node || node.type.name !== selected.type) return;
 		updateBlockAttribute(editor, selected.pos, attribute, value);
@@ -77,7 +71,7 @@
 	}
 
 	function removeSelected() {
-		if (!editor || !selected) return;
+		if (!selected) return;
 		const position = selected.pos;
 		const node = editor.state.doc.nodeAt(position);
 		if (!node) return;
@@ -91,7 +85,7 @@
 	{#if selected}
 		{@const selectedType = selected.type}
 		{@const deleteLabel =
-			selected.attrs.customNode && editor && !isBlockDragMode(editor.state)
+			selected.attrs.customNode && !isBlockDragMode(editor.state)
 				? 'Delete custom block'
 				: 'Delete selected block'}
 		<div class="selection-heading">

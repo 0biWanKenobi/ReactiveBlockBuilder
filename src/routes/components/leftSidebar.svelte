@@ -30,7 +30,7 @@
 		library: CustomBlockLibrary;
 		repository: CustomBlockRepository;
 		sheet: Sheet;
-		editor: Editor | null;
+		editor: Editor;
 		onDragPaletteBlock: (res: OpResult) => void;
 		onBlockEdit: (block: CustomBlockDefinition) => void;
 		onBlockDelete: (res: OpResult) => Promise<void>;
@@ -58,11 +58,11 @@
 	}
 
 	function _onDragPaletteBlock(event: DragEvent, block: TypedNode) {
-		if (!editor || mode !== 'design') {
+		if (mode !== 'design') {
 			event.preventDefault();
 			onDragPaletteBlock({
 				success: false,
-				message: 'Editor is not initialized or mode is not Design'
+				message: 'Only available in Design Mode'
 			});
 			return;
 		}
@@ -77,10 +77,6 @@
 				message: `Cannot drag block: ${error instanceof Error ? error.message : String(error)}`
 			});
 		}
-	}
-
-	function onFinishPaletteDrag() {
-		if (editor) endPaletteDrag(editor.view);
 	}
 
 	async function _onBlockDelete(definition: CustomBlockDefinition) {
@@ -132,7 +128,7 @@
 		customBlocks={library.definitions}
 		draggable={mode === 'design'}
 		onDragStart={_onDragPaletteBlock}
-		onDragEnd={onFinishPaletteDrag}
+		onDragEnd={() => endPaletteDrag(editor.view)}
 		onEdit={onBlockEdit}
 		onDelete={_onBlockDelete}
 	/>

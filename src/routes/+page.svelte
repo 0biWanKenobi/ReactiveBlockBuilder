@@ -14,9 +14,9 @@
 	} from '../lib/custom-blocks/model';
 	import type { CustomBlockDefinition, PopulatedNode } from '../lib/custom-blocks/types';
 	import { synchronizeCustomNodes } from '../lib/editor/customNodes';
-	import type { Editor, JSONContent } from '@tiptap/core';
+	import { Editor, type JSONContent } from '@tiptap/core';
 	import type { Transaction } from '@tiptap/pm/state';
-	import { initialFields } from '../lib/index';
+	import { createSheetExtensions, initialFields, sampleDocument } from '../lib/index';
 	import type { Sheet } from '../lib/index';
 	import LeftSidebar from './components/leftSidebar.svelte';
 	import MainPane from './components/mainPane/mainPane.svelte';
@@ -25,11 +25,23 @@
 	import Switch from '#lib/components/Switch.svelte';
 	import type { ThemeStylesheet } from '#lib/themes/styles';
 
-	let editor = $state<Editor | null>(null);
+	let fields = $state<Sheet>(structuredClone(initialFields));
+	let editor = $state<Editor>(
+		new Editor({
+			editable: true,
+			// svelte-ignore state_referenced_locally
+			// capturing initial value is intentional
+			extensions: createSheetExtensions(fields),
+			content: sampleDocument,
+			autofocus: false,
+			editorProps: {
+				attributes: { class: 'sheet-document', 'aria-label': 'Character sheet block editor' }
+			}
+		})
+	);
 	let mode = $state<'design' | 'play'>('design');
 	let leftCollapsed = $state(false);
 	let rightCollapsed = $state(false);
-	let fields = $state<Sheet>(structuredClone(initialFields));
 	const library = new CustomBlockLibrary();
 	const repository = new CustomBlockRepository(new LocalStorageAdapter());
 	let blockCSS = $state<Record<string, string>>({});
@@ -45,16 +57,14 @@
 	let activeStylesheet = $state<ThemeStylesheet>('base');
 
 	$effect(() => {
-		if (!editor) return;
-		const current = editor;
 		const mapConversion = ({ transaction }: { transaction: Transaction }) => {
 			if (pendingConversion !== null && transaction.docChanged) {
 				pendingConversion = transaction.mapping.map(pendingConversion);
 			}
 		};
-		current.on('transaction', mapConversion);
+		editor.on('transaction', mapConversion);
 		return () => {
-			current.off('transaction', mapConversion);
+			editor.off('transaction', mapConversion);
 		};
 	});
 
@@ -67,6 +77,10 @@
 				message = `Storage initialization failed: ${error instanceof Error ? error.message : String(error)}`;
 			}
 		})();
+
+		return () => {
+			editor = null as any;
+		};
 	});
 
 	async function reloadBlockStyles() {
@@ -82,7 +96,6 @@
 	}
 
 	function startNewDefinition(pos: number) {
-		if (!editor) return;
 		const node = editor.state.doc.nodeAt(pos);
 		if (!node || node.type.name !== 'container' || !node.childCount) return;
 		const structure = ensureNodeIds(node.toJSON() as PopulatedNode<'container'>);
@@ -111,7 +124,6 @@
 	}
 
 	function replaceOriginal(pos: number, typeId: string) {
-		if (!editor) return;
 		const definition = library.clone(typeId)!;
 		const original = editor.state.doc.nodeAt(pos)!;
 		const instance = makeInstance(definition);
@@ -166,7 +178,7 @@
 				await repository.save(synchronized);
 				library.upsert(synchronized);
 			}
-			if (editor) synchronizeCustomNodes(editor, library);
+			synchronizeCustomNodes(editor, library);
 			await reloadBlockStyles();
 			if (definitionTrail.length) {
 				const previous = definitionTrail.at(-1)!;
@@ -249,7 +261,7 @@
 
 		<MainPane
 			{mode}
-			bind:editor
+			{editor}
 			bind:fields
 			{library}
 			{repository}

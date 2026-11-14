@@ -21,7 +21,7 @@
 		onMessage
 	}: {
 		mode: EditorMode;
-		editor: Editor | null;
+		editor: Editor;
 		fields: Sheet;
 		library: CustomBlockLibrary;
 		repository: CustomBlockRepository;
@@ -59,7 +59,6 @@
 	}
 
 	function exportSheet() {
-		if (!editor) return;
 		const saved: SavedSheet = {
 			version: 1,
 			themeId: DEFAULT_THEME,
@@ -91,7 +90,6 @@
 	}
 
 	function importSheet() {
-		if (!editor) return;
 		try {
 			const imported: SavedSheet = JSON.parse(jsonSource);
 			if (

@@ -192,7 +192,7 @@
 	function resetValues() {
 		try {
 			const reset = resetLeafDefaults(currentStructure());
-			editor?.commands.setContent({ type: 'doc', content: [reset] });
+			editor.commands.setContent({ type: 'doc', content: [reset] });
 			syncStructure();
 			error = '';
 		} catch (cause) {
@@ -279,7 +279,7 @@
 					onDragStart={dragStart}
 					onDragEnd={() => endPaletteDrag(editor.view)}
 				/>
-				{#if selected && editor}
+				{#if selected}
 					<Inspector block={selected} {editor} {openNested} />
 				{/if}
 			</aside>
