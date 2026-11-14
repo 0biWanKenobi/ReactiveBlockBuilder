@@ -3,7 +3,7 @@ import { chromium } from 'playwright';
 
 const browser = await chromium.launch({ headless: true });
 try {
-	for (const width of [1440, 900, 600]) {
+	for (const width of [1440, 1001, 1000, 900, 621, 620, 600]) {
 		const page = await browser.newPage({ viewport: { width, height: 700 } });
 		const errors = [];
 		page.on('pageerror', (error) => errors.push(error.message));
@@ -12,12 +12,28 @@ try {
 
 		const left = page.locator('.side-pane').first();
 		const right = page.locator('.side-pane.right');
+		const main = page.locator('.main-pane');
 		const canvas = page.locator('.sheet-frame');
 		const initialWidth = (await canvas.boundingBox()).width;
 		await page.getByLabel('New field identifier').fill('UNSAVED_DRAFT');
 		await page.evaluate(() => {
 			window.originalEditor = document.querySelector('.sheet-content .tiptap');
 		});
+
+		const initialMain = await main.boundingBox();
+		await page.getByRole('button', { name: 'Hide inspector', exact: true }).click();
+		await page.waitForTimeout(550);
+		if (width > 620) {
+			const collapsedMain = await main.boundingBox();
+			assert.equal(collapsedMain.x, initialMain.x, 'Center stays in its column');
+			assert.equal(collapsedMain.y, initialMain.y, 'Center stays in the first row');
+			assert(
+				collapsedMain.width >= initialMain.width,
+				'Collapsing inspector preserves center width'
+			);
+		}
+		await page.getByRole('button', { name: 'Show inspector', exact: true }).click();
+		await page.waitForTimeout(550);
 
 		await page.getByRole('button', { name: 'Hide block palette', exact: true }).click();
 		await page.waitForTimeout(550);
@@ -39,11 +55,26 @@ try {
 			await page.getByRole('button', { name: 'Show inspector', exact: true }).isVisible(),
 			true
 		);
+		if (width > 620) {
+			const layout = await page.locator('.editor-layout').boundingBox();
+			const collapsedMain = await main.boundingBox();
+			assert.equal(
+				collapsedMain.x,
+				layout.x,
+				'Center starts at the left with both panes collapsed'
+			);
+			assert.equal(
+				collapsedMain.y,
+				layout.y,
+				'Center stays in the first row with both panes collapsed'
+			);
+			assert.equal(collapsedMain.width, layout.width, 'Center fills the available width');
+		}
 		if (width > 1000) {
 			assert.equal(Math.round((await right.boundingBox()).width), 0);
 			assert.equal(
 				Math.round((await canvas.boundingBox()).width),
-				width - 46,
+				(await page.locator('.main-pane').evaluate((pane) => pane.clientWidth)) - 46,
 				'Canvas uses both collapsed columns'
 			);
 		}
@@ -55,13 +86,19 @@ try {
 		const rightTab = await page
 			.getByRole('button', { name: 'Show inspector', exact: true })
 			.boundingBox();
+		const availableWidth = await page.evaluate(() => document.documentElement.clientWidth);
 		assert.equal(leftTab.x, 11.5);
-		assert.equal(rightTab.x + rightTab.width, width - 11.5);
-		assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), width);
+		assert.equal(rightTab.x + rightTab.width, availableWidth - 11.5);
+		assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), availableWidth);
 		if (width > 1000) {
-			await page.evaluate(() => window.scrollTo(0, 220));
+			const toolbarTop = (await page.locator('.topbar').boundingBox()).height;
+			await page.locator('.main-pane').evaluate((pane) => pane.scrollTo(0, 220));
 			for (const toolbar of await page.locator('.pane-toolbar').all()) {
-				assert.equal(Math.round((await toolbar.boundingBox()).y), 0, 'Collapsed tabs stay sticky');
+				assert.equal(
+					Math.round((await toolbar.boundingBox()).y),
+					Math.round(toolbarTop),
+					'Collapsed tabs stay below the topbar while the center scrolls'
+				);
 			}
 		}
 
@@ -98,12 +135,13 @@ try {
 			true
 		);
 		if (width > 1000) {
-			await page.evaluate(() => window.scrollTo(0, 220));
+			const toolbarTop = (await page.locator('.topbar').boundingBox()).height;
+			await page.locator('.main-pane').evaluate((pane) => pane.scrollTo(0, 220));
 			for (const toolbar of await page.locator('.pane-toolbar').all()) {
 				assert.equal(
 					Math.round((await toolbar.boundingBox()).y),
-					0,
-					'Burger stays at the top while scrolling'
+					Math.round(toolbarTop),
+					'Burger stays below the topbar while the center scrolls'
 				);
 			}
 		}

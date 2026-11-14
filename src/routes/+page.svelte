@@ -339,10 +339,11 @@
 	.workspace {
 		display: flex;
 		flex-direction: column;
-		min-height: 100dvh;
+		height: 100dvh;
 	}
 	.topbar {
 		display: flex;
+		flex-shrink: 0;
 		justify-content: space-between;
 		gap: 20px;
 		align-items: center;
@@ -437,6 +438,10 @@
 		}
 	}
 	@media (max-width: 620px) {
+		.workspace {
+			height: auto;
+			min-height: 100dvh;
+		}
 		.topbar {
 			flex-direction: column;
 			align-items: flex-start;

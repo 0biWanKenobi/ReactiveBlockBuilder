@@ -72,7 +72,7 @@
 		display: grid;
 		grid-template-columns: minmax(0, 1fr);
 		grid-template-rows: 44px minmax(0, 1fr);
-		height: 100vh;
+		height: 100%;
 		/* The collapsed tab must extend beyond the pane's zero-width column. */
 		overflow: visible;
 		transition:
@@ -210,7 +210,18 @@
 			border-width: 0;
 		}
 	}
+	@media (min-width: 621px) and (max-width: 1000px) {
+		.right.collapsed {
+			grid-area: 1 / 2;
+			justify-self: end;
+			width: 0;
+			height: 0;
+		}
+	}
 	@media (max-width: 620px) {
+		.pane-wrapper {
+			height: 100dvh;
+		}
 		.side-pane {
 			width: 100%;
 			flex-shrink: 0;

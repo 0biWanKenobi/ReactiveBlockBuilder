@@ -161,6 +161,9 @@
 		flex-direction: column;
 		padding: 23px;
 		min-width: 0;
+		min-height: 0;
+		overflow-y: auto;
+		overscroll-behavior-y: contain;
 		transition: padding 460ms ease;
 	}
 	.pane-title,
@@ -279,6 +282,7 @@
 	@media (max-width: 620px) {
 		.main-pane {
 			width: 100%;
+			overflow: visible;
 		}
 	}
 </style>
