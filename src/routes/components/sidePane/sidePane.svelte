@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import type { EditorMode } from '../leftSidebar.svelte';
+	import { clickOutside } from '#lib/directives/clickOutside';
 	import './style.css';
 
 	let {
@@ -9,6 +10,7 @@
 		side,
 		mode,
 		collapsed = $bindable(false),
+		outsideDismissed = $bindable(false),
 		children
 	}: {
 		id: string;
@@ -16,14 +18,19 @@
 		side: 'left' | 'right';
 		mode: EditorMode;
 		collapsed?: boolean;
+		outsideDismissed?: boolean;
 		children: Snippet;
 	} = $props();
 </script>
 
 <div
 	class="side-pane"
+	use:clickOutside={() => {
+		if (side === 'right') outsideDismissed = true;
+	}}
 	class:right={side === 'right'}
 	class:collapsed
+	class:outside-dismissed={outsideDismissed}
 	class:playing={mode === 'play'}
 	inert={mode === 'play'}
 >
@@ -42,7 +49,10 @@
 				title={`${collapsed ? 'Show' : 'Hide'} ${label}`}
 				aria-expanded={!collapsed}
 				aria-controls={id}
-				onclick={() => (collapsed = !collapsed)}
+				onclick={() => {
+					collapsed = !collapsed;
+					outsideDismissed = false;
+				}}
 			>
 				<svg
 					width="18"
@@ -198,24 +208,61 @@
 	}
 	@media (max-width: 1000px) {
 		.right {
-			grid-column: 1 / -1;
+			position: fixed;
+			inset: auto 0 0;
+			z-index: 40;
+			width: 100%;
+			height: min(60dvh, 520px);
+			max-height: none;
+			overflow: hidden;
+			border-radius: 14px 14px 0 0;
+			background: #fbfaf8;
 			border-left: 0;
 			border-top: 1px solid #dedad4;
+			box-shadow: 0 -8px 32px #332c2426;
+			transform: translateY(0);
+			opacity: 1;
+			visibility: visible;
+			transition:
+				transform 360ms cubic-bezier(0.2, 0.7, 0.2, 1),
+				visibility 0s;
 		}
-		.playing {
+		.right:is(.collapsed, .outside-dismissed, .playing) {
+			transform: translateY(100%);
+			visibility: hidden;
+			pointer-events: none;
+			transition-delay: 0s, 360ms;
+		}
+		.right .pane-wrapper {
+			position: relative;
+			height: 100%;
+			grid-template-rows: 44px minmax(0, 1fr);
+			transition: none;
+		}
+		.right .pane-toolbar {
+			justify-self: stretch;
+			width: auto;
+			height: 44px;
+			padding: 5px;
+			background: #fbfaf8;
+			pointer-events: auto;
+		}
+		.right .pane-tab-shape {
+			display: none;
+		}
+		.right .pane-toggle {
+			position: static;
+		}
+		.right .pane-content {
+			opacity: 1;
+			transition: none;
+		}
+		.playing:not(.right) {
 			max-height: 0;
 			border-width: 0;
 		}
 		.collapsed {
 			border-width: 0;
-		}
-	}
-	@media (min-width: 621px) and (max-width: 1000px) {
-		.right.collapsed {
-			grid-area: 1 / 2;
-			justify-self: end;
-			width: 0;
-			height: 0;
 		}
 	}
 	@media (max-width: 620px) {
@@ -235,6 +282,7 @@
 		.pane-wrapper,
 		.side-pane .pane-content {
 			transition-duration: 0ms;
+			transition-delay: 0ms;
 		}
 	}
 </style>

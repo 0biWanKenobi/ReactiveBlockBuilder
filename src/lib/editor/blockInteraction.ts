@@ -6,12 +6,17 @@ import { selectedBlock } from './selection';
 export const blockSelector = 'section[data-sheet-container], [data-sheet-text], [data-sheet-block]';
 export const blockTypes = new Set(['container', 'textBlock', 'formula', 'image']);
 const dragModeKey = new PluginKey<boolean>('rbbBlockDragMode');
-const hoverKey = new PluginKey<number | null>('rbbHoveredBlock');
+type BlockHover = { gutter: number | null; context: number | null };
+const hoverKey = new PluginKey<BlockHover>('rbbHoveredBlock');
 
-/** Gutter hover uses known handle positions; ordinary sheet hover stays in CSS. */
-function setGutterHover(view: EditorView, pos: number | null): void {
-	if (hoverKey.getState(view.state) === pos) return;
-	view.dispatch(view.state.tr.setMeta(hoverKey, pos).setMeta('addToHistory', false));
+/** Keep menu previews independent of the drag gutter's pointer tracking. */
+function setBlockHover(view: EditorView, source: keyof BlockHover, pos: number | null): void {
+	if (hoverKey.getState(view.state)?.[source] === pos) return;
+	view.dispatch(view.state.tr.setMeta(hoverKey, { [source]: pos }).setMeta('addToHistory', false));
+}
+
+export function setContextBlockHover(view: EditorView, pos: number | null): void {
+	setBlockHover(view, 'context', pos);
 }
 
 /** The rail and block are separate subtrees; their physical gap is still a hover target. */
@@ -34,18 +39,18 @@ export function createGutterHover(
 	getAnchor: () => { element: HTMLElement; from: number } | undefined
 ) {
 	function clear() {
-		setGutterHover(view, null);
+		setBlockHover(view, 'gutter', null);
 	}
 
 	function handleOver(event: Event) {
 		if (rail.hidden || !isBlockDragMode(view.state)) return;
-		setGutterHover(view, getTarget(event)?.from ?? getAnchor()?.from ?? null);
+		setBlockHover(view, 'gutter', getTarget(event)?.from ?? getAnchor()?.from ?? null);
 	}
 
 	function handleOut(event: MouseEvent) {
 		if (rail.hidden || !isBlockDragMode(view.state)) return;
 		if (event.relatedTarget instanceof Node && rail.contains(event.relatedTarget)) return;
-		setGutterHover(view, getAnchor()?.from ?? null);
+		setBlockHover(view, 'gutter', getAnchor()?.from ?? null);
 	}
 
 	function keepVisible(event: MouseEvent): boolean {
@@ -53,7 +58,7 @@ export function createGutterHover(
 		if (event.target instanceof Node && rail.contains(event.target)) return true;
 		const anchor = getAnchor();
 		if (!anchor || !withinGutterBridge(event, rail, anchor.element)) return false;
-		setGutterHover(view, anchor.from);
+		setBlockHover(view, 'gutter', anchor.from);
 		return true;
 	}
 
@@ -145,14 +150,14 @@ export const BlockInteraction = Extension.create({
 		let decoratedDocument: EditorState['doc'] | undefined;
 		let dragDecorations = DecorationSet.empty;
 		return [
-			new Plugin<number | null>({
+			new Plugin<BlockHover>({
 				key: hoverKey,
 				state: {
-					init: () => null,
+					init: () => ({ gutter: null, context: null }),
 					apply(transaction, current) {
-						if (transaction.docChanged) return null;
+						if (transaction.docChanged) return { gutter: null, context: null };
 						const next = transaction.getMeta(hoverKey);
-						return next === undefined ? current : next;
+						return next === undefined ? current : { ...current, ...next };
 					}
 				},
 				props: {
@@ -170,12 +175,15 @@ export const BlockInteraction = Extension.create({
 								})
 							);
 						}
-						const pos = hoverKey.getState(state);
-						const node = pos === null || pos === undefined ? null : state.doc.nodeAt(pos);
-						if (node && pos !== null && pos !== undefined && blockTypes.has(node.type.name)) {
-							decorations.push(
-								Decoration.node(pos, pos + node.nodeSize, { 'data-rbb-hovered': '' })
-							);
+						const hover = hoverKey.getState(state);
+						for (const [attribute, pos] of [
+							['data-rbb-hovered', hover?.gutter],
+							['data-rbb-context-hovered', hover?.context]
+						] as const) {
+							const node = pos === null || pos === undefined ? null : state.doc.nodeAt(pos);
+							if (node && pos !== null && pos !== undefined && blockTypes.has(node.type.name)) {
+								decorations.push(Decoration.node(pos, pos + node.nodeSize, { [attribute]: '' }));
+							}
 						}
 						return DecorationSet.create(state.doc, decorations);
 					}

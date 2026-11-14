@@ -43,7 +43,7 @@ export async function testTextSpans(page) {
 		await page.getByRole('button', { name: 'Edit', exact: true }).click();
 
 		await canvas.locator('.span-test-row').click({ button: 'right' });
-		await page.getByRole('button', { name: 'Save as custom block', exact: true }).click();
+		await page.getByRole('menuitem', { name: 'Save as custom block', exact: true }).click();
 		await modal.waitFor({ state: 'visible' });
 		const layouts = await page.evaluate(() => {
 			return ['.main-pane', '.rbb-definition-preview'].map((selector) => {

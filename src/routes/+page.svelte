@@ -20,7 +20,7 @@
 	import type { Sheet } from '../lib/index';
 	import LeftSidebar from './components/leftSidebar.svelte';
 	import MainPane from './components/mainPane/mainPane.svelte';
-	import Inspector from './components/rightSidebar.svelte';
+	import RightSidebar from './components/rightSidebar.svelte';
 	import SidePane from './components/sidePane/sidePane.svelte';
 	import Switch from '#lib/components/Switch.svelte';
 	import type { ThemeStylesheet } from '#lib/themes/styles';
@@ -42,6 +42,7 @@
 	let mode = $state<'design' | 'play'>('design');
 	let leftCollapsed = $state(false);
 	let rightCollapsed = $state(false);
+	let rightDismissed = $state(false);
 	const library = new CustomBlockLibrary();
 	const repository = new CustomBlockRepository(new LocalStorageAdapter());
 	let blockCSS = $state<Record<string, string>>({});
@@ -269,6 +270,10 @@
 			bind:activeStylesheet
 			bind:message
 			onSaveAsCustomBlock={startNewDefinition}
+			onViewProperties={() => {
+				rightCollapsed = false;
+				rightDismissed = false;
+			}}
 		/>
 
 		<SidePane
@@ -277,8 +282,9 @@
 			side="right"
 			{mode}
 			bind:collapsed={rightCollapsed}
+			bind:outsideDismissed={rightDismissed}
 		>
-			<Inspector
+			<RightSidebar
 				{mode}
 				{editor}
 				sheet={fields}
@@ -435,6 +441,9 @@
 		.editor-layout {
 			--left-pane-width: 190px;
 			grid-template-columns: var(--left-pane-width) minmax(0, 1fr);
+		}
+		.editor-layout.right-collapsed {
+			--right-toggle-inset: 0px;
 		}
 	}
 	@media (max-width: 620px) {

@@ -2,15 +2,15 @@
 	import { onMount } from 'svelte';
 	import '#lib/editor/blockInteraction.css';
 	import { Editor } from '@tiptap/core';
-	import { createSheetExtensions, sampleDocument, type Sheet } from '#lib';
+	import type { Sheet } from '#lib';
 	import type { CustomBlockLibrary } from '#lib/custom-blocks/library.svelte';
 	import type { CustomBlockRepository } from '#lib/custom-blocks/repository';
-	import { clickOutside } from '#lib/directives/clickOutside';
-	import { blockBoundary, setBlockDragMode } from '#lib/editor/blockInteraction';
+	import { setBlockDragMode } from '#lib/editor/blockInteraction';
 	import type { EditorMode } from '../leftSidebar.svelte';
 	import SourcePanels from './sourcePanels.svelte';
 	import Switch from '#lib/components/Switch.svelte';
 	import type { ThemeStylesheet } from '#lib/themes/styles';
+	import ContextMenu from './contextMenu.svelte';
 
 	let {
 		mode,
@@ -21,7 +21,8 @@
 		blockCSS,
 		activeStylesheet = $bindable('base'),
 		message = $bindable(''),
-		onSaveAsCustomBlock
+		onSaveAsCustomBlock,
+		onViewProperties
 	}: {
 		mode: EditorMode;
 		editor: Editor;
@@ -32,12 +33,12 @@
 		activeStylesheet: ThemeStylesheet;
 		message: string;
 		onSaveAsCustomBlock: (position: number) => void;
+		onViewProperties: () => void;
 	} = $props();
 
 	let canvas: HTMLDivElement;
 	let designTool = $state<'edit' | 'drag'>('edit');
-	let contextPosition = $state<number | null>(null);
-	let contextCoords = $state({ x: 0, y: 0 });
+	let contextMenu: ReturnType<typeof ContextMenu>;
 
 	onMount(() => {
 		editor.mount(canvas);
@@ -46,29 +47,6 @@
 			editor.destroy();
 		};
 	});
-
-	function contextMenu(event: MouseEvent) {
-		if (mode !== 'design') return;
-		const target =
-			event.target instanceof Element
-				? event.target.closest('section[data-sheet-container]')
-				: null;
-		if (!target || target.closest('[data-custom-block-type]')) {
-			contextPosition = null;
-			return;
-		}
-		const boundary = blockBoundary(editor.view, target);
-		const node = boundary && editor.state.doc.nodeAt(boundary.from);
-		if (!boundary || !node?.childCount) return;
-		event.preventDefault();
-		// A native right-click can place the caret in a nearby child even when
-		// the pointer is on container padding or a layout gap. Keep the editor
-		// selection and the context action on the same container.
-		editor.commands.setNodeSelection(boundary.from);
-		editor.view.focus();
-		contextPosition = boundary.from;
-		contextCoords = { x: event.clientX, y: event.clientY };
-	}
 
 	$effect(() => {
 		setBlockDragMode(editor.view, mode === 'design' && designTool === 'drag');
@@ -107,7 +85,12 @@
 		{/if}
 	</div>
 	<div class="sheet-frame" class:playing={mode === 'play'}>
-		<div class="sheet-content" role="group" aria-label="Sheet canvas" oncontextmenu={contextMenu}>
+		<div
+			class="sheet-content"
+			role="group"
+			aria-label="Sheet canvas"
+			oncontextmenu={(event) => contextMenu.open(event)}
+		>
 			<div bind:this={canvas}></div>
 		</div>
 	</div>
@@ -125,39 +108,20 @@
 	/>
 </main>
 
-{#if contextPosition !== null}
-	{@const position = contextPosition}
-	<div
-		class="context-action"
-		use:clickOutside={() => {
-			contextPosition = null;
-		}}
-		style:left={`${contextCoords.x}px`}
-		style:top={`${contextCoords.y}px`}
-	>
-		<button
-			onclick={() => {
-				onSaveAsCustomBlock(position);
-				contextPosition = null;
-			}}>Save as custom block</button
-		>
-	</div>
-{/if}
+<ContextMenu
+	bind:this={contextMenu}
+	{editor}
+	editorMode={mode}
+	{onViewProperties}
+	{onSaveAsCustomBlock}
+/>
 
 <style>
-	.context-action {
-		position: fixed;
-		z-index: 50;
-		display: flex;
-		gap: 6px;
-		padding: 10px;
-		background: #fff7e9;
-		border: 1px solid #c7ab83;
-		border-radius: 8px;
-		margin: 8px;
+	.sheet-content :global(.tiptap [data-rbb-context-hovered]) {
+		outline: 2px dashed #b48348 !important;
+		outline-offset: 2px;
 	}
 	.main-pane {
-		/* The collapsed inspector tab shares this cell at tablet widths. */
 		grid-area: 1 / 2;
 		display: flex;
 		flex-direction: column;

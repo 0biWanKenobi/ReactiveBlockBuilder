@@ -35,8 +35,8 @@ try {
     });
     window.addEventListener('beforeunload', () => console.log('BEFORE UNLOAD'), { once:true });
   });
-  console.log('Menu before click', await page.getByRole('button', { name: 'Save as custom block' }).evaluate(el => el.outerHTML));
-  await page.getByRole('button', { name: 'Save as custom block' }).click();
+  console.log('Menu before click', await page.getByRole('menuitem', { name: 'Save as custom block' }).evaluate(el => el.outerHTML));
+  await page.getByRole('menuitem', { name: 'Save as custom block' }).click();
   console.log('Trace', await page.evaluate(() => window.__trace));
   console.log('URL', page.url());
   console.log('Body status', (await page.locator('body').innerText()).slice(0,600));
@@ -44,7 +44,7 @@ try {
   console.log('After creation:', {
     dialogs: await page.locator('[role="dialog"]').count(),
     status: await page.locator('[role="status"]').allTextContents(),
-    contextActions: await page.getByRole('button', { name: 'Save as custom block' }).count()
+    contextActions: await page.getByRole('menuitem', { name: 'Save as custom block' }).count()
   });
   await modal.waitFor({ timeout: 5000 });
   await modal.getByLabel('Custom block name').fill('Test Header');

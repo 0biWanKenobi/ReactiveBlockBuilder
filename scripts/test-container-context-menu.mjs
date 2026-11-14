@@ -2,7 +2,7 @@
 export async function testContainerContextMenu(page) {
   const canvas = page.locator('.sheet-content .tiptap').first();
   const modal = page.getByRole('dialog', { name: 'Custom block definition editor' });
-  const menu = page.getByRole('button', { name: 'Save as custom block', exact: true });
+  const menu = page.getByRole('menuitem', { name: 'Save as custom block', exact: true });
   const cases = [
     { selector: '.stats-grid', surface: '.stat-card', edge: 'top', gap: true,
       classes: 'stats-grid', children: ['stat-card', 'stat-card', 'stat-card', 'stat-card'] },
@@ -43,7 +43,18 @@ export async function testContainerContextMenu(page) {
         throw new Error(`Right-click on ${testCase.classes} (${testCase.edge}) selected ${selectedType} .${selectedClasses}`);
       }
 
+      await menu.hover();
+      if (await container.evaluate(element => getComputedStyle(element).outlineStyle) !== 'dashed') {
+        throw new Error(`Save hover must preview ${testCase.classes}, including selected containers`);
+      }
+      await page.getByRole('menuitem', { name: 'View properties', exact: true }).hover();
+      if (await container.evaluate(element => getComputedStyle(element).outlineStyle) !== 'solid') {
+        throw new Error('Leaving Save must restore the container selection outline');
+      }
       await menu.click();
+      if (await canvas.locator('[data-rbb-context-hovered]').count()) {
+        throw new Error('Closing the menu must clear its save target');
+      }
       await modal.waitFor({ state: 'visible' });
       const name = await modal.getByLabel('Custom block name').inputValue();
       const root = modal.locator('.preview .tiptap > section');
@@ -56,6 +67,24 @@ export async function testContainerContextMenu(page) {
       await modal.getByRole('button', { name: 'Close editor', exact: true }).click();
       await modal.waitFor({ state: 'hidden' });
     }
+  }
+  // A leaf keeps its selection while Save previews only its enclosing container.
+  const label = canvas.locator('.stat-label').first();
+  const enclosing = canvas.locator('.stat-card').first();
+  await label.click({ button: 'right' });
+  await menu.hover();
+  if (await enclosing.evaluate(element => getComputedStyle(element).outlineStyle) !== 'dashed' ||
+      await canvas.locator('.stats-grid').evaluate(element => getComputedStyle(element).outlineStyle) === 'dashed' ||
+      await page.getByLabel('Selected block CSS classes').inputValue() !== 'stat-label') {
+    throw new Error('Save must highlight the nearest container without changing the leaf selection');
+  }
+  await page.getByRole('menuitem', { name: 'View properties', exact: true }).hover();
+  if (await enclosing.evaluate(element => getComputedStyle(element).outlineStyle) === 'dashed') {
+    throw new Error('Leaving Save must clear the enclosing-container preview');
+  }
+  await page.locator('.topbar h1').click();
+  if (await canvas.locator('[data-rbb-context-hovered]').count()) {
+    throw new Error('Outside dismissal must clear the save target');
   }
   console.log('Container right-click: hover, selection and captured subtree match across repeated clicks');
 }

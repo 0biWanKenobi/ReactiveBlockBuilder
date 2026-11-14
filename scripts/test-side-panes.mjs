@@ -14,15 +14,40 @@ try {
 		const right = page.locator('.side-pane.right');
 		const main = page.locator('.main-pane');
 		const canvas = page.locator('.sheet-frame');
+		const compact = width <= 1000;
+		async function openInspector() {
+			await page.locator('.sheet-title').first().click({ button: 'right' });
+			const menu = page.getByRole('menu', { name: 'Block actions' });
+			assert.equal(await menu.getByRole('separator').count(), 1);
+			await menu.getByRole('menuitem', { name: 'View properties', exact: true }).click();
+			await page.waitForTimeout(550);
+			assert.equal(await right.isVisible(), true, 'Context menu opens properties at every width');
+			assert.equal(
+				await page.locator('#inspector-pane .selection-heading strong').innerText(),
+				'textBlock'
+			);
+			if (compact) {
+				const bounds = await right.boundingBox();
+				assert.equal(bounds.y + bounds.height, 700, 'Properties drawer meets the viewport bottom');
+			}
+		}
 		const initialWidth = (await canvas.boundingBox()).width;
 		await page.getByLabel('New field identifier').fill('UNSAVED_DRAFT');
 		await page.evaluate(() => {
 			window.originalEditor = document.querySelector('.sheet-content .tiptap');
 		});
 
+		await openInspector();
 		const initialMain = await main.boundingBox();
 		await page.getByRole('button', { name: 'Hide inspector', exact: true }).click();
 		await page.waitForTimeout(550);
+		if (compact) {
+			assert.equal(await right.isVisible(), false, 'Burger closes the drawer completely');
+			assert.equal(
+				await page.getByRole('button', { name: 'Show inspector', exact: true }).isVisible(),
+				false
+			);
+		}
 		if (width > 620) {
 			const collapsedMain = await main.boundingBox();
 			assert.equal(collapsedMain.x, initialMain.x, 'Center stays in its column');
@@ -32,8 +57,7 @@ try {
 				'Collapsing inspector preserves center width'
 			);
 		}
-		await page.getByRole('button', { name: 'Show inspector', exact: true }).click();
-		await page.waitForTimeout(550);
+		await openInspector();
 
 		await page.getByRole('button', { name: 'Hide block palette', exact: true }).click();
 		await page.waitForTimeout(550);
@@ -44,16 +68,17 @@ try {
 				.getAttribute('aria-expanded'),
 			'false'
 		);
-		assert.equal(await page.locator('#inspector-pane aside').isVisible(), true);
+		assert.equal(await page.locator('#inspector-pane aside').isVisible(), !compact);
 		if (width > 620) assert.equal(Math.round((await left.boundingBox()).width), 0);
 		if (width > 1000) assert((await canvas.boundingBox()).width > initialWidth + 150);
 
+		if (compact) await openInspector();
 		await page.getByRole('button', { name: 'Hide inspector', exact: true }).click();
 		await page.waitForTimeout(550);
 		assert.equal(await page.locator('#inspector-pane').getAttribute('inert'), '');
 		assert.equal(
 			await page.getByRole('button', { name: 'Show inspector', exact: true }).isVisible(),
-			true
+			!compact
 		);
 		if (width > 620) {
 			const layout = await page.locator('.editor-layout').boundingBox();
@@ -78,17 +103,19 @@ try {
 				'Canvas uses both collapsed columns'
 			);
 		}
-		if (width <= 1000) assert.equal(Math.round((await right.boundingBox()).height), 0);
+		if (compact) assert.equal(await right.isVisible(), false);
 		if (width <= 620) assert.equal(Math.round((await left.boundingBox()).height), 0);
 		const leftTab = await page
 			.getByRole('button', { name: 'Show block palette', exact: true })
 			.boundingBox();
-		const rightTab = await page
-			.getByRole('button', { name: 'Show inspector', exact: true })
-			.boundingBox();
 		const availableWidth = await page.evaluate(() => document.documentElement.clientWidth);
 		assert.equal(leftTab.x, 11.5);
-		assert.equal(rightTab.x + rightTab.width, availableWidth - 11.5);
+		if (!compact) {
+			const rightTab = await page
+				.getByRole('button', { name: 'Show inspector', exact: true })
+				.boundingBox();
+			assert.equal(rightTab.x + rightTab.width, availableWidth - 11.5);
+		}
 		assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), availableWidth);
 		if (width > 1000) {
 			const toolbarTop = (await page.locator('.topbar').boundingBox()).height;
@@ -112,7 +139,6 @@ try {
 		await page.waitForTimeout(550);
 		assert.equal(await left.isVisible(), false);
 		assert.equal(await right.isVisible(), false);
-		if (width <= 1000) assert.equal((await right.boundingBox()).height, 0);
 
 		await page.getByRole('button', { name: '✎ Design', exact: true }).click();
 		await page.waitForTimeout(550);
@@ -122,12 +148,18 @@ try {
 		);
 		assert.equal(
 			await page.getByRole('button', { name: 'Show inspector', exact: true }).isVisible(),
-			true
+			!compact
 		);
 		assert.equal(await page.getByLabel('New field identifier').inputValue(), 'UNSAVED_DRAFT');
 
-		await page.getByRole('button', { name: 'Show inspector', exact: true }).click();
+		await openInspector();
+		await page.locator('.topbar h1').click();
 		await page.waitForTimeout(550);
+		assert.equal(
+			await right.isVisible(),
+			!compact,
+			'Outside clicks dismiss only the compact drawer'
+		);
 		assert.equal(
 			await page.evaluate(
 				() => window.originalEditor === document.querySelector('.sheet-content .tiptap')

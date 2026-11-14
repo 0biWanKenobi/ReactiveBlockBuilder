@@ -111,7 +111,7 @@ export async function testStockThemes(page) {
 	// Stock styles also apply inside the definition preview.
 	await replace(css);
 	await canvas.locator('.sheet-footer').click({ button: 'right', position: { x: 4, y: 4 } });
-	await page.getByRole('button', { name: 'Save as custom block', exact: true }).click();
+	await page.getByRole('menuitem', { name: 'Save as custom block', exact: true }).click();
 	const modal = page.getByRole('dialog', { name: 'Custom block definition editor' });
 	await modal.waitFor();
 	assert.equal(

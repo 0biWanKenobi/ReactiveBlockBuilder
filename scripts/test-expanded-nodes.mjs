@@ -107,7 +107,7 @@ export async function testExpandedNodes(page) {
 			.locator('.expanded-conversion-regression')
 			.dispatchEvent('contextmenu', { button: 2 });
 		await page
-			.getByRole('button', { name: 'Save as custom block', exact: true })
+			.getByRole('menuitem', { name: 'Save as custom block', exact: true })
 			.evaluate((el) => el.click());
 		let modal = page.getByRole('dialog', { name: 'Custom block definition editor' });
 		await modal.getByLabel('Custom block name').fill('Expanded Conversion');
@@ -622,7 +622,7 @@ export async function testExpandedNodes(page) {
 		}, childId);
 		await canvas.locator('.expanded-conversion-shift').dispatchEvent('contextmenu', { button: 2 });
 		await page
-			.getByRole('button', { name: 'Save as custom block', exact: true })
+			.getByRole('menuitem', { name: 'Save as custom block', exact: true })
 			.evaluate((el) => el.click());
 		modal = page.getByRole('dialog', { name: 'Custom block definition editor' });
 		await modal.locator('.sheet-document').evaluate((el) => el.editor.commands.setNodeSelection(1));
