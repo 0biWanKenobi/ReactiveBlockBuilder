@@ -89,7 +89,7 @@
 			class="sheet-content"
 			role="group"
 			aria-label="Sheet canvas"
-			oncontextmenu={(event) => contextMenu.open(event)}
+			oncontextmenu={contextMenu.open}
 		>
 			<div bind:this={canvas}></div>
 		</div>
