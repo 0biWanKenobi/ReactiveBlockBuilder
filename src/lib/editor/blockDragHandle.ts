@@ -10,6 +10,7 @@ import {
 	pointerBlock
 } from './blockInteraction';
 import { endPaletteDrag } from './blockDragPreview';
+import type { Listen } from '#lib/types/shared.ts';
 
 interface HandleTarget {
 	element: HTMLElement;
@@ -133,10 +134,6 @@ function createHandles(view: EditorView) {
 	}
 
 	function mousemove(event: MouseEvent) {
-		if (!isBlockDragMode(view.state)) {
-			hide(true);
-			return;
-		}
 		if (dragging || pressed) return;
 		const target = event.target;
 
@@ -161,7 +158,7 @@ function createHandles(view: EditorView) {
 	}
 
 	function select(target: HandleTarget | null): NodeSelection | null {
-		if (!target || !isBlockDragMode(view.state)) return null;
+		if (!target) return null;
 		const boundary = blockBoundary(view, target.element);
 		if (!boundary) return null;
 		const selection = NodeSelection.create(view.state.doc, boundary.from);
@@ -213,19 +210,36 @@ function createHandles(view: EditorView) {
 		hide(true);
 	}
 
+	function toggleEventListeners(action: 'addEventListener' | 'removeEventListener') {
+		(window[action] as Listen)('mousemove', mousemove);
+		(window[action] as Listen)('scroll', position, true);
+		(window[action] as Listen)('resize', position);
+		(window[action] as Listen)('mouseup', mouseup);
+		(rail[action] as Listen)('click', click);
+		(rail[action] as Listen)('mousedown', mousedown);
+		(rail[action] as Listen)('dragstart', dragstart);
+		(rail[action] as Listen)('dragend', dragend);
+	}
+
 	// Follow the pointer across the DOM gap between canvas and fixed gutter.
-	window.addEventListener('mousemove', mousemove);
-	rail.addEventListener('click', click);
-	rail.addEventListener('mousedown', mousedown);
-	rail.addEventListener('dragstart', dragstart);
-	rail.addEventListener('dragend', dragend);
-	window.addEventListener('scroll', position, true);
-	window.addEventListener('resize', position);
-	window.addEventListener('mouseup', mouseup);
+	if (isBlockDragMode(view.state)) {
+		toggleEventListeners('addEventListener');
+	}
 
 	return {
 		update(_view: EditorView, previousState: EditorState) {
-			if (!isBlockDragMode(view.state)) {
+			const dragMode = isBlockDragMode(view.state);
+			if (dragMode !== isBlockDragMode(previousState)) {
+				if (dragMode) {
+					toggleEventListeners('addEventListener');
+					gutterHover.toggleEventListeners('addEventListener')
+				}
+				else {
+					toggleEventListeners('removeEventListener');
+					gutterHover.toggleEventListeners('removeEventListener');
+				}
+			}
+			if (!dragMode) {
 				hide(true);
 				return;
 			}
@@ -237,14 +251,7 @@ function createHandles(view: EditorView) {
 			} else position();
 		},
 		destroy() {
-			window.removeEventListener('mousemove', mousemove);
-			rail.removeEventListener('click', click);
-			rail.removeEventListener('mousedown', mousedown);
-			rail.removeEventListener('dragstart', dragstart);
-			rail.removeEventListener('dragend', dragend);
-			window.removeEventListener('scroll', position, true);
-			window.removeEventListener('resize', position);
-			window.removeEventListener('mouseup', mouseup);
+			toggleEventListeners('removeEventListener');
 			gutterHover.destroy();
 			rail.remove();
 		}

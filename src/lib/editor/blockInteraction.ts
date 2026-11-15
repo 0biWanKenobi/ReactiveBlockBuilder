@@ -2,6 +2,7 @@ import { Extension } from '@tiptap/core';
 import { NodeSelection, Plugin, PluginKey, type EditorState } from '@tiptap/pm/state';
 import { Decoration, DecorationSet, type EditorView } from '@tiptap/pm/view';
 import { selectedBlock } from './selection';
+import type { Listen } from '#lib/types/shared.ts';
 
 export const blockSelector = 'section[data-sheet-container], [data-sheet-text], [data-sheet-block]';
 export const blockTypes = new Set(['container', 'textBlock', 'formula', 'image']);
@@ -43,18 +44,18 @@ export function createGutterHover(
 	}
 
 	function handleOver(event: Event) {
-		if (rail.hidden || !isBlockDragMode(view.state)) return;
+		if (rail.hidden) return;
 		setBlockHover(view, 'gutter', getTarget(event)?.from ?? getAnchor()?.from ?? null);
 	}
 
 	function handleOut(event: MouseEvent) {
-		if (rail.hidden || !isBlockDragMode(view.state)) return;
+		if (rail.hidden) return;
 		if (event.relatedTarget instanceof Node && rail.contains(event.relatedTarget)) return;
 		setBlockHover(view, 'gutter', getAnchor()?.from ?? null);
 	}
 
 	function keepVisible(event: MouseEvent): boolean {
-		if (rail.hidden || !isBlockDragMode(view.state)) return false;
+		if (rail.hidden) return false;
 		if (event.target instanceof Node && rail.contains(event.target)) return true;
 		const anchor = getAnchor();
 		if (!anchor || !withinGutterBridge(event, rail, anchor.element)) return false;
@@ -62,12 +63,22 @@ export function createGutterHover(
 		return true;
 	}
 
-	rail.addEventListener('mouseover', handleOver);
-	rail.addEventListener('mouseout', handleOut);
+	function toggleEventListeners(action: 'addEventListener' | 'removeEventListener') {
+		(rail[action] as Listen)('mouseover', handleOver);
+		(rail[action] as Listen)('mouseout', handleOut);
+	}
+
+	if (isBlockDragMode(view.state)) {
+		toggleEventListeners('addEventListener');
+	}
+
 	return {
 		handleOver,
 		keepVisible,
 		clear,
+		toggleEventListeners(action: 'addEventListener' | 'removeEventListener') {
+			toggleEventListeners(action);
+		},
 		destroy() {
 			rail.removeEventListener('mouseover', handleOver);
 			rail.removeEventListener('mouseout', handleOut);
