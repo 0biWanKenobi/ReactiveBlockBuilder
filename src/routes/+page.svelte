@@ -24,6 +24,9 @@
 	import SidePane from './components/sidePane/sidePane.svelte';
 	import Switch from '#lib/components/Switch.svelte';
 	import type { ThemeStylesheet } from '#lib/themes/styles';
+	import { createThemeStyleStore } from '#lib/themes/store';
+	import type { Tab } from '#lib/types/shared.ts';
+	import { SelectedTab, setSelectedTab } from '#lib/selectedTab.svelte';
 
 	let fields = $state<Sheet>(structuredClone(initialFields));
 	let editor = $state<Editor>(
@@ -40,6 +43,7 @@
 		})
 	);
 	let mode = $state<'design' | 'play'>('design');
+	const selectedTab = setSelectedTab(new SelectedTab());
 	let leftCollapsed = $state(false);
 	let rightCollapsed = $state(false);
 	let rightDismissed = $state(false);
@@ -56,6 +60,7 @@
 	let rememberChoice = $state(false);
 	let message = $state('');
 	let activeStylesheet = $state<ThemeStylesheet>('base');
+	const themeStyles = createThemeStyleStore(repository, (next) => (message = next));
 
 	$effect(() => {
 		const mapConversion = ({ transaction }: { transaction: Transaction }) => {
@@ -70,6 +75,7 @@
 	});
 
 	onMount(() => {
+		void themeStyles.load();
 		void (async () => {
 			try {
 				library.replace(await repository.list());
@@ -206,16 +212,23 @@
 </script>
 
 <svelte:head>
-	<title>Reactive Block Builder — prototype</title>
-	<meta name="description" content="Svelte 5 and Tiptap character sheet WYSIWYG prototype" />
+	<title>Character Sheet Designer</title>
+	<meta name="description" content="Character sheet WYSIWYG editor" />
 </svelte:head>
 
 <div class="workspace" class:playing={mode === 'play'}>
 	<header class="topbar">
 		<div>
-			<div class="eyebrow">SVELTE 5 × TIPTAP · PROTOTYPE</div>
-			<h1>Reactive Block Builder</h1>
-			<p>Build a nested character sheet with your own CSS and reactive formulas.</p>
+			<h1>Character Sheet Designer</h1>
+			<p>Build a sheet with your own style and reactive properties.</p>
+		</div>
+		<div>
+			<Switch
+				values={['sheet', 'JSON', 'CSS'] satisfies Tab[]}
+				labels={['📝 Sheet', '{ } Definition', '🖌️ Style']}
+				bind:active={selectedTab.value}
+				aria-label="Tabs"
+			/>
 		</div>
 		<Switch
 			values={['design', 'play']}
@@ -265,8 +278,8 @@
 			{editor}
 			bind:fields
 			{library}
-			{repository}
 			{blockCSS}
+			{themeStyles}
 			bind:activeStylesheet
 			bind:message
 			onSaveAsCustomBlock={startNewDefinition}
@@ -356,12 +369,6 @@
 		padding: 24px 30px;
 		background: #23282c;
 		color: #faf8f5;
-	}
-	.eyebrow {
-		color: #c9a274;
-		font-size: 0.67rem;
-		font-weight: 800;
-		letter-spacing: 0.15em;
 	}
 	h1 {
 		margin: 5px 0 3px;

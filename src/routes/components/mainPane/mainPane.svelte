@@ -4,21 +4,21 @@
 	import { Editor } from '@tiptap/core';
 	import type { Sheet } from '#lib';
 	import type { CustomBlockLibrary } from '#lib/custom-blocks/library.svelte';
-	import type { CustomBlockRepository } from '#lib/custom-blocks/repository';
 	import { setBlockDragMode } from '#lib/editor/blockInteraction';
 	import type { EditorMode } from '../leftSidebar.svelte';
 	import SourcePanels from './sourcePanels.svelte';
 	import Switch from '#lib/components/Switch.svelte';
 	import type { ThemeStylesheet } from '#lib/themes/styles';
 	import ContextMenu from './contextMenu.svelte';
+	import type { ThemeStyleStore } from '#lib/themes/store';
 
 	let {
 		mode,
 		editor,
 		fields = $bindable(),
 		library,
-		repository,
 		blockCSS,
+		themeStyles,
 		activeStylesheet = $bindable('base'),
 		message = $bindable(''),
 		onSaveAsCustomBlock,
@@ -28,8 +28,8 @@
 		editor: Editor;
 		fields: Sheet;
 		library: CustomBlockLibrary;
-		repository: CustomBlockRepository;
 		blockCSS: Record<string, string>;
+		themeStyles: ThemeStyleStore;
 		activeStylesheet: ThemeStylesheet;
 		message: string;
 		onSaveAsCustomBlock: (position: number) => void;
@@ -38,14 +38,26 @@
 
 	let canvas: HTMLDivElement;
 	let designTool = $state<'edit' | 'drag'>('edit');
+	// svelte-ignore non_reactive_update
 	let contextMenu: ReturnType<typeof ContextMenu>;
+	let styleElement = $state.raw<HTMLStyleElement | null>(null);
+	const appliedThemeCSS = $derived(themeStyles.appliedCSS);
 
 	onMount(() => {
+		const element = themeStyles.mountStyleElement();
+		styleElement = element;
 		editor.mount(canvas);
 
 		return () => {
+			element.remove();
+			styleElement = null;
 			editor.destroy();
 		};
+	});
+
+	$effect(() => {
+		if (styleElement)
+			styleElement.textContent = $appliedThemeCSS + '\n' + Object.values(blockCSS).join('\n');
 	});
 
 	$effect(() => {
@@ -101,8 +113,7 @@
 		{editor}
 		bind:fields
 		{library}
-		{repository}
-		{blockCSS}
+		{themeStyles}
 		bind:activeStylesheet
 		onMessage={(next) => (message = next)}
 	/>

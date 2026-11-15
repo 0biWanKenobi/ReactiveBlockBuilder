@@ -6,17 +6,19 @@
 	import type { CustomBlockLibrary } from '#lib/custom-blocks/library.svelte';
 	import { customNodeSync } from '#lib/editor/customNodes';
 	import { prepareDocument } from '#lib/custom-blocks/model';
-	import { DEFAULT_THEME, type CustomBlockRepository } from '#lib/custom-blocks/repository';
+	import { DEFAULT_THEME } from '#lib/custom-blocks/repository';
 	import { allowedNodeTypes, initialFields, sampleDocument, validateId, type Sheet } from '#lib';
 	import type { EditorMode } from '../leftSidebar.svelte';
+	import SlideUp from '#lib/components/SlideUp.svelte';
+	import { getSelectedTab } from '#lib/selectedTab.svelte';
+	import type { ThemeStyleStore } from '#lib/themes/store';
 
 	let {
 		mode,
 		editor,
 		fields = $bindable(),
 		library,
-		repository,
-		blockCSS,
+		themeStyles,
 		activeStylesheet = $bindable('base'),
 		onMessage
 	}: {
@@ -24,11 +26,11 @@
 		editor: Editor;
 		fields: Sheet;
 		library: CustomBlockLibrary;
-		repository: CustomBlockRepository;
-		blockCSS: Record<string, string>;
+		themeStyles: ThemeStyleStore;
 		activeStylesheet: ThemeStylesheet;
 		onMessage: (message: string) => void;
 	} = $props();
+	const selectedTab = getSelectedTab();
 
 	type SavedSheet = {
 		version: 1;
@@ -130,47 +132,45 @@
 	}
 </script>
 
-<div class="source-panels" class:playing={mode === 'play'} inert={mode === 'play'}>
+<SlideUp
+	bind:collapsed={
+		() => selectedTab.value === 'sheet' || mode === 'play',
+		(v) => {
+			if (v) selectedTab.value = 'sheet';
+		}
+	}
+	expandedHeight={500}
+>
 	<section class="source-panel">
-		<div class="source-heading">
-			<strong>Sheet JSON</strong>
-			<div class="source-actions">
-				<button id="apply-sheet-json" onclick={importSheet}>Apply JSON ➡️ Preview</button>
-				<button id="sync-sheet-json" onclick={exportSheet}>Sync Preview ➡️ JSON</button>
-				<button title="Format JSON" aria-label="Format JSON" onclick={formatJSON}>Format</button>
+		{#if selectedTab.value === 'JSON'}
+			<div class="source-heading">
+				<strong>Sheet Definition</strong>
+				<div class="source-actions">
+					<button id="apply-sheet-json" onclick={importSheet}>Apply to Preview</button>
+					<button id="sync-sheet-json" onclick={exportSheet}>Sync from Preview</button>
+					<button title="Format Definition" aria-label="Format Definition" onclick={formatJSON}
+						>🪄</button
+					>
+				</div>
 			</div>
-		</div>
-		<CodeEditor
-			language="json"
-			label="Sheet JSON"
-			value={jsonSource}
-			onChange={(next) => (jsonSource = next)}
-		/>
+			<CodeEditor
+				language="json"
+				label="Sheet Definition"
+				value={jsonSource}
+				onChange={(next) => (jsonSource = next)}
+			/>
+		{:else}
+			<ThemeCSS {themeStyles} bind:activeStylesheet />
+		{/if}
 	</section>
-	<section class="source-panel">
-		<ThemeCSS {repository} {blockCSS} bind:activeStylesheet {onMessage} />
-	</section>
-</div>
+</SlideUp>
 
 <style>
-	.source-panels {
-		display: grid;
-		flex: 1 1 320px;
-		min-height: 0;
-		grid-template-columns: 1fr 1fr;
-		gap: 15px;
-		margin-top: 25px;
-		overflow: hidden;
-		transition:
-			flex-grow 460ms ease,
-			flex-basis 460ms ease,
-			opacity 200ms ease,
-			margin-top 460ms ease,
-			visibility 0s linear 460ms;
-	}
 	.source-panel {
 		display: flex;
 		flex-direction: column;
+		flex: 1;
+		min-height: 0;
 		min-width: 0;
 		background: #fff;
 		border: 1px solid #e4ded5;
@@ -190,35 +190,5 @@
 		display: flex;
 		gap: 6px;
 		align-items: center;
-	}
-
-	.source-panels.playing {
-		opacity: 0;
-		visibility: hidden;
-		pointer-events: none;
-		flex-grow: 0;
-		flex-basis: 0px;
-		margin-top: 0;
-	}
-
-	@media (prefers-reduced-motion: reduce) {
-		.source-panels {
-			transition-duration: 0ms;
-		}
-	}
-
-	@media (max-width: 1000px) {
-		.source-panels {
-			grid-template-columns: 1fr;
-		}
-	}
-
-	@media (max-width: 620px) {
-		.source-panels {
-			min-height: 100dvh;
-		}
-		.source-panels.playing {
-			min-height: 0;
-		}
 	}
 </style>

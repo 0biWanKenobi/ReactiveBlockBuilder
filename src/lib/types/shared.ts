@@ -9,3 +9,6 @@ export type Listen = <K extends keyof HTMLElementEventMap>(
     listener: (event: HTMLElementEventMap[K]) => void,
     capture?: boolean
 ) => void;
+
+
+export type Tab = 'sheet' | 'JSON' | 'CSS'
