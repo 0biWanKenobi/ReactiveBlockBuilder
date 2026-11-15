@@ -127,7 +127,7 @@ export function pointerBlock(view: EditorView, target: EventTarget | null): HTML
 	const block =
 		(isBlockDragMode(view.state) ? outermostCustomBlock(view, element) : null) ??
 		element.closest(blockSelector);
-	return block instanceof HTMLElement && view.dom.contains(block) ? block : null;
+	return block instanceof HTMLElement ? block : null;
 }
 
 function selectPointerBlock(view: EditorView, target: EventTarget | null): boolean {
