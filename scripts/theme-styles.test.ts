@@ -85,12 +85,31 @@ test('theme save, discard and reset keep sibling drafts and empty CSS', async ()
 	await theme.save('image');
 	expect((await repository.readThemeStylesheets()).image).toBe('');
 	expect((await repository.readThemeStylesheets()).base).toBe(defaultThemeStylesheets.base);
-	theme.reset('image');
+	const resetting = theme.reset('image');
+	expect(get(theme).loading).toBe(true);
+	expect(get(theme).drafts.image).toBe('');
+	await resetting;
+	expect(get(theme).loading).toBe(false);
 	expect(get(theme).drafts.image).toContain('.rbb-image');
 	theme.discard('image');
 	expect(get(theme).drafts.image).toBe('');
 	expect(get(theme).drafts.base).toBe('.sheet-content { color: red; }');
 	expect(get(theme.appliedCSS)).not.toContain('.rbb-image');
+});
+
+test('theme loading failures release the editor lock', async () => {
+	const storage = memoryStorage();
+	storage.read = async () => {
+		throw new Error('Storage unavailable');
+	};
+	const messages: string[] = [];
+	const theme = createThemeStyleStore(new CustomBlockRepository(storage), (message) =>
+		messages.push(message)
+	);
+	await theme.load();
+	expect(get(theme).loading).toBe(false);
+	expect(get(theme).drafts).toEqual(defaultThemeStylesheets);
+	expect(messages).toEqual(['Theme loading failed: Storage unavailable']);
 });
 
 test('async theme saves and formatting preserve newer edits', async () => {

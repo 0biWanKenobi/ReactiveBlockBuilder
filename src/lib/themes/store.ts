@@ -24,7 +24,6 @@ export function createThemeStyleStore(
 	const state = writable({
 		drafts: { ...defaultThemeStylesheets },
 		saved: { ...defaultThemeStylesheets },
-		resetDefaults: { ...defaultThemeStylesheets },
 		loading: true,
 		saving: false
 	});
@@ -63,21 +62,18 @@ export function createThemeStyleStore(
 		async load() {
 			try {
 				const stored = await repository.readThemeStylesheets();
-				const [drafts, resetDefaults] = await Promise.all([
-					formatStylesheets(stored),
-					formatStylesheets(defaultThemeStylesheets)
-				]);
+				const drafts = await formatStylesheets(stored);
 				state.update((value) => ({
 					...value,
 					drafts,
-					saved: { ...drafts },
-					resetDefaults,
-					loading: false
+					saved: { ...drafts }
 				}));
 			} catch (error) {
 				onMessage(
 					`Theme loading failed: ${error instanceof Error ? error.message : String(error)}`
 				);
+			} finally {
+				state.update((value) => ({ ...value, loading: false }));
 			}
 		},
 		async save(section: ThemeStylesheet) {
@@ -97,9 +93,18 @@ export function createThemeStyleStore(
 			edit(section, get(state).saved[section]);
 			onMessage(`${label(section)} theme CSS discarded`);
 		},
-		reset(section: ThemeStylesheet) {
-			edit(section, get(state).resetDefaults[section]);
-			onMessage(`${label(section)} theme CSS reset to default. Save to keep it.`);
+		async reset(section: ThemeStylesheet) {
+			if (get(state).loading) return;
+			state.update((value) => ({ ...value, loading: true }));
+			try {
+				const css = await formatCSS(defaultThemeStylesheets[section]);
+				if (get(state).drafts[section] !== css) edit(section, css);
+				onMessage(`${label(section)} theme CSS reset to default. Save to keep it.`);
+			} catch (error) {
+				onMessage(`Cannot reset CSS: ${error instanceof Error ? error.message : String(error)}`);
+			} finally {
+				state.update((value) => ({ ...value, loading: false }));
+			}
 		},
 		async format(section: ThemeStylesheet) {
 			const css = get(state).drafts[section];

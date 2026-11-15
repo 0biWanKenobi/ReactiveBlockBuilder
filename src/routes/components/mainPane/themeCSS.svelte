@@ -77,13 +77,23 @@
 	</p>
 </div>
 {#key activeStylesheet}
-	<div class="theme-source" inert={$theme.loading}>
-		<CodeEditor
-			language="css"
-			label="Theme"
-			value={$theme.drafts[activeStylesheet]}
-			onChange={(next) => theme.edit(activeStylesheet, next)}
-		/>
+	<div class="theme-source" aria-busy={$theme.loading}>
+		<div class="theme-editor" inert={$theme.loading}>
+			<CodeEditor
+				language="css"
+				label="Theme"
+				value={$theme.drafts[activeStylesheet]}
+				onChange={(next) => theme.edit(activeStylesheet, next)}
+			/>
+		</div>
+		{#if $theme.loading}
+			<div class="loading-overlay" role="status">
+				{#await import('#lib/components/Spinner.svelte') then { default: Spinner }}
+					<Spinner />
+				{/await}
+				<span>Loading styles…</span>
+			</div>
+		{/if}
 	</div>
 {/key}
 
@@ -126,9 +136,23 @@
 		margin: 0;
 	}
 	.theme-source {
+		position: relative;
+	}
+	.theme-source,
+	.theme-editor {
 		display: flex;
 		flex: 1;
 		min-height: 0;
 		min-width: 0;
+	}
+	.loading-overlay {
+		position: absolute;
+		inset: 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 10px;
+		background: #ffffffd9;
+		font-size: 0.85rem;
 	}
 </style>
