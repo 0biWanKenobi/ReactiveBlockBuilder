@@ -1,8 +1,12 @@
-<script lang="ts" generics="T">
+<script lang="ts" generics="T, const V extends T[]">
 	import type { SvelteHTMLElements } from 'svelte/elements';
 
 	type ExtraProps = SvelteHTMLElements['div'];
-	type SwitchProps = { values: [T, T]; labels: [string, string]; active: T } & Partial<ExtraProps>;
+	type SwitchProps = {
+		values: V;
+		labels: { [K in keyof V]: string };
+		active: T;
+	} & Partial<ExtraProps>;
 
 	let {
 		values,
@@ -12,26 +16,17 @@
 		...restProps
 	}: SwitchProps = $props();
 
-	const left = $derived(values[0]);
-	const right = $derived(values[1]);
-
-	const leftLabel = $derived(labels[0]);
-	const rightLabel = $derived(labels[1]);
-
 	const classValue = $derived(customClass ? `switch ${customClass}` : 'switch');
 </script>
 
 <div class={classValue} {...restProps} role="group">
-	<button
-		class:active={active === left}
-		aria-pressed={active === left}
-		onclick={() => (active = left)}>{leftLabel}</button
-	>
-	<button
-		class:active={active === right}
-		aria-pressed={active === right}
-		onclick={() => (active = right)}>{rightLabel}</button
-	>
+	{#each values as value, i (i)}
+		<button
+			class:active={active === value}
+			aria-pressed={active === value}
+			onclick={() => (active = value)}>{labels[i]}</button
+		>
+	{/each}
 </div>
 
 <style>
