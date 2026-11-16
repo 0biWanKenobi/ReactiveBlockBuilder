@@ -52,7 +52,10 @@
 	let blockCSS = $state<Record<string, string>>({});
 	let editedBlock = $state<CustomBlockDefinition | null>(null);
 	let editedCSS = $state<string | null>(null);
-	let definitionTrail = $state<{ definition: CustomBlockDefinition; css: string }[]>([]);
+	let editedNeedsSync = $state(false);
+	let definitionTrail = $state<
+		{ definition: CustomBlockDefinition; css: string; needsSync: boolean }[]
+	>([]);
 	let pendingConversion = $state<number | null>(null);
 	let pendingOriginal = $state<JSONContent | null>(null);
 	let saveBehavior = $state<'ask' | 'replace' | 'keep'>('ask');
@@ -114,6 +117,7 @@
 			definitionTrail = [];
 			editedCSS = null;
 			editedBlock = createDefinition(name, structure, library);
+			editedNeedsSync = true;
 			pendingOriginal = structure;
 			pendingConversion = pos;
 		} catch (error) {
@@ -144,16 +148,18 @@
 	async function openNestedDefinition(
 		typeId: string,
 		current: CustomBlockDefinition,
-		draftCSS: string
+		draftCSS: string,
+		needsSync: boolean
 	) {
 		const target = library.get(typeId);
 		if (!target) {
 			message = `Missing custom block definition: ${typeId}`;
 			return;
 		}
-		definitionTrail = [...definitionTrail, { definition: current, css: draftCSS }];
+		definitionTrail = [...definitionTrail, { definition: current, css: draftCSS, needsSync }];
 		editedBlock = target;
 		editedCSS = null;
+		editedNeedsSync = false;
 	}
 
 	function closeDefinition() {
@@ -162,39 +168,58 @@
 			definitionTrail = definitionTrail.slice(0, -1);
 			editedBlock = previous.definition;
 			editedCSS = previous.css;
+			editedNeedsSync = previous.needsSync;
 		} else {
 			editedBlock = null;
 			editedCSS = null;
+			editedNeedsSync = false;
 			pendingConversion = null;
 			pendingOriginal = null;
 		}
 	}
 
-	async function saveDefinition(definition: CustomBlockDefinition, blockStyle: string) {
+	async function saveDefinition(
+		definition: CustomBlockDefinition,
+		blockStyle: string,
+		needsSync: boolean
+	) {
 		try {
+			const synchronize = needsSync || !library.get(definition.typeId);
 			validateDefinition(definition, library);
 			await repository.save(definition);
 			await repository.writeBlockCSS(definition.typeId, blockStyle);
 			library.upsert(definition);
-			// Nested instances in saved definitions follow the same structural rules as sheets.
-			for (const entry of library.list()) {
-				const current = library.clone(entry.typeId)!;
-				const structure = prepareDocument(current.structure, library);
-				if (JSON.stringify(structure) === JSON.stringify(current.structure)) continue;
-				const synchronized = { ...current, structure };
-				await repository.save(synchronized);
-				library.upsert(synchronized);
+			if (synchronize) {
+				// Nested instances in saved definitions follow the same structural rules as sheets.
+				for (const entry of library.list()) {
+					const current = library.clone(entry.typeId)!;
+					const structure = prepareDocument(current.structure, library);
+					if (JSON.stringify(structure) === JSON.stringify(current.structure)) continue;
+					const synchronized = { ...current, structure };
+					await repository.save(synchronized);
+					library.upsert(synchronized);
+				}
+				synchronizeCustomNodes(editor, library);
 			}
-			synchronizeCustomNodes(editor, library);
-			await reloadBlockStyles();
+			// Keep the library's cascade order without rereading unchanged stylesheets.
+			blockCSS = Object.fromEntries(
+				library
+					.list()
+					.map(({ typeId }) => [
+						typeId,
+						typeId === definition.typeId ? blockStyle : blockCSS[typeId]
+					])
+			);
 			if (definitionTrail.length) {
 				const previous = definitionTrail.at(-1)!;
 				definitionTrail = definitionTrail.slice(0, -1);
 				editedBlock = previous.definition;
 				editedCSS = previous.css;
+				editedNeedsSync = previous.needsSync;
 			} else {
 				editedBlock = null;
 				editedCSS = null;
+				editedNeedsSync = false;
 			}
 			if (pendingConversion !== null && !definitionTrail.length && !editedBlock) {
 				if (saveBehavior === 'ask') {
@@ -264,6 +289,7 @@
 					editedCSS = null;
 					definitionTrail = [];
 					editedBlock = block;
+					editedNeedsSync = false;
 					pendingConversion = null;
 				}}
 				onBlockDelete={async ({ success, message: msg }) => {
@@ -312,6 +338,7 @@
 		<CustomBlockEditorModal
 			initial={editedBlock}
 			initialCSS={editedCSS ?? blockCSS[editedBlock.typeId] ?? ''}
+			initialNeedsSync={editedNeedsSync}
 			{library}
 			{fields}
 			onSave={saveDefinition}

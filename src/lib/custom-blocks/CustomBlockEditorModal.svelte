@@ -20,6 +20,7 @@
 	let {
 		initial,
 		initialCSS,
+		initialNeedsSync,
 		library,
 		fields,
 		onSave,
@@ -29,11 +30,17 @@
 	}: {
 		initial: CustomBlockDefinition;
 		initialCSS: string;
+		initialNeedsSync: boolean;
 		library: BlockLibrary;
 		fields: Sheet;
-		onSave: (definition: CustomBlockDefinition, css: string) => void;
+		onSave: (definition: CustomBlockDefinition, css: string, needsSync: boolean) => void;
 		onClose: () => void;
-		onNavigate?: (typeId: string, current: CustomBlockDefinition, css: string) => void;
+		onNavigate?: (
+			typeId: string,
+			current: CustomBlockDefinition,
+			css: string,
+			needsSync: boolean
+		) => void;
 		breadcrumbs?: string[];
 	} = $props();
 
@@ -55,6 +62,9 @@
 	let css = $state(starterCSS);
 	// true when the user has edited the JSON directly, so we don't overwrite their changes with the editor's state.
 	let jsonDraftEdited = $state(false);
+	// Conservative save hint; undo does not clear it or affect semantic dirty checking.
+	// svelte-ignore state_referenced_locally
+	let needsSync = initialNeedsSync;
 	// svelte-ignore state_referenced_locally
 	let structure = $state(
 		JSON.stringify(prepareDocument($state.snapshot(initial.structure), library), null, 2)
@@ -86,6 +96,7 @@
 		editorProps: { attributes: { class: 'sheet-document' } },
 		onTransaction: ({ editor }) => synchronizeSelection(editor),
 		onUpdate() {
+			needsSync = true;
 			// jsonDraftEdited is set to true when the user edits the JSON directly, so we only sync structure if they haven't done that.
 			if (!jsonDraftEdited && tab === 'structure') syncStructure();
 		}
@@ -228,7 +239,7 @@
 	function openNested() {
 		if (!selected || !selected.attrs.customNode || !onNavigate) return;
 		try {
-			onNavigate(String(selected.attrs.typeId ?? ''), currentDraft(), css);
+			onNavigate(String(selected.attrs.typeId ?? ''), currentDraft(), css, requiresSync());
 		} catch (cause) {
 			error = cause instanceof Error ? cause.message : String(cause);
 		}
@@ -237,10 +248,14 @@
 	function save() {
 		try {
 			const next = currentDraft();
-			onSave(next, css);
+			onSave(next, css, requiresSync());
 		} catch (cause) {
 			error = cause instanceof Error ? cause.message : String(cause);
 		}
+	}
+
+	function requiresSync(): boolean {
+		return needsSync || rootClass.trim() !== initial.rootClass;
 	}
 </script>
 
