@@ -1,10 +1,10 @@
 # Code optimization deep dive
 
-Refreshed and rebenchmarked **2026-11-15** against **`485fe81`**. The working tree now also implements U2: defaults are formatted on Reset, and startup/Reset share a loading flag, editor lock, and lazily loaded spinner. Only existing findings were checked; no new optimization search. The reconciliation/protection benchmark paths are unchanged by U2. Superseded measurements were removed, and a reproducible protection benchmark script was added.
+Findings refreshed **2026-11-16** against the working tree based on **`4146bcc`**. Benchmarks were run **2026-11-15** against **`485fe81`**; the measured reconciliation/protection paths are unchanged. Only existing findings were checked; no new optimization search. Superseded measurements were removed, and a reproducible protection benchmark script is included.
 
 Scope: production source, tests, and tooling outside `src/lib/formula/engine.ts`. That file was not inspected and has no recommendations here. Current design uses expanded custom instances. The older compact-node experiment report describes another implementation; its results are not treated as current evidence. No glossary or ADR files were present.
 
-The remaining opportunities reduce repeated work around the editor: echoing CodeMirror document strings and reconciling unrelated definitions when saving. Several smaller extractions improve consistency; they should not be sold as runtime wins. Original finding IDs are retained; resolved U1 and U2 are omitted.
+The remaining opportunities reduce repeated work around the editor: duplicate modal selection notifications and reconciling unrelated definitions when saving. Several smaller extractions improve consistency; they should not be sold as runtime wins. Original finding IDs are retained.
 
 ## Priority and scope
 
@@ -12,7 +12,6 @@ Impact describes the expected benefit, not a measured improvement from an implem
 
 | Priority      | ID  | Opportunity                                           | Main benefit                              | Effort / risk             |
 | ------------- | --- | ----------------------------------------------------- | ----------------------------------------- | ------------------------- |
-| First         | U3  | Avoid CodeMirror string echo                          | Less work per source edit                 | Small / low               |
 | First         | U4  | Remove duplicate selection callback                   | Simple repeated-work removal              | Small / low               |
 | Next          | C1  | Limit definition-save propagation and CSS reload      | Save cost scales with affected data       | Medium–large / medium     |
 | Next          | C2  | Reconcile only affected live custom instances         | Less serialization and rebuilding on save | Medium / medium           |
@@ -35,11 +34,11 @@ The measurements cover two application paths still relevant to the remaining fin
 
 ### Existing tests and type checks
 
-Commands rerun against the current working tree on **2026-11-15** (Bun 1.4.4):
+Unit tests and type checks rerun against the current working tree on **2026-11-16** (Bun 1.4.4):
 
 - `bun test`: **33 passed, 0 failed; 186 assertions across five files**.
 - `bun run check`: **0 errors, 0 warnings**.
-- `bunx vite build` and `bun run prepack`: **passed** after implementing U2; the spinner is emitted as a separate lazy chunk.
+- `bunx vite build` and `bun run prepack`: **passed**.
 
 These checks establish that the reviewed code passes its existing automated checks. They do not validate the proposed refactorings.
 
@@ -79,21 +78,9 @@ These checks establish that the reviewed code passes its existing automated chec
 
 ### Limits of these measurements
 
-These are single-machine **Bun 1.4.4 / Linux x64 CPU microbenchmarks**, on an **AMD Ryzen 3 3200G with Radeon Vega Graphics** (four logical CPUs). No DOM updates, Svelte scheduling, CodeMirror replacement, layout, paint, or reactive library proxies are included. Sub-millisecond results are sensitive to runtime noise. The tables measure different operations and workloads, so their times should not be added together or treated as components of one measured user action. They support keeping C7 behind the bounded repeated-work changes; they supply no before/after speedup claim. Full browser behavior suites were not run for this report. Targeted embedded-browser checks for the implemented U2 verified startup and reset loading, editor/control locking, the loading label while the spinner component imports, SVG rotation keyframes, successful reset, preserved draft and unlocking after a formatter failure, and successful retry. The delay/failure was injected only into browser-loaded code and removed afterward; no UI latency claim is made.
+These are single-machine **Bun 1.4.4 / Linux x64 CPU microbenchmarks**, on an **AMD Ryzen 3 3200G with Radeon Vega Graphics** (four logical CPUs). No DOM updates, Svelte scheduling, CodeMirror replacement, layout, paint, or reactive library proxies are included. Sub-millisecond results are sensitive to runtime noise. The tables measure different operations and workloads, so their times should not be added together or treated as components of one measured user action. They support keeping C7 behind the bounded repeated-work changes; they supply no before/after speedup claim. Full browser behavior suites were not run for this report.
 
 ## Detailed UI findings
-
-### U3. Remove CodeEditor document-string echo work
-
-**Evidence.** The CodeMirror update listener converts its document to a string and calls `onChange` ([src/lib/editor/CodeEditor.svelte:49](/home/obiwk/Documenti/RolePlaying/sheet_visual_creator/src/lib/editor/CodeEditor.svelte:49)). Current parents immediately store that string back into `value`: sheet JSON ([src/routes/components/mainPane/sourcePanels.svelte:160](/home/obiwk/Documenti/RolePlaying/sheet_visual_creator/src/routes/components/mainPane/sourcePanels.svelte:160)), theme CSS ([src/routes/components/mainPane/themeCSS.svelte:86](/home/obiwk/Documenti/RolePlaying/sheet_visual_creator/src/routes/components/mainPane/themeCSS.svelte:86)), and modal JSON/CSS ([src/lib/custom-blocks/CustomBlockEditorModal.svelte:307](/home/obiwk/Documenti/RolePlaying/sheet_visual_creator/src/lib/custom-blocks/CustomBlockEditorModal.svelte:307)). Its synchronization effect then calls `view.state.doc.toString()` again to discover that its document already matches the echoed prop ([src/lib/editor/CodeEditor.svelte:66](/home/obiwk/Documenti/RolePlaying/sheet_visual_creator/src/lib/editor/CodeEditor.svelte:66)). The existing equality guard correctly avoids dispatching a replacement transaction on every keystroke, but still recomputes the document string for that comparison.
-
-**Optimization.** Cache the last document string at the CodeEditor boundary. Update it before emitting `onChange`, and after applying an external `value`; compare incoming props with this cache first. Preserve the `synchronizing` guard so programmatic formatting/import does not turn into another user edit or mark modal JSON as unapplied.
-
-**Expected impact, hypothesis.** Removes a repeated document-to-string operation per echoed edit. This does not eliminate the first serialization required by the current string-valued component API. Likely meaningful mainly for large JSON; no allocation size or duration measured.
-
-**Effort/risk.** Low. Cache must reflect external replacements as well as local edits. Parent callbacks that normalize input must still apply their changed value rather than being mistaken for an echo.
-
-**Meaningful verification.** Use a large JSON editor and record `toString` call counts around typing. Verify one `onChange` for a user edit, zero feedback callbacks for external format/import/reset, unchanged caret during ordinary typing, and the existing unapplied-JSON protection. Also test a parent that transforms the emitted string. Avoid asserting private implementation details beyond the instrumentation used to assess performance.
 
 ### U4. Remove duplicate modal selection notifications; retain attribute updates
 
@@ -199,7 +186,7 @@ An initial implementation can keep existing structural reconciliation and only a
 
 For conversion, preserve the **first normalized IDs** shared by `pendingOriginal` and the new definition. Removing that step blindly can generate different IDs in each copy and break later value matching. A single conversion-preparation operation returning both related results would make that invariant explicit.
 
-**Expected impact.** Fewer complete allocations/traversals on definition creation and palette drag, primarily for large custom trees. These are explicit actions rather than each-keystroke paths, so prioritize below U3.
+**Expected impact.** Fewer complete allocations/traversals on definition creation and palette drag, primarily for large custom trees. These are explicit actions rather than each-keystroke paths, so prioritize below the per-edit and definition-save paths.
 
 **Effort/risk.** Medium. Reactive proxies must still become plain data before operations requiring cloneable input. Never share mutable result nodes/attrs with definitions or sibling instances; current isolation test explicitly requires detached outputs ([scripts/custom-model.test.ts:284](/home/obiwk/Documenti/RolePlaying/sheet_visual_creator/scripts/custom-model.test.ts:284)). This is about removing _successive redundant copies_, not dropping required copy ownership.
 
@@ -247,7 +234,7 @@ For conversion, preserve the **first normalized IDs** shared by `pendingOriginal
 
 **Optimization.** Only if profiling supports it, maintain an outer-instance index in plugin state and use changed ranges/subtree identities to restrict discovery/comparison. A cached no-custom-instance state could fast-path stock typing, but must be invalidated on inserts, paste, drop, and full imports. The hard part is incremental index correctness, not replacing `sameStructure`.
 
-**Expected impact.** Reduces O(document traversal) discovery per edit. The current probe above shows measurable scaling, but only about 0.333 ms total for 5,000 stock blocks; that does not justify a large rewrite before U3/C1. Immutable subtree comparison already avoids rechecking every leaf in unchanged custom blocks.
+**Expected impact.** Reduces O(document traversal) discovery per edit. The current probe above shows measurable scaling, but only about 0.333 ms total for 5,000 stock blocks; that does not justify a large rewrite before U4/C1. Immutable subtree comparison already avoids rechecking every leaf in unchanged custom blocks.
 
 **Effort/risk.** Large/high. Preserve whole-instance deletion rules, selected ancestor deletion, nested protection, duplicate instance IDs from clipboard copies, and transaction rejection semantics. Mapping only the cursor's current node is insufficient: a transaction may edit multiple disjoint ranges or delete an ancestor.
 
@@ -277,7 +264,6 @@ The linked browser scenarios retain their earlier assertions, but several contro
 
 ## Existing optimizations worth preserving
 
-- Theme startup formats only loaded styles. Reset formats the selected default on demand. Both use the existing `loading` flag to lock the CSS editor and theme controls and display an overlay; both clear it in `finally` on success or failure. The overlay dynamically imports a reusable SVG spinner with its rotation styling in [src/lib/components/Spinner.svelte:1](/home/obiwk/Documenti/RolePlaying/sheet_visual_creator/src/lib/components/Spinner.svelte:1). [src/lib/themes/store.ts:62](/home/obiwk/Documenti/RolePlaying/sheet_visual_creator/src/lib/themes/store.ts:62), [src/lib/themes/store.ts:96](/home/obiwk/Documenti/RolePlaying/sheet_visual_creator/src/lib/themes/store.ts:96), [src/routes/components/mainPane/themeCSS.svelte:79](/home/obiwk/Documenti/RolePlaying/sheet_visual_creator/src/routes/components/mainPane/themeCSS.svelte:79).
 - `prepareDocument` already snapshots a definition once per type per synchronous pass and merges root classes once. It is not doing a fresh recursive definition clone for every repeated instance. [src/lib/custom-blocks/model.ts:63](/home/obiwk/Documenti/RolePlaying/sheet_visual_creator/src/lib/custom-blocks/model.ts:63).
 - Protection already exploits immutable subtree identity, while synchronization replaces only unequal outer instances. [src/lib/editor/customNodes.ts:10](/home/obiwk/Documenti/RolePlaying/sheet_visual_creator/src/lib/editor/customNodes.ts:10).
 - Drag decorations reuse the same document and preview identities; existing tests explicitly cover invalidation. [scripts/block-interaction.test.ts:8](/home/obiwk/Documenti/RolePlaying/sheet_visual_creator/scripts/block-interaction.test.ts:8).
@@ -297,11 +283,10 @@ The linked browser scenarios retain their earlier assertions, but several contro
 ## Implementation sequence and acceptance checks
 
 1. Start with bounded removals: duplicate modal selection notification (U4), export's second clone (U7), unused Button/type (U8). Each can remain an independent small change.
-2. Address CodeEditor echo work (U3). Measure large JSON edits, not only the sample sheet.
-3. Add C1's CSS/name save gate and direct stylesheet update. Measure again before adding dependency-based propagation and C2's affected-instance filtering.
-4. Extract shared policy/contracts only where callers become clearer (C4/U6/C5); remove abandoned helpers and temporary instrumentation.
-5. Take on stylesheet splitting, incremental protection indexing, persistent geometry caching, or a keyed library only after profiles show their cost matters.
+2. Add C1's CSS/name save gate and direct stylesheet update. Measure again before adding dependency-based propagation and C2's affected-instance filtering.
+3. Extract shared policy/contracts only where callers become clearer (C4/U6/C5); remove abandoned helpers and temporary instrumentation.
+4. Take on stylesheet splitting, incremental protection indexing, persistent geometry caching, or a keyed library only after profiles show their cost matters.
 
 For actual implementations, run existing `bun test` and `bun run check`; run ESLint/Prettier on changed files. Package-facing changes also need `bunx vite build` followed by `bun run prepack` (the current `build` script invokes npm internally). Browser behavior checks must use the embedded browser MCP on port 7345; first check whether the app is already running at localhost:5173.
 
-Acceptance should cover preserved content/identity, current JSON draft rules, nested-definition propagation, selection/focus, protected structure, and CSS cascade. Performance acceptance should compare complete user-action paths and work counts before/after: CodeMirror string conversions while typing, definition reads/reconciliations per save, and layout reads during drag. Use a browser trace for UI latency claims. The baseline tests in this refresh validate current code only; the remaining proposals have no before/after performance or browser-behavior validation here.
+Acceptance should cover preserved content/identity, current JSON draft rules, nested-definition propagation, selection/focus, protected structure, and CSS cascade. Performance acceptance should compare complete user-action paths and work counts before/after: selection callbacks per transaction, definition reads/reconciliations per save, and layout reads during drag. Use a browser trace for UI latency claims. The baseline tests in this refresh validate current code only; the remaining proposals have no before/after performance or browser-behavior validation here.

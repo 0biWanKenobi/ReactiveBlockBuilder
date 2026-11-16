@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
 	import { EditorView, basicSetup } from 'codemirror';
 	import { json } from '@codemirror/lang-json';
 	import { css } from '@codemirror/lang-css';
@@ -17,60 +17,62 @@
 	} = $props();
 
 	let target: HTMLDivElement;
-	let view: EditorView | undefined;
+	// svelte-ignore state_referenced_locally
+	let currentText = value;
+	const view = new EditorView({
+		doc: currentText,
+		extensions: [
+			basicSetup,
+			// svelte-ignore state_referenced_locally
+			language === 'css' ? css() : json(),
+			EditorView.lineWrapping,
+			EditorView.theme({
+				'&': {
+					fontSize: '12px',
+					backgroundColor: '#ffffff'
+				},
+				'.cm-scroller': { overflow: 'auto' },
+				'.cm-content': {
+					padding: '10px 4px',
+					fontFamily: 'ui-monospace, SFMono-Regular, Consolas, monospace',
+					lineHeight: '1.55'
+				},
+				'.cm-gutters': {
+					backgroundColor: '#fbfaf8',
+					borderRight: '1px solid #eee9e2',
+					color: '#ac9e90'
+				},
+				'&.cm-focused': { outline: 'none' }
+			}),
+			EditorView.updateListener.of((update) => {
+				if (update.docChanged && !synchronizing) {
+					currentText = update.state.doc.toString();
+					onChange(currentText);
+				}
+			})
+		]
+	});
 	let synchronizing = false;
 
-	onMount(() => {
-		view = new EditorView({
-			parent: target,
-			doc: value,
-			extensions: [
-				basicSetup,
-				language === 'css' ? css() : json(),
-				EditorView.lineWrapping,
-				EditorView.theme({
-					'&': {
-						fontSize: '12px',
-						backgroundColor: '#ffffff'
-					},
-					'.cm-scroller': { overflow: 'auto' },
-					'.cm-content': {
-						padding: '10px 4px',
-						fontFamily: 'ui-monospace, SFMono-Regular, Consolas, monospace',
-						lineHeight: '1.55'
-					},
-					'.cm-gutters': {
-						backgroundColor: '#fbfaf8',
-						borderRight: '1px solid #eee9e2',
-						color: '#ac9e90'
-					},
-					'&.cm-focused': { outline: 'none' }
-				}),
-				EditorView.updateListener.of((update) => {
-					if (update.docChanged && !synchronizing) {
-						onChange(update.state.doc.toString());
-					}
-				})
-			]
-		});
-		view.contentDOM.setAttribute('aria-label', label);
+	onDestroy(() => {
+		view.destroy();
+	});
 
-		return () => {
-			view?.destroy();
-			view = undefined;
-		};
+	onMount(() => {
+		view.contentDOM.setAttribute('aria-label', label);
+		target.appendChild(view.dom);
 	});
 
 	// Keep programmatic imports, exports and formatting in sync without
 	// replacing the editor contents on each keystroke.
 	$effect(() => {
-		const latest = value;
-		if (view && view.state.doc.toString() !== latest) {
+		if (currentText !== value) {
 			synchronizing = true;
 			try {
 				view.dispatch({
-					changes: { from: 0, to: view.state.doc.length, insert: latest }
+					changes: { from: 0, to: view.state.doc.length, insert: value }
 				});
+				currentText = value;
 			} finally {
 				synchronizing = false;
 			}
