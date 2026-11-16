@@ -84,7 +84,6 @@
 			content: [prepareDocument($state.snapshot(initial.structure), library)]
 		},
 		editorProps: { attributes: { class: 'sheet-document' } },
-		onSelectionUpdate: ({ editor }) => synchronizeSelection(editor),
 		onTransaction: ({ editor }) => synchronizeSelection(editor),
 		onUpdate() {
 			// jsonDraftEdited is set to true when the user edits the JSON directly, so we only sync structure if they haven't done that.
