@@ -1,6 +1,6 @@
 # Code optimization deep dive
 
-Findings refreshed **2026-11-16** against the working tree based on **`5955704`**. Benchmarks were run **2026-11-15** against **`485fe81`**; the measured reconciliation/protection functions are unchanged. C1's metadata/CSS save gate and CSS cache update are now implemented; structural saves still use full-library reconciliation. Only existing findings were checked; no new optimization search. Superseded measurements were removed, and a reproducible protection benchmark script is included.
+Findings refreshed **2026-11-17** against **`eb6371f`**. The older reconciliation/protection microbenchmarks were run **2026-11-15** against **`485fe81`**; those functions are unchanged. C1's metadata/CSS save gate and CSS cache update are implemented. A production-browser and fresh-process comparison on the reproduced Smoke Ball sheet now supports deferring the remaining C1 work; the candidate is retained only as an experiment. Only existing findings were checked; no new optimization search.
 
 Scope: production source, tests, and tooling outside `src/lib/formula/engine.ts`. That file was not inspected and has no recommendations here. Current design uses expanded custom instances. The older compact-node experiment report describes another implementation; its results are not treated as current evidence. No glossary or ADR files were present.
 
@@ -12,8 +12,8 @@ Impact describes the expected benefit, not a measured improvement from an implem
 
 | Priority      | ID  | Opportunity                                           | Main benefit                              | Effort / risk             |
 | ------------- | --- | ----------------------------------------------------- | ----------------------------------------- | ------------------------- |
-| First         | C1  | Limit structural definition-save propagation          | Save cost scales with affected data       | Medium–large / medium     |
-| Next          | C2  | Reconcile only affected live custom instances         | Less serialization and rebuilding on save | Medium / medium           |
+| Profile first | C1  | Limit structural definition-save propagation          | Save cost scales with affected data       | Medium–large / medium     |
+| First         | C2  | Reconcile only affected live custom instances         | Less serialization and rebuilding on save | Medium / medium           |
 | Next          | C3  | Remove successive tree copies at ownership boundaries | Fewer allocations in creation/drag flows  | Medium / medium           |
 | Next          | C4  | Share block-kind and leaf-value metadata              | Remove duplicated policy                  | Medium / low–medium       |
 | Next          | U6  | Share inspector contract and common fields            | Remove form/type duplication              | Small–medium / low–medium |
@@ -33,9 +33,9 @@ The measurements cover two application paths still relevant to the remaining fin
 
 ### Existing tests and type checks
 
-Unit tests and type checks rerun against the current working tree on **2026-11-16** (Bun 1.4.4):
+Unit tests and type checks rerun against the current working tree on **2026-11-17** (Bun 1.4.4):
 
-- `bun test`: **33 passed, 0 failed; 186 assertions across five files**.
+- `bun test`: **36 passed, 0 failed; 261 assertions across six files**.
 - `bun run check`: **0 errors, 0 warnings**.
 - `bunx vite build` and `bun run prepack`: **passed**.
 
@@ -77,7 +77,7 @@ These checks establish that the reviewed code passes its existing automated chec
 
 ### Limits of these measurements
 
-These are single-machine **Bun 1.4.4 / Linux x64 CPU microbenchmarks**, on an **AMD Ryzen 3 3200G with Radeon Vega Graphics** (four logical CPUs). No DOM updates, Svelte scheduling, CodeMirror replacement, layout, paint, or reactive library proxies are included. Sub-millisecond results are sensitive to runtime noise. The tables measure different operations and workloads, so their times should not be added together or treated as components of one measured user action. They support keeping C7 behind the bounded repeated-work changes; they supply no before/after speedup claim. Full browser behavior suites were not run for this report.
+These are single-machine **Bun 1.4.4 / Linux x64 CPU microbenchmarks**, on an **AMD Ryzen 3 3200G with Radeon Vega Graphics** (four logical CPUs). No DOM updates, Svelte scheduling, CodeMirror replacement, layout, paint, or reactive library proxies are included. Sub-millisecond results are sensitive to runtime noise. The tables measure different operations and workloads, so their times should not be added together or treated as components of one measured user action. They support keeping C7 behind the bounded repeated-work changes; they supply no before/after speedup claim. Full browser behavior suites were not run; the focused C1 production-browser comparison below was run.
 
 ## Detailed UI findings
 
@@ -139,7 +139,7 @@ These are single-machine **Bun 1.4.4 / Linux x64 CPU microbenchmarks**, on an **
 
 **Remaining optimization.** For structural/root-class changes, compute the changed type and its transitive dependents. Build direct dependency edges from custom-instance references, stopping at each custom root rather than treating its embedded copied children as independent definition references. Reconcile that affected set against a consistent candidate library. Share definition snapshots across the batch where practical; the current loop starts a new cache for every definition. Persist/upsert only results that differ.
 
-Dependency tracking can follow if large-library measurements justify it. Avoid replacing string comparisons with hashes unless their maintenance and equality semantics are justified.
+**Decision: defer.** The [Smoke Ball before/after report](benchmarks/c1-smoke-ball/README.md) uses a screenshot-informed eight-definition library, 80 cold browser-document loads and 160 fresh Bun processes. Median Save closing times differ by about 0–3 ms, renderer CPU shows no consistent saving, and retained heap differs by only 34–58 KiB. Only the layout-addition timing has a positive exploratory confidence interval (paired median saving 1.55 ms). Neither a user-perceptible improvement nor important resource savings is demonstrated. The per-save dependency/batch candidate remains in `scripts/experiments/c1/propagation.ts`; production propagation is unchanged. Dependency tracking can follow if a larger real library justifies it. Avoid replacing string comparisons with hashes unless their maintenance and equality semantics are justified.
 
 **Observed work reduction.** In a two-definition browser fixture, name/CSS saves perform zero reconciliation snapshots, while structural saves still snapshot both definitions. All tested saves perform zero block-stylesheet reads. This validates removed work, not a timing improvement. The remaining opportunity removes unrelated snapshots, traversals, and comparisons from structural saves, whose cost still follows aggregate library size. Actual latency improvement remains unmeasured.
 

@@ -1,0 +1,3748 @@
+{
+	"dateUTC": "2026-11-16T23:00:24Z",
+	"dateLocal": "2026-11-17",
+	"baseline": "eb6371f",
+	"environment": {
+		"cpu": "AMD Ryzen 3 3200G, 4 cores",
+		"os": "Linux 7.3.3-1-cachyos x64",
+		"bun": "1.4.4",
+		"browser": "VS Code embedded browser, Electron 43.8.6 / Chromium 150.0.7871.250",
+		"cold": "Fresh document/JS realm, empty HTTP cache, cache disabled; VS Code/renderer process and OS caches not restarted",
+		"productionOrigins": {
+			"before": "http://localhost:5174",
+			"after": "http://localhost:5175"
+		}
+	},
+	"protocol": {
+		"timingPairsPerScenario": 10,
+		"allocationPairsPerScenario": 3,
+		"warmups": 0,
+		"order": "Alternating before/after per round",
+		"samplingInterval": 16384,
+		"scope": "Remaining C1 only; C2 unchanged",
+		"fixture": "examples/smoke-ball/bundle.json",
+		"fixtureDefinitions": 8,
+		"fixtureDocumentNodes": 770,
+		"fixtureDefinitionNodes": 63
+	},
+	"timing": [
+		{
+			"round": 0,
+			"variant": "before",
+			"scenario": "shared-property",
+			"allocations": false,
+			"startupMs": 483.09999999962747,
+			"coldSheetLoadedMs": 776.6999999992549,
+			"importMs": 194.90000000037253,
+			"closeMs": 43,
+			"paintMs": 86.69999999925494,
+			"cpuTaskMs": 89.17700000000006,
+			"scriptMs": 25.10799999999999,
+			"layoutMs": 18.606000000000012,
+			"heapBefore": 11524356,
+			"heapAfter": 13538996,
+			"heapRetained": 11708008,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-property.json",
+					"bytes": 1704
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-property.css",
+					"bytes": 216
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-3.json",
+					"bytes": 10360
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-5.json",
+					"bytes": 3016
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-6.json",
+					"bytes": 4922
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-7.json",
+					"bytes": 3028
+				}
+			],
+			"touched": [
+				"rbb:custom-blocks/sb-template-5.json",
+				"rbb:custom-blocks/sb-template-6.json",
+				"rbb:custom-blocks/sb-template-7.json",
+				"rbb:custom-blocks/sb-property.json",
+				"rbb:custom-blocks/sb-template-3.json"
+			],
+			"transferBytes": 1394749
+		},
+		{
+			"round": 0,
+			"variant": "after",
+			"scenario": "shared-property",
+			"allocations": false,
+			"startupMs": 719.5,
+			"coldSheetLoadedMs": 937.0999999996275,
+			"importMs": 149.59999999962747,
+			"closeMs": 43.5,
+			"paintMs": 79.90000000037253,
+			"cpuTaskMs": 85.56999999999992,
+			"scriptMs": 24.023000000000017,
+			"layoutMs": 18.838,
+			"heapBefore": 11094996,
+			"heapAfter": 13020036,
+			"heapRetained": 11303920,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-property.json",
+					"bytes": 1704
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-property.css",
+					"bytes": 216
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-3.json",
+					"bytes": 10360
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-5.json",
+					"bytes": 3016
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-6.json",
+					"bytes": 4922
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-7.json",
+					"bytes": 3028
+				}
+			],
+			"touched": [
+				"rbb:custom-blocks/sb-template-5.json",
+				"rbb:custom-blocks/sb-template-6.json",
+				"rbb:custom-blocks/sb-template-7.json",
+				"rbb:custom-blocks/sb-property.json",
+				"rbb:custom-blocks/sb-template-3.json"
+			],
+			"transferBytes": 1395202
+		},
+		{
+			"round": 0,
+			"variant": "before",
+			"scenario": "journal-note",
+			"allocations": false,
+			"startupMs": 535.5,
+			"coldSheetLoadedMs": 838.4000000003725,
+			"importMs": 172.2999999988824,
+			"closeMs": 28.59999999962747,
+			"paintMs": 43.80000000074506,
+			"cpuTaskMs": 51.00699999999991,
+			"scriptMs": 6.713000000000024,
+			"layoutMs": 16.115000000000006,
+			"heapBefore": 11157200,
+			"heapAfter": 11615708,
+			"heapRetained": 11284392,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-1.json",
+					"bytes": 1508
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-1.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-1.json"],
+			"transferBytes": 1394749
+		},
+		{
+			"round": 0,
+			"variant": "after",
+			"scenario": "journal-note",
+			"allocations": false,
+			"startupMs": 521.9000000003725,
+			"coldSheetLoadedMs": 768.8000000007451,
+			"importMs": 178.7999999988824,
+			"closeMs": 29.299999998882413,
+			"paintMs": 61,
+			"cpuTaskMs": 62.81300000000001,
+			"scriptMs": 6.849999999999995,
+			"layoutMs": 17.080000000000005,
+			"heapBefore": 11092352,
+			"heapAfter": 12076240,
+			"heapRetained": 11184928,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-1.json",
+					"bytes": 1508
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-1.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-1.json"],
+			"transferBytes": 1395202
+		},
+		{
+			"round": 0,
+			"variant": "before",
+			"scenario": "trait-note",
+			"allocations": false,
+			"startupMs": 571.6999999992549,
+			"coldSheetLoadedMs": 813.7999999988824,
+			"importMs": 152.40000000037253,
+			"closeMs": 29.800000000745058,
+			"paintMs": 45.20000000111759,
+			"cpuTaskMs": 49.70399999999997,
+			"scriptMs": 7.261000000000017,
+			"layoutMs": 15.393999999999998,
+			"heapBefore": 11078360,
+			"heapAfter": 11428040,
+			"heapRetained": 11196496,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-2.json",
+					"bytes": 1520
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-2.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-2.json"],
+			"transferBytes": 1394749
+		},
+		{
+			"round": 0,
+			"variant": "after",
+			"scenario": "trait-note",
+			"allocations": false,
+			"startupMs": 556.5,
+			"coldSheetLoadedMs": 806,
+			"importMs": 178.09999999962747,
+			"closeMs": 30.09999999962747,
+			"paintMs": 45.09999999962747,
+			"cpuTaskMs": 47.31799999999997,
+			"scriptMs": 5.219000000000001,
+			"layoutMs": 18.826999999999998,
+			"heapBefore": 11060408,
+			"heapAfter": 11921560,
+			"heapRetained": 11139420,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-2.json",
+					"bytes": 1520
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-2.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-2.json"],
+			"transferBytes": 1395202
+		},
+		{
+			"round": 0,
+			"variant": "before",
+			"scenario": "note-layout-add",
+			"allocations": false,
+			"startupMs": 604.5,
+			"coldSheetLoadedMs": 856,
+			"importMs": 175.7000000011176,
+			"closeMs": 30.300000000745058,
+			"paintMs": 43.80000000074506,
+			"cpuTaskMs": 47.93700000000012,
+			"scriptMs": 5.368000000000039,
+			"layoutMs": 16.312,
+			"heapBefore": 11457728,
+			"heapAfter": 12174076,
+			"heapRetained": 11590428,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-1.json",
+					"bytes": 2098
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-1.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-1.json"],
+			"transferBytes": 1394749
+		},
+		{
+			"round": 0,
+			"variant": "after",
+			"scenario": "note-layout-add",
+			"allocations": false,
+			"startupMs": 459.7000000011176,
+			"coldSheetLoadedMs": 704.0999999996275,
+			"importMs": 173.19999999925494,
+			"closeMs": 29.600000001490116,
+			"paintMs": 44.20000000111759,
+			"cpuTaskMs": 48.574000000000005,
+			"scriptMs": 6.6130000000000075,
+			"layoutMs": 17.260000000000005,
+			"heapBefore": 11493072,
+			"heapAfter": 11858656,
+			"heapRetained": 11581812,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-1.json",
+					"bytes": 2098
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-1.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-1.json"],
+			"transferBytes": 1395202
+		},
+		{
+			"round": 1,
+			"variant": "after",
+			"scenario": "shared-property",
+			"allocations": false,
+			"startupMs": 484.8999999985099,
+			"coldSheetLoadedMs": 710.5999999996275,
+			"importMs": 146.89999999850988,
+			"closeMs": 50.30000000074506,
+			"paintMs": 86.59999999962747,
+			"cpuTaskMs": 88.11400000000003,
+			"scriptMs": 14.270000000000005,
+			"layoutMs": 19.314000000000004,
+			"heapBefore": 11085372,
+			"heapAfter": 13011464,
+			"heapRetained": 11299936,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-property.json",
+					"bytes": 1704
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-property.css",
+					"bytes": 216
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-3.json",
+					"bytes": 10360
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-5.json",
+					"bytes": 3016
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-6.json",
+					"bytes": 4922
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-7.json",
+					"bytes": 3028
+				}
+			],
+			"touched": [
+				"rbb:custom-blocks/sb-template-5.json",
+				"rbb:custom-blocks/sb-template-6.json",
+				"rbb:custom-blocks/sb-template-7.json",
+				"rbb:custom-blocks/sb-property.json",
+				"rbb:custom-blocks/sb-template-3.json"
+			],
+			"transferBytes": 1395202
+		},
+		{
+			"round": 1,
+			"variant": "before",
+			"scenario": "shared-property",
+			"allocations": false,
+			"startupMs": 476.80000000074506,
+			"coldSheetLoadedMs": 743.9000000003725,
+			"importMs": 168.69999999925494,
+			"closeMs": 48.80000000074506,
+			"paintMs": 90.90000000037253,
+			"cpuTaskMs": 92.0200000000001,
+			"scriptMs": 16.749000000000013,
+			"layoutMs": 18.410000000000004,
+			"heapBefore": 11163948,
+			"heapAfter": 13173076,
+			"heapRetained": 11394564,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-property.json",
+					"bytes": 1704
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-property.css",
+					"bytes": 216
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-3.json",
+					"bytes": 10360
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-5.json",
+					"bytes": 3016
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-6.json",
+					"bytes": 4922
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-7.json",
+					"bytes": 3028
+				}
+			],
+			"touched": [
+				"rbb:custom-blocks/sb-template-5.json",
+				"rbb:custom-blocks/sb-template-6.json",
+				"rbb:custom-blocks/sb-template-7.json",
+				"rbb:custom-blocks/sb-property.json",
+				"rbb:custom-blocks/sb-template-3.json"
+			],
+			"transferBytes": 1394749
+		},
+		{
+			"round": 1,
+			"variant": "after",
+			"scenario": "journal-note",
+			"allocations": false,
+			"startupMs": 437.59999999962747,
+			"coldSheetLoadedMs": 676.1999999992549,
+			"importMs": 161.5,
+			"closeMs": 51.30000000074506,
+			"paintMs": 68.90000000037253,
+			"cpuTaskMs": 100.89900000000007,
+			"scriptMs": 40.44999999999999,
+			"layoutMs": 24.464999999999993,
+			"heapBefore": 11062624,
+			"heapAfter": 11632064,
+			"heapRetained": 11168524,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-1.json",
+					"bytes": 1508
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-1.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-1.json"],
+			"transferBytes": 1395202
+		},
+		{
+			"round": 1,
+			"variant": "before",
+			"scenario": "journal-note",
+			"allocations": false,
+			"startupMs": 501.59999999962747,
+			"coldSheetLoadedMs": 771.6999999992549,
+			"importMs": 164.80000000074506,
+			"closeMs": 34,
+			"paintMs": 50.69999999925494,
+			"cpuTaskMs": 53.678000000000004,
+			"scriptMs": 8.42599999999999,
+			"layoutMs": 15.889999999999995,
+			"heapBefore": 11551032,
+			"heapAfter": 11977188,
+			"heapRetained": 11280324,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-1.json",
+					"bytes": 1508
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-1.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-1.json"],
+			"transferBytes": 1394749
+		},
+		{
+			"round": 1,
+			"variant": "after",
+			"scenario": "trait-note",
+			"allocations": false,
+			"startupMs": 435,
+			"coldSheetLoadedMs": 707.5,
+			"importMs": 178.60000000149012,
+			"closeMs": 25.5,
+			"paintMs": 38.69999999925494,
+			"cpuTaskMs": 40.98500000000005,
+			"scriptMs": 4.607,
+			"layoutMs": 15.645,
+			"heapBefore": 11063080,
+			"heapAfter": 11925752,
+			"heapRetained": 11141252,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-2.json",
+					"bytes": 1520
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-2.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-2.json"],
+			"transferBytes": 1395202
+		},
+		{
+			"round": 1,
+			"variant": "before",
+			"scenario": "trait-note",
+			"allocations": false,
+			"startupMs": 495.2000000011176,
+			"coldSheetLoadedMs": 902.6000000014901,
+			"importMs": 156.59999999962747,
+			"closeMs": 32.5,
+			"paintMs": 48.29999999888241,
+			"cpuTaskMs": 50.07699999999993,
+			"scriptMs": 5.669000000000035,
+			"layoutMs": 18.526999999999994,
+			"heapBefore": 11150940,
+			"heapAfter": 11498664,
+			"heapRetained": 11263052,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-2.json",
+					"bytes": 1520
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-2.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-2.json"],
+			"transferBytes": 1394749
+		},
+		{
+			"round": 1,
+			"variant": "after",
+			"scenario": "note-layout-add",
+			"allocations": false,
+			"startupMs": 456.59999999962747,
+			"coldSheetLoadedMs": 719.3999999985099,
+			"importMs": 176,
+			"closeMs": 31.09999999962747,
+			"paintMs": 47.19999999925494,
+			"cpuTaskMs": 51.70799999999998,
+			"scriptMs": 7.11500000000001,
+			"layoutMs": 17.63,
+			"heapBefore": 11503600,
+			"heapAfter": 11868208,
+			"heapRetained": 11592360,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-1.json",
+					"bytes": 2098
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-1.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-1.json"],
+			"transferBytes": 1395202
+		},
+		{
+			"round": 1,
+			"variant": "before",
+			"scenario": "note-layout-add",
+			"allocations": false,
+			"startupMs": 456.30000000074506,
+			"coldSheetLoadedMs": 682.5999999996275,
+			"importMs": 152.09999999962747,
+			"closeMs": 31.90000000037253,
+			"paintMs": 45.19999999925494,
+			"cpuTaskMs": 51.727999999999994,
+			"scriptMs": 5.526000000000003,
+			"layoutMs": 15.585999999999995,
+			"heapBefore": 11488388,
+			"heapAfter": 12205640,
+			"heapRetained": 11611572,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-1.json",
+					"bytes": 2098
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-1.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-1.json"],
+			"transferBytes": 1394749
+		},
+		{
+			"round": 2,
+			"variant": "before",
+			"scenario": "shared-property",
+			"allocations": false,
+			"startupMs": 493.7999999988824,
+			"coldSheetLoadedMs": 729.7999999988824,
+			"importMs": 144.90000000037253,
+			"closeMs": 43.09999999962747,
+			"paintMs": 66.80000000074506,
+			"cpuTaskMs": 71.99099999999991,
+			"scriptMs": 14.938000000000006,
+			"layoutMs": 16.505,
+			"heapBefore": 11160700,
+			"heapAfter": 13151004,
+			"heapRetained": 11387756,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-property.json",
+					"bytes": 1704
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-property.css",
+					"bytes": 216
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-3.json",
+					"bytes": 10360
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-5.json",
+					"bytes": 3016
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-6.json",
+					"bytes": 4922
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-7.json",
+					"bytes": 3028
+				}
+			],
+			"touched": [
+				"rbb:custom-blocks/sb-template-5.json",
+				"rbb:custom-blocks/sb-template-6.json",
+				"rbb:custom-blocks/sb-template-7.json",
+				"rbb:custom-blocks/sb-property.json",
+				"rbb:custom-blocks/sb-template-3.json"
+			],
+			"transferBytes": 1394749
+		},
+		{
+			"round": 2,
+			"variant": "after",
+			"scenario": "shared-property",
+			"allocations": false,
+			"startupMs": 478.40000000037253,
+			"coldSheetLoadedMs": 699.3000000007451,
+			"importMs": 142.09999999962747,
+			"closeMs": 40.40000000037253,
+			"paintMs": 61.69999999925494,
+			"cpuTaskMs": 67.311,
+			"scriptMs": 13.14599999999999,
+			"layoutMs": 17.231999999999996,
+			"heapBefore": 11098024,
+			"heapAfter": 13025704,
+			"heapRetained": 11309476,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-property.json",
+					"bytes": 1704
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-property.css",
+					"bytes": 216
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-3.json",
+					"bytes": 10360
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-5.json",
+					"bytes": 3016
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-6.json",
+					"bytes": 4922
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-7.json",
+					"bytes": 3028
+				}
+			],
+			"touched": [
+				"rbb:custom-blocks/sb-template-5.json",
+				"rbb:custom-blocks/sb-template-6.json",
+				"rbb:custom-blocks/sb-template-7.json",
+				"rbb:custom-blocks/sb-property.json",
+				"rbb:custom-blocks/sb-template-3.json"
+			],
+			"transferBytes": 1395202
+		},
+		{
+			"round": 2,
+			"variant": "before",
+			"scenario": "journal-note",
+			"allocations": false,
+			"startupMs": 468.59999999962747,
+			"coldSheetLoadedMs": 683.7999999988824,
+			"importMs": 140.40000000037253,
+			"closeMs": 33.69999999925494,
+			"paintMs": 60.30000000074506,
+			"cpuTaskMs": 62.540999999999954,
+			"scriptMs": 8.556000000000008,
+			"layoutMs": 17.363999999999997,
+			"heapBefore": 11084880,
+			"heapAfter": 11531388,
+			"heapRetained": 11213684,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-1.json",
+					"bytes": 1508
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-1.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-1.json"],
+			"transferBytes": 1394749
+		},
+		{
+			"round": 2,
+			"variant": "after",
+			"scenario": "journal-note",
+			"allocations": false,
+			"startupMs": 680.6999999992549,
+			"coldSheetLoadedMs": 922.9000000003725,
+			"importMs": 147.5,
+			"closeMs": 27.700000001117587,
+			"paintMs": 45.600000001490116,
+			"cpuTaskMs": 49.28399999999999,
+			"scriptMs": 7.508000000000015,
+			"layoutMs": 16.511,
+			"heapBefore": 11149616,
+			"heapAfter": 12122424,
+			"heapRetained": 11239064,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-1.json",
+					"bytes": 1508
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-1.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-1.json"],
+			"transferBytes": 1395202
+		},
+		{
+			"round": 2,
+			"variant": "before",
+			"scenario": "trait-note",
+			"allocations": false,
+			"startupMs": 532.4000000003725,
+			"coldSheetLoadedMs": 818.2000000011176,
+			"importMs": 192,
+			"closeMs": 35.09999999962747,
+			"paintMs": 51.59999999962747,
+			"cpuTaskMs": 53.75699999999994,
+			"scriptMs": 5.554000000000004,
+			"layoutMs": 18.495000000000005,
+			"heapBefore": 11154736,
+			"heapAfter": 11487176,
+			"heapRetained": 11256648,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-2.json",
+					"bytes": 1520
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-2.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-2.json"],
+			"transferBytes": 1394749
+		},
+		{
+			"round": 2,
+			"variant": "after",
+			"scenario": "trait-note",
+			"allocations": false,
+			"startupMs": 438.8999999985099,
+			"coldSheetLoadedMs": 698.0999999996275,
+			"importMs": 169.40000000037253,
+			"closeMs": 27.90000000037253,
+			"paintMs": 43.100000001490116,
+			"cpuTaskMs": 46.82799999999998,
+			"scriptMs": 6.602999999999998,
+			"layoutMs": 16.795000000000005,
+			"heapBefore": 11153248,
+			"heapAfter": 12020328,
+			"heapRetained": 11225340,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-2.json",
+					"bytes": 1520
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-2.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-2.json"],
+			"transferBytes": 1395202
+		},
+		{
+			"round": 2,
+			"variant": "before",
+			"scenario": "note-layout-add",
+			"allocations": false,
+			"startupMs": 446.80000000074506,
+			"coldSheetLoadedMs": 701.5,
+			"importMs": 184,
+			"closeMs": 33,
+			"paintMs": 48,
+			"cpuTaskMs": 56.47200000000008,
+			"scriptMs": 7.016999999999996,
+			"layoutMs": 16.055999999999994,
+			"heapBefore": 11498344,
+			"heapAfter": 12207320,
+			"heapRetained": 11627320,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-1.json",
+					"bytes": 2098
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-1.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-1.json"],
+			"transferBytes": 1394749
+		},
+		{
+			"round": 2,
+			"variant": "after",
+			"scenario": "note-layout-add",
+			"allocations": false,
+			"startupMs": 450.2999999988824,
+			"coldSheetLoadedMs": 696.9000000003725,
+			"importMs": 155.80000000074506,
+			"closeMs": 31,
+			"paintMs": 45.29999999888241,
+			"cpuTaskMs": 57.43700000000007,
+			"scriptMs": 6.124999999999991,
+			"layoutMs": 18.500999999999998,
+			"heapBefore": 11495544,
+			"heapAfter": 11866292,
+			"heapRetained": 11585328,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-1.json",
+					"bytes": 2098
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-1.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-1.json"],
+			"transferBytes": 1395202
+		},
+		{
+			"round": 3,
+			"variant": "after",
+			"scenario": "shared-property",
+			"allocations": false,
+			"startupMs": 468.59999999962747,
+			"coldSheetLoadedMs": 776.5,
+			"importMs": 180.19999999925494,
+			"closeMs": 141.7999999988824,
+			"paintMs": 199.5,
+			"cpuTaskMs": 207.28499999999994,
+			"scriptMs": 45.50099999999998,
+			"layoutMs": 50.642999999999994,
+			"heapBefore": 11416548,
+			"heapAfter": 13327348,
+			"heapRetained": 11623704,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-property.json",
+					"bytes": 1704
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-property.css",
+					"bytes": 216
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-3.json",
+					"bytes": 10360
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-5.json",
+					"bytes": 3016
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-6.json",
+					"bytes": 4922
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-7.json",
+					"bytes": 3028
+				}
+			],
+			"touched": [
+				"rbb:custom-blocks/sb-template-5.json",
+				"rbb:custom-blocks/sb-template-6.json",
+				"rbb:custom-blocks/sb-template-7.json",
+				"rbb:custom-blocks/sb-property.json",
+				"rbb:custom-blocks/sb-template-3.json"
+			],
+			"transferBytes": 1395202
+		},
+		{
+			"round": 3,
+			"variant": "before",
+			"scenario": "shared-property",
+			"allocations": false,
+			"startupMs": 524.7000000011176,
+			"coldSheetLoadedMs": 761.3000000007451,
+			"importMs": 158,
+			"closeMs": 44.29999999888241,
+			"paintMs": 85.90000000037253,
+			"cpuTaskMs": 90.67900000000006,
+			"scriptMs": 13.677999999999995,
+			"layoutMs": 18.02,
+			"heapBefore": 11067524,
+			"heapAfter": 13058576,
+			"heapRetained": 11298996,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-property.json",
+					"bytes": 1704
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-property.css",
+					"bytes": 216
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-3.json",
+					"bytes": 10360
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-5.json",
+					"bytes": 3016
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-6.json",
+					"bytes": 4922
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-7.json",
+					"bytes": 3028
+				}
+			],
+			"touched": [
+				"rbb:custom-blocks/sb-template-5.json",
+				"rbb:custom-blocks/sb-template-6.json",
+				"rbb:custom-blocks/sb-template-7.json",
+				"rbb:custom-blocks/sb-property.json",
+				"rbb:custom-blocks/sb-template-3.json"
+			],
+			"transferBytes": 1394749
+		},
+		{
+			"round": 3,
+			"variant": "after",
+			"scenario": "journal-note",
+			"allocations": false,
+			"startupMs": 489.6000000014901,
+			"coldSheetLoadedMs": 762.5,
+			"importMs": 183.80000000074506,
+			"closeMs": 27,
+			"paintMs": 51.5,
+			"cpuTaskMs": 55.76700000000001,
+			"scriptMs": 6.169000000000008,
+			"layoutMs": 16.29200000000001,
+			"heapBefore": 11074284,
+			"heapAfter": 12059080,
+			"heapRetained": 11167148,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-1.json",
+					"bytes": 1508
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-1.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-1.json"],
+			"transferBytes": 1395202
+		},
+		{
+			"round": 3,
+			"variant": "before",
+			"scenario": "journal-note",
+			"allocations": false,
+			"startupMs": 502.5,
+			"coldSheetLoadedMs": 751,
+			"importMs": 152.40000000037253,
+			"closeMs": 29.09999999962747,
+			"paintMs": 65.09999999962747,
+			"cpuTaskMs": 67.42699999999991,
+			"scriptMs": 7.747999999999977,
+			"layoutMs": 16.207,
+			"heapBefore": 11151208,
+			"heapAfter": 11584356,
+			"heapRetained": 11278972,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-1.json",
+					"bytes": 1508
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-1.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-1.json"],
+			"transferBytes": 1394749
+		},
+		{
+			"round": 3,
+			"variant": "after",
+			"scenario": "trait-note",
+			"allocations": false,
+			"startupMs": 485.2999999988824,
+			"coldSheetLoadedMs": 736.5,
+			"importMs": 161.69999999925494,
+			"closeMs": 25.40000000037253,
+			"paintMs": 39.80000000074506,
+			"cpuTaskMs": 42.80700000000004,
+			"scriptMs": 4.459999999999992,
+			"layoutMs": 15.602000000000004,
+			"heapBefore": 11144944,
+			"heapAfter": 12011056,
+			"heapRetained": 11225096,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-2.json",
+					"bytes": 1520
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-2.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-2.json"],
+			"transferBytes": 1395202
+		},
+		{
+			"round": 3,
+			"variant": "before",
+			"scenario": "trait-note",
+			"allocations": false,
+			"startupMs": 471.1000000014901,
+			"coldSheetLoadedMs": 719.6000000014901,
+			"importMs": 168.59999999962747,
+			"closeMs": 29.799999998882413,
+			"paintMs": 44.69999999925494,
+			"cpuTaskMs": 47.60500000000001,
+			"scriptMs": 6.7590000000000146,
+			"layoutMs": 17.023999999999997,
+			"heapBefore": 11087500,
+			"heapAfter": 11466692,
+			"heapRetained": 11200528,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-2.json",
+					"bytes": 1520
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-2.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-2.json"],
+			"transferBytes": 1394749
+		},
+		{
+			"round": 3,
+			"variant": "after",
+			"scenario": "note-layout-add",
+			"allocations": false,
+			"startupMs": 483.5,
+			"coldSheetLoadedMs": 734.8000000007451,
+			"importMs": 166.19999999925494,
+			"closeMs": 27.40000000037253,
+			"paintMs": 44.40000000037253,
+			"cpuTaskMs": 49.234,
+			"scriptMs": 8.112000000000009,
+			"layoutMs": 15.806000000000001,
+			"heapBefore": 11548416,
+			"heapAfter": 11939660,
+			"heapRetained": 11633596,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-1.json",
+					"bytes": 2098
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-1.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-1.json"],
+			"transferBytes": 1395202
+		},
+		{
+			"round": 3,
+			"variant": "before",
+			"scenario": "note-layout-add",
+			"allocations": false,
+			"startupMs": 499.2000000011176,
+			"coldSheetLoadedMs": 757.3000000007451,
+			"importMs": 166,
+			"closeMs": 35.20000000111759,
+			"paintMs": 48.30000000074506,
+			"cpuTaskMs": 54.999999999999936,
+			"scriptMs": 5.786000000000014,
+			"layoutMs": 16.84,
+			"heapBefore": 11500300,
+			"heapAfter": 12209432,
+			"heapRetained": 11629404,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-1.json",
+					"bytes": 2098
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-1.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-1.json"],
+			"transferBytes": 1394749
+		},
+		{
+			"round": 4,
+			"variant": "before",
+			"scenario": "shared-property",
+			"allocations": false,
+			"startupMs": 493.6000000014901,
+			"coldSheetLoadedMs": 723.6000000014901,
+			"importMs": 144.09999999962747,
+			"closeMs": 40.40000000037253,
+			"paintMs": 66.69999999925494,
+			"cpuTaskMs": 86.136,
+			"scriptMs": 14.156000000000002,
+			"layoutMs": 16.723000000000003,
+			"heapBefore": 11102384,
+			"heapAfter": 13099132,
+			"heapRetained": 11333788,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-property.json",
+					"bytes": 1704
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-property.css",
+					"bytes": 216
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-3.json",
+					"bytes": 10360
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-5.json",
+					"bytes": 3016
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-6.json",
+					"bytes": 4922
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-7.json",
+					"bytes": 3028
+				}
+			],
+			"touched": [
+				"rbb:custom-blocks/sb-template-5.json",
+				"rbb:custom-blocks/sb-template-6.json",
+				"rbb:custom-blocks/sb-template-7.json",
+				"rbb:custom-blocks/sb-property.json",
+				"rbb:custom-blocks/sb-template-3.json"
+			],
+			"transferBytes": 1394749
+		},
+		{
+			"round": 4,
+			"variant": "after",
+			"scenario": "shared-property",
+			"allocations": false,
+			"startupMs": 485.09999999962747,
+			"coldSheetLoadedMs": 712.0999999996275,
+			"importMs": 145.80000000074506,
+			"closeMs": 43.90000000037253,
+			"paintMs": 66.5,
+			"cpuTaskMs": 87.10700000000004,
+			"scriptMs": 14.023000000000007,
+			"layoutMs": 18.404000000000003,
+			"heapBefore": 11106048,
+			"heapAfter": 13027152,
+			"heapRetained": 11319324,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-property.json",
+					"bytes": 1704
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-property.css",
+					"bytes": 216
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-3.json",
+					"bytes": 10360
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-5.json",
+					"bytes": 3016
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-6.json",
+					"bytes": 4922
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-7.json",
+					"bytes": 3028
+				}
+			],
+			"touched": [
+				"rbb:custom-blocks/sb-template-5.json",
+				"rbb:custom-blocks/sb-template-6.json",
+				"rbb:custom-blocks/sb-template-7.json",
+				"rbb:custom-blocks/sb-property.json",
+				"rbb:custom-blocks/sb-template-3.json"
+			],
+			"transferBytes": 1395202
+		},
+		{
+			"round": 4,
+			"variant": "before",
+			"scenario": "journal-note",
+			"allocations": false,
+			"startupMs": 474.2999999988824,
+			"coldSheetLoadedMs": 722.7999999988824,
+			"importMs": 165.40000000037253,
+			"closeMs": 30,
+			"paintMs": 47.90000000037253,
+			"cpuTaskMs": 52.041000000000004,
+			"scriptMs": 7.320999999999994,
+			"layoutMs": 16.337000000000003,
+			"heapBefore": 11078796,
+			"heapAfter": 11525916,
+			"heapRetained": 11211608,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-1.json",
+					"bytes": 1508
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-1.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-1.json"],
+			"transferBytes": 1394749
+		},
+		{
+			"round": 4,
+			"variant": "after",
+			"scenario": "journal-note",
+			"allocations": false,
+			"startupMs": 454.2999999988824,
+			"coldSheetLoadedMs": 689.8999999985099,
+			"importMs": 147.09999999962747,
+			"closeMs": 29.09999999962747,
+			"paintMs": 43.79999999888241,
+			"cpuTaskMs": 47.072,
+			"scriptMs": 6.722999999999979,
+			"layoutMs": 16.380000000000006,
+			"heapBefore": 11156988,
+			"heapAfter": 12136248,
+			"heapRetained": 11252568,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-1.json",
+					"bytes": 1508
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-1.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-1.json"],
+			"transferBytes": 1395202
+		},
+		{
+			"round": 4,
+			"variant": "before",
+			"scenario": "trait-note",
+			"allocations": false,
+			"startupMs": 491.7000000011176,
+			"coldSheetLoadedMs": 717.4000000003725,
+			"importMs": 153.09999999962747,
+			"closeMs": 31.09999999962747,
+			"paintMs": 46.30000000074506,
+			"cpuTaskMs": 50.33100000000002,
+			"scriptMs": 5.739999999999995,
+			"layoutMs": 16.641000000000002,
+			"heapBefore": 11076208,
+			"heapAfter": 11449576,
+			"heapRetained": 11193712,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-2.json",
+					"bytes": 1520
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-2.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-2.json"],
+			"transferBytes": 1394749
+		},
+		{
+			"round": 4,
+			"variant": "after",
+			"scenario": "trait-note",
+			"allocations": false,
+			"startupMs": 496,
+			"coldSheetLoadedMs": 780.0999999996275,
+			"importMs": 198.2000000011176,
+			"closeMs": 27.299999998882413,
+			"paintMs": 60.19999999925494,
+			"cpuTaskMs": 62.416000000000025,
+			"scriptMs": 5.526000000000003,
+			"layoutMs": 17.492,
+			"heapBefore": 11086184,
+			"heapAfter": 11950504,
+			"heapRetained": 11163856,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-2.json",
+					"bytes": 1520
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-2.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-2.json"],
+			"transferBytes": 1395202
+		},
+		{
+			"round": 4,
+			"variant": "before",
+			"scenario": "note-layout-add",
+			"allocations": false,
+			"startupMs": 592.4000000003725,
+			"coldSheetLoadedMs": 847.5999999996275,
+			"importMs": 180.10000000149012,
+			"closeMs": 29.699999999254942,
+			"paintMs": 44.69999999925494,
+			"cpuTaskMs": 49.36300000000004,
+			"scriptMs": 6.187999999999999,
+			"layoutMs": 15.741999999999999,
+			"heapBefore": 11507688,
+			"heapAfter": 12223820,
+			"heapRetained": 11636688,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-1.json",
+					"bytes": 2098
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-1.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-1.json"],
+			"transferBytes": 1394749
+		},
+		{
+			"round": 4,
+			"variant": "after",
+			"scenario": "note-layout-add",
+			"allocations": false,
+			"startupMs": 452.59999999962747,
+			"coldSheetLoadedMs": 710.1999999992549,
+			"importMs": 185.40000000037253,
+			"closeMs": 29.90000000037253,
+			"paintMs": 46.5,
+			"cpuTaskMs": 52.054000000000045,
+			"scriptMs": 7.485000000000019,
+			"layoutMs": 16.271000000000008,
+			"heapBefore": 11499832,
+			"heapAfter": 11868800,
+			"heapRetained": 11588648,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-1.json",
+					"bytes": 2098
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-1.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-1.json"],
+			"transferBytes": 1395202
+		},
+		{
+			"round": 5,
+			"variant": "after",
+			"scenario": "shared-property",
+			"allocations": false,
+			"startupMs": 501.3999999985099,
+			"coldSheetLoadedMs": 719,
+			"importMs": 153.39999999850988,
+			"closeMs": 45.5,
+			"paintMs": 70.30000000074506,
+			"cpuTaskMs": 89.83000000000007,
+			"scriptMs": 16.591999999999995,
+			"layoutMs": 16.940000000000005,
+			"heapBefore": 11084484,
+			"heapAfter": 12988128,
+			"heapRetained": 11294264,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-property.json",
+					"bytes": 1704
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-property.css",
+					"bytes": 216
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-3.json",
+					"bytes": 10360
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-5.json",
+					"bytes": 3016
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-6.json",
+					"bytes": 4922
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-7.json",
+					"bytes": 3028
+				}
+			],
+			"touched": [
+				"rbb:custom-blocks/sb-template-5.json",
+				"rbb:custom-blocks/sb-template-6.json",
+				"rbb:custom-blocks/sb-template-7.json",
+				"rbb:custom-blocks/sb-property.json",
+				"rbb:custom-blocks/sb-template-3.json"
+			],
+			"transferBytes": 1395202
+		},
+		{
+			"round": 5,
+			"variant": "before",
+			"scenario": "shared-property",
+			"allocations": false,
+			"startupMs": 549.7999999988824,
+			"coldSheetLoadedMs": 785.7999999988824,
+			"importMs": 159.39999999850988,
+			"closeMs": 42.79999999888241,
+			"paintMs": 84,
+			"cpuTaskMs": 86.96499999999996,
+			"scriptMs": 14.582000000000011,
+			"layoutMs": 16.757999999999996,
+			"heapBefore": 11181724,
+			"heapAfter": 13198544,
+			"heapRetained": 11316972,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-property.json",
+					"bytes": 1704
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-property.css",
+					"bytes": 216
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-3.json",
+					"bytes": 10360
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-5.json",
+					"bytes": 3016
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-6.json",
+					"bytes": 4922
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-7.json",
+					"bytes": 3028
+				}
+			],
+			"touched": [
+				"rbb:custom-blocks/sb-template-5.json",
+				"rbb:custom-blocks/sb-template-6.json",
+				"rbb:custom-blocks/sb-template-7.json",
+				"rbb:custom-blocks/sb-property.json",
+				"rbb:custom-blocks/sb-template-3.json"
+			],
+			"transferBytes": 1394749
+		},
+		{
+			"round": 5,
+			"variant": "after",
+			"scenario": "journal-note",
+			"allocations": false,
+			"startupMs": 488.40000000037253,
+			"coldSheetLoadedMs": 743.1000000014901,
+			"importMs": 163.7000000011176,
+			"closeMs": 27.799999998882413,
+			"paintMs": 42.899999998509884,
+			"cpuTaskMs": 63.012999999999984,
+			"scriptMs": 6.706999999999991,
+			"layoutMs": 16.888,
+			"heapBefore": 11081252,
+			"heapAfter": 12063144,
+			"heapRetained": 11169324,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-1.json",
+					"bytes": 1508
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-1.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-1.json"],
+			"transferBytes": 1395202
+		},
+		{
+			"round": 5,
+			"variant": "before",
+			"scenario": "journal-note",
+			"allocations": false,
+			"startupMs": 585.8999999985099,
+			"coldSheetLoadedMs": 807.3999999985099,
+			"importMs": 153,
+			"closeMs": 27.799999998882413,
+			"paintMs": 47.79999999888241,
+			"cpuTaskMs": 55.35099999999993,
+			"scriptMs": 9.739999999999998,
+			"layoutMs": 15.955000000000004,
+			"heapBefore": 11086732,
+			"heapAfter": 11522904,
+			"heapRetained": 11218484,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-1.json",
+					"bytes": 1508
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-1.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-1.json"],
+			"transferBytes": 1394749
+		},
+		{
+			"round": 5,
+			"variant": "after",
+			"scenario": "trait-note",
+			"allocations": false,
+			"startupMs": 470.59999999962747,
+			"coldSheetLoadedMs": 703.5,
+			"importMs": 151.30000000074506,
+			"closeMs": 26,
+			"paintMs": 40.80000000074506,
+			"cpuTaskMs": 42.29000000000005,
+			"scriptMs": 6.080000000000002,
+			"layoutMs": 15.152,
+			"heapBefore": 11175664,
+			"heapAfter": 12044248,
+			"heapRetained": 11164752,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-2.json",
+					"bytes": 1520
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-2.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-2.json"],
+			"transferBytes": 1395202
+		},
+		{
+			"round": 5,
+			"variant": "before",
+			"scenario": "trait-note",
+			"allocations": false,
+			"startupMs": 521.2000000011176,
+			"coldSheetLoadedMs": 779.3000000007451,
+			"importMs": 173.39999999850988,
+			"closeMs": 27.59999999962747,
+			"paintMs": 40.90000000037253,
+			"cpuTaskMs": 44.197000000000045,
+			"scriptMs": 4.686999999999997,
+			"layoutMs": 15.610999999999994,
+			"heapBefore": 11091236,
+			"heapAfter": 11428704,
+			"heapRetained": 11208540,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-2.json",
+					"bytes": 1520
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-2.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-2.json"],
+			"transferBytes": 1394749
+		},
+		{
+			"round": 5,
+			"variant": "after",
+			"scenario": "note-layout-add",
+			"allocations": false,
+			"startupMs": 463.19999999925494,
+			"coldSheetLoadedMs": 695.3999999985099,
+			"importMs": 154.90000000037253,
+			"closeMs": 31,
+			"paintMs": 46,
+			"cpuTaskMs": 61.751,
+			"scriptMs": 6.3,
+			"layoutMs": 18.067999999999994,
+			"heapBefore": 11496932,
+			"heapAfter": 11912628,
+			"heapRetained": 11580240,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-1.json",
+					"bytes": 2098
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-1.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-1.json"],
+			"transferBytes": 1395202
+		},
+		{
+			"round": 5,
+			"variant": "before",
+			"scenario": "note-layout-add",
+			"allocations": false,
+			"startupMs": 947.3000000007451,
+			"coldSheetLoadedMs": 1189,
+			"importMs": 167.69999999925494,
+			"closeMs": 33.399999998509884,
+			"paintMs": 46,
+			"cpuTaskMs": 51.49499999999985,
+			"scriptMs": 5.007000000000039,
+			"layoutMs": 16.182000000000002,
+			"heapBefore": 11489400,
+			"heapAfter": 12200000,
+			"heapRetained": 11613360,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-1.json",
+					"bytes": 2098
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-1.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-1.json"],
+			"transferBytes": 1394749
+		},
+		{
+			"round": 6,
+			"variant": "before",
+			"scenario": "shared-property",
+			"allocations": false,
+			"startupMs": 502.40000000037253,
+			"coldSheetLoadedMs": 757.3000000007451,
+			"importMs": 168.69999999925494,
+			"closeMs": 39.5,
+			"paintMs": 80.5,
+			"cpuTaskMs": 86.68799999999999,
+			"scriptMs": 12.622999999999996,
+			"layoutMs": 17.017999999999997,
+			"heapBefore": 11537768,
+			"heapAfter": 13546200,
+			"heapRetained": 11669504,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-property.json",
+					"bytes": 1704
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-property.css",
+					"bytes": 216
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-3.json",
+					"bytes": 10360
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-5.json",
+					"bytes": 3016
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-6.json",
+					"bytes": 4922
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-7.json",
+					"bytes": 3028
+				}
+			],
+			"touched": [
+				"rbb:custom-blocks/sb-template-5.json",
+				"rbb:custom-blocks/sb-template-6.json",
+				"rbb:custom-blocks/sb-template-7.json",
+				"rbb:custom-blocks/sb-property.json",
+				"rbb:custom-blocks/sb-template-3.json"
+			],
+			"transferBytes": 1394749
+		},
+		{
+			"round": 6,
+			"variant": "after",
+			"scenario": "shared-property",
+			"allocations": false,
+			"startupMs": 447.19999999925494,
+			"coldSheetLoadedMs": 713.6999999992549,
+			"importMs": 174.40000000037253,
+			"closeMs": 40.100000001490116,
+			"paintMs": 64.5,
+			"cpuTaskMs": 68.59700000000002,
+			"scriptMs": 14.189000000000007,
+			"layoutMs": 18.817000000000007,
+			"heapBefore": 11089292,
+			"heapAfter": 13028004,
+			"heapRetained": 11305584,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-property.json",
+					"bytes": 1704
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-property.css",
+					"bytes": 216
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-3.json",
+					"bytes": 10360
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-5.json",
+					"bytes": 3016
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-6.json",
+					"bytes": 4922
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-7.json",
+					"bytes": 3028
+				}
+			],
+			"touched": [
+				"rbb:custom-blocks/sb-template-5.json",
+				"rbb:custom-blocks/sb-template-6.json",
+				"rbb:custom-blocks/sb-template-7.json",
+				"rbb:custom-blocks/sb-property.json",
+				"rbb:custom-blocks/sb-template-3.json"
+			],
+			"transferBytes": 1395202
+		},
+		{
+			"round": 6,
+			"variant": "before",
+			"scenario": "journal-note",
+			"allocations": false,
+			"startupMs": 527.5999999996275,
+			"coldSheetLoadedMs": 771.6999999992549,
+			"importMs": 151.7000000011176,
+			"closeMs": 29.800000000745058,
+			"paintMs": 45.70000000111759,
+			"cpuTaskMs": 47.51699999999992,
+			"scriptMs": 7.405999999999996,
+			"layoutMs": 15.892999999999997,
+			"heapBefore": 11082172,
+			"heapAfter": 11540452,
+			"heapRetained": 11214852,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-1.json",
+					"bytes": 1508
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-1.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-1.json"],
+			"transferBytes": 1394749
+		},
+		{
+			"round": 6,
+			"variant": "after",
+			"scenario": "journal-note",
+			"allocations": false,
+			"startupMs": 503.7000000011176,
+			"coldSheetLoadedMs": 756.7000000011176,
+			"importMs": 169.80000000074506,
+			"closeMs": 29.399999998509884,
+			"paintMs": 65.79999999888241,
+			"cpuTaskMs": 71.99099999999991,
+			"scriptMs": 7.330000000000004,
+			"layoutMs": 16.507,
+			"heapBefore": 11086928,
+			"heapAfter": 12071768,
+			"heapRetained": 11179588,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-1.json",
+					"bytes": 1508
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-1.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-1.json"],
+			"transferBytes": 1395202
+		},
+		{
+			"round": 6,
+			"variant": "before",
+			"scenario": "trait-note",
+			"allocations": false,
+			"startupMs": 694.4000000003725,
+			"coldSheetLoadedMs": 916.0999999996275,
+			"importMs": 149.40000000037253,
+			"closeMs": 29,
+			"paintMs": 45.59999999962747,
+			"cpuTaskMs": 50.53099999999999,
+			"scriptMs": 6.832000000000004,
+			"layoutMs": 16.003000000000004,
+			"heapBefore": 11191280,
+			"heapAfter": 11544880,
+			"heapRetained": 11204844,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-2.json",
+					"bytes": 1520
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-2.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-2.json"],
+			"transferBytes": 1394749
+		},
+		{
+			"round": 6,
+			"variant": "after",
+			"scenario": "trait-note",
+			"allocations": false,
+			"startupMs": 473.59999999962747,
+			"coldSheetLoadedMs": 755.5999999996275,
+			"importMs": 184.7000000011176,
+			"closeMs": 31.40000000037253,
+			"paintMs": 48,
+			"cpuTaskMs": 68.14699999999996,
+			"scriptMs": 8.008999999999988,
+			"layoutMs": 18.052000000000007,
+			"heapBefore": 11136680,
+			"heapAfter": 11998600,
+			"heapRetained": 11212964,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-2.json",
+					"bytes": 1520
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-2.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-2.json"],
+			"transferBytes": 1395202
+		},
+		{
+			"round": 6,
+			"variant": "before",
+			"scenario": "note-layout-add",
+			"allocations": false,
+			"startupMs": 612.1999999992549,
+			"coldSheetLoadedMs": 830.5,
+			"importMs": 144.09999999962747,
+			"closeMs": 32.899999998509884,
+			"paintMs": 47,
+			"cpuTaskMs": 54.28900000000003,
+			"scriptMs": 5.534999999999984,
+			"layoutMs": 17.367,
+			"heapBefore": 11498908,
+			"heapAfter": 12214044,
+			"heapRetained": 11621996,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-1.json",
+					"bytes": 2098
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-1.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-1.json"],
+			"transferBytes": 1394749
+		},
+		{
+			"round": 6,
+			"variant": "after",
+			"scenario": "note-layout-add",
+			"allocations": false,
+			"startupMs": 457.5,
+			"coldSheetLoadedMs": 697.6000000014901,
+			"importMs": 159,
+			"closeMs": 27.800000000745058,
+			"paintMs": 44.30000000074506,
+			"cpuTaskMs": 48.207,
+			"scriptMs": 8.41,
+			"layoutMs": 15.907000000000004,
+			"heapBefore": 11481088,
+			"heapAfter": 11851200,
+			"heapRetained": 11562508,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-1.json",
+					"bytes": 2098
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-1.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-1.json"],
+			"transferBytes": 1395202
+		},
+		{
+			"round": 7,
+			"variant": "after",
+			"scenario": "shared-property",
+			"allocations": false,
+			"startupMs": 539.8000000007451,
+			"coldSheetLoadedMs": 769.6999999992549,
+			"importMs": 152.90000000037253,
+			"closeMs": 44.69999999925494,
+			"paintMs": 82.79999999888241,
+			"cpuTaskMs": 84.18500000000006,
+			"scriptMs": 12.739,
+			"layoutMs": 19.093,
+			"heapBefore": 11110344,
+			"heapAfter": 13053088,
+			"heapRetained": 11324152,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-property.json",
+					"bytes": 1704
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-property.css",
+					"bytes": 216
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-3.json",
+					"bytes": 10360
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-5.json",
+					"bytes": 3016
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-6.json",
+					"bytes": 4922
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-7.json",
+					"bytes": 3028
+				}
+			],
+			"touched": [
+				"rbb:custom-blocks/sb-template-5.json",
+				"rbb:custom-blocks/sb-template-6.json",
+				"rbb:custom-blocks/sb-template-7.json",
+				"rbb:custom-blocks/sb-property.json",
+				"rbb:custom-blocks/sb-template-3.json"
+			],
+			"transferBytes": 1395202
+		},
+		{
+			"round": 7,
+			"variant": "before",
+			"scenario": "shared-property",
+			"allocations": false,
+			"startupMs": 483.69999999925494,
+			"coldSheetLoadedMs": 747,
+			"importMs": 145.19999999925494,
+			"closeMs": 43.40000000037253,
+			"paintMs": 83.40000000037253,
+			"cpuTaskMs": 84.45200000000008,
+			"scriptMs": 14.435999999999977,
+			"layoutMs": 18.378,
+			"heapBefore": 11119860,
+			"heapAfter": 13128376,
+			"heapRetained": 11349504,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-property.json",
+					"bytes": 1704
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-property.css",
+					"bytes": 216
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-3.json",
+					"bytes": 10360
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-5.json",
+					"bytes": 3016
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-6.json",
+					"bytes": 4922
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-7.json",
+					"bytes": 3028
+				}
+			],
+			"touched": [
+				"rbb:custom-blocks/sb-template-5.json",
+				"rbb:custom-blocks/sb-template-6.json",
+				"rbb:custom-blocks/sb-template-7.json",
+				"rbb:custom-blocks/sb-property.json",
+				"rbb:custom-blocks/sb-template-3.json"
+			],
+			"transferBytes": 1394749
+		},
+		{
+			"round": 7,
+			"variant": "after",
+			"scenario": "journal-note",
+			"allocations": false,
+			"startupMs": 521,
+			"coldSheetLoadedMs": 908.6999999992549,
+			"importMs": 268.7000000011176,
+			"closeMs": 29.59999999962747,
+			"paintMs": 45.80000000074506,
+			"cpuTaskMs": 47.99699999999996,
+			"scriptMs": 7.641000000000009,
+			"layoutMs": 16.161,
+			"heapBefore": 11135632,
+			"heapAfter": 12126864,
+			"heapRetained": 11223728,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-1.json",
+					"bytes": 1508
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-1.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-1.json"],
+			"transferBytes": 1395202
+		},
+		{
+			"round": 7,
+			"variant": "before",
+			"scenario": "journal-note",
+			"allocations": false,
+			"startupMs": 533.9000000003725,
+			"coldSheetLoadedMs": 798.6999999992549,
+			"importMs": 164.59999999962747,
+			"closeMs": 33.09999999962747,
+			"paintMs": 62.90000000037253,
+			"cpuTaskMs": 67.20300000000002,
+			"scriptMs": 6.853999999999999,
+			"layoutMs": 18.973000000000003,
+			"heapBefore": 11140260,
+			"heapAfter": 11603288,
+			"heapRetained": 11268040,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-1.json",
+					"bytes": 1508
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-1.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-1.json"],
+			"transferBytes": 1394749
+		},
+		{
+			"round": 7,
+			"variant": "after",
+			"scenario": "trait-note",
+			"allocations": false,
+			"startupMs": 563.8999999985099,
+			"coldSheetLoadedMs": 800.5999999996275,
+			"importMs": 162.90000000037253,
+			"closeMs": 31.100000001490116,
+			"paintMs": 50.100000001490116,
+			"cpuTaskMs": 72.68600000000004,
+			"scriptMs": 26.354000000000017,
+			"layoutMs": 17.555999999999994,
+			"heapBefore": 11089816,
+			"heapAfter": 11508132,
+			"heapRetained": 11170044,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-2.json",
+					"bytes": 1520
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-2.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-2.json"],
+			"transferBytes": 1395202
+		},
+		{
+			"round": 7,
+			"variant": "before",
+			"scenario": "trait-note",
+			"allocations": false,
+			"startupMs": 580.2000000011176,
+			"coldSheetLoadedMs": 824,
+			"importMs": 164.30000000074506,
+			"closeMs": 30,
+			"paintMs": 44.20000000111759,
+			"cpuTaskMs": 46.66399999999993,
+			"scriptMs": 5.570999999999993,
+			"layoutMs": 16.501999999999995,
+			"heapBefore": 11087916,
+			"heapAfter": 11435172,
+			"heapRetained": 11205680,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-2.json",
+					"bytes": 1520
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-2.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-2.json"],
+			"transferBytes": 1394749
+		},
+		{
+			"round": 7,
+			"variant": "after",
+			"scenario": "note-layout-add",
+			"allocations": false,
+			"startupMs": 609.8000000007451,
+			"coldSheetLoadedMs": 884,
+			"importMs": 189.5,
+			"closeMs": 28.199999999254942,
+			"paintMs": 46.399999998509884,
+			"cpuTaskMs": 57.336999999999975,
+			"scriptMs": 7.218999999999975,
+			"layoutMs": 16.201000000000008,
+			"heapBefore": 11458956,
+			"heapAfter": 11836060,
+			"heapRetained": 11553252,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-1.json",
+					"bytes": 2098
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-1.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-1.json"],
+			"transferBytes": 1395202
+		},
+		{
+			"round": 7,
+			"variant": "before",
+			"scenario": "note-layout-add",
+			"allocations": false,
+			"startupMs": 547.5,
+			"coldSheetLoadedMs": 776.5,
+			"importMs": 153,
+			"closeMs": 33,
+			"paintMs": 47.90000000037253,
+			"cpuTaskMs": 57.203,
+			"scriptMs": 6.150000000000016,
+			"layoutMs": 17.236999999999995,
+			"heapBefore": 11480220,
+			"heapAfter": 12213088,
+			"heapRetained": 11603692,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-1.json",
+					"bytes": 2098
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-1.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-1.json"],
+			"transferBytes": 1394749
+		},
+		{
+			"round": 8,
+			"variant": "before",
+			"scenario": "shared-property",
+			"allocations": false,
+			"startupMs": 488.5,
+			"coldSheetLoadedMs": 759.5999999996275,
+			"importMs": 174.59999999962747,
+			"closeMs": 44.90000000037253,
+			"paintMs": 82,
+			"cpuTaskMs": 85.69499999999996,
+			"scriptMs": 13.764999999999999,
+			"layoutMs": 18.643999999999995,
+			"heapBefore": 11165764,
+			"heapAfter": 13164940,
+			"heapRetained": 11396464,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-property.json",
+					"bytes": 1704
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-property.css",
+					"bytes": 216
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-3.json",
+					"bytes": 10360
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-5.json",
+					"bytes": 3016
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-6.json",
+					"bytes": 4922
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-7.json",
+					"bytes": 3028
+				}
+			],
+			"touched": [
+				"rbb:custom-blocks/sb-template-5.json",
+				"rbb:custom-blocks/sb-template-6.json",
+				"rbb:custom-blocks/sb-template-7.json",
+				"rbb:custom-blocks/sb-property.json",
+				"rbb:custom-blocks/sb-template-3.json"
+			],
+			"transferBytes": 1394749
+		},
+		{
+			"round": 8,
+			"variant": "after",
+			"scenario": "shared-property",
+			"allocations": false,
+			"startupMs": 534.3999999985099,
+			"coldSheetLoadedMs": 797.8999999985099,
+			"importMs": 189.2000000011176,
+			"closeMs": 43.19999999925494,
+			"paintMs": 82,
+			"cpuTaskMs": 84.66600000000003,
+			"scriptMs": 13.38700000000001,
+			"layoutMs": 18.062,
+			"heapBefore": 11094840,
+			"heapAfter": 13021216,
+			"heapRetained": 11309052,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-property.json",
+					"bytes": 1704
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-property.css",
+					"bytes": 216
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-3.json",
+					"bytes": 10360
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-5.json",
+					"bytes": 3016
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-6.json",
+					"bytes": 4922
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-7.json",
+					"bytes": 3028
+				}
+			],
+			"touched": [
+				"rbb:custom-blocks/sb-template-5.json",
+				"rbb:custom-blocks/sb-template-6.json",
+				"rbb:custom-blocks/sb-template-7.json",
+				"rbb:custom-blocks/sb-property.json",
+				"rbb:custom-blocks/sb-template-3.json"
+			],
+			"transferBytes": 1395202
+		},
+		{
+			"round": 8,
+			"variant": "before",
+			"scenario": "journal-note",
+			"allocations": false,
+			"startupMs": 514.7000000011176,
+			"coldSheetLoadedMs": 746.6000000014901,
+			"importMs": 154.30000000074506,
+			"closeMs": 34.100000001490116,
+			"paintMs": 64.5,
+			"cpuTaskMs": 67.85799999999998,
+			"scriptMs": 6.929999999999992,
+			"layoutMs": 19.576999999999998,
+			"heapBefore": 11083380,
+			"heapAfter": 11530640,
+			"heapRetained": 11216864,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-1.json",
+					"bytes": 1508
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-1.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-1.json"],
+			"transferBytes": 1394749
+		},
+		{
+			"round": 8,
+			"variant": "after",
+			"scenario": "journal-note",
+			"allocations": false,
+			"startupMs": 557,
+			"coldSheetLoadedMs": 785.0999999996275,
+			"importMs": 141.40000000037253,
+			"closeMs": 27,
+			"paintMs": 43.30000000074506,
+			"cpuTaskMs": 45.011000000000024,
+			"scriptMs": 5.621000000000015,
+			"layoutMs": 16.054,
+			"heapBefore": 11088984,
+			"heapAfter": 12073796,
+			"heapRetained": 11181536,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-1.json",
+					"bytes": 1508
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-1.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-1.json"],
+			"transferBytes": 1395202
+		},
+		{
+			"round": 8,
+			"variant": "before",
+			"scenario": "trait-note",
+			"allocations": false,
+			"startupMs": 443.80000000074506,
+			"coldSheetLoadedMs": 691.9000000003725,
+			"importMs": 158.80000000074506,
+			"closeMs": 30.899999998509884,
+			"paintMs": 46.29999999888241,
+			"cpuTaskMs": 47.51499999999997,
+			"scriptMs": 6.055000000000005,
+			"layoutMs": 15.264,
+			"heapBefore": 11079988,
+			"heapAfter": 11462412,
+			"heapRetained": 11193184,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-2.json",
+					"bytes": 1520
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-2.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-2.json"],
+			"transferBytes": 1394749
+		},
+		{
+			"round": 8,
+			"variant": "after",
+			"scenario": "trait-note",
+			"allocations": false,
+			"startupMs": 575.0999999996275,
+			"coldSheetLoadedMs": 805.0999999996275,
+			"importMs": 149,
+			"closeMs": 35.90000000037253,
+			"paintMs": 62.40000000037253,
+			"cpuTaskMs": 65.28600000000007,
+			"scriptMs": 6.41899999999998,
+			"layoutMs": 16.405,
+			"heapBefore": 11082372,
+			"heapAfter": 11952104,
+			"heapRetained": 11160060,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-2.json",
+					"bytes": 1520
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-2.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-2.json"],
+			"transferBytes": 1395202
+		},
+		{
+			"round": 8,
+			"variant": "before",
+			"scenario": "note-layout-add",
+			"allocations": false,
+			"startupMs": 493.7000000011176,
+			"coldSheetLoadedMs": 727.5999999996275,
+			"importMs": 159.80000000074506,
+			"closeMs": 30.800000000745058,
+			"paintMs": 44,
+			"cpuTaskMs": 49.67699999999997,
+			"scriptMs": 5.521999999999999,
+			"layoutMs": 15.761999999999992,
+			"heapBefore": 11490420,
+			"heapAfter": 12196252,
+			"heapRetained": 11619468,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-1.json",
+					"bytes": 2098
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-1.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-1.json"],
+			"transferBytes": 1394749
+		},
+		{
+			"round": 8,
+			"variant": "after",
+			"scenario": "note-layout-add",
+			"allocations": false,
+			"startupMs": 480.2000000011176,
+			"coldSheetLoadedMs": 717.3000000007451,
+			"importMs": 155.09999999962747,
+			"closeMs": 29.699999999254942,
+			"paintMs": 45,
+			"cpuTaskMs": 51.200999999999944,
+			"scriptMs": 6.3249999999999975,
+			"layoutMs": 16.967999999999996,
+			"heapBefore": 11474940,
+			"heapAfter": 11823168,
+			"heapRetained": 11559368,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-1.json",
+					"bytes": 2098
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-1.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-1.json"],
+			"transferBytes": 1395202
+		},
+		{
+			"round": 9,
+			"variant": "after",
+			"scenario": "shared-property",
+			"allocations": false,
+			"startupMs": 499.19999999925494,
+			"coldSheetLoadedMs": 713.5,
+			"importMs": 147.19999999925494,
+			"closeMs": 43.29999999888241,
+			"paintMs": 81.69999999925494,
+			"cpuTaskMs": 89.723,
+			"scriptMs": 14.370999999999995,
+			"layoutMs": 17.135000000000005,
+			"heapBefore": 11101260,
+			"heapAfter": 13032124,
+			"heapRetained": 11314556,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-property.json",
+					"bytes": 1704
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-property.css",
+					"bytes": 216
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-3.json",
+					"bytes": 10360
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-5.json",
+					"bytes": 3016
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-6.json",
+					"bytes": 4922
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-7.json",
+					"bytes": 3028
+				}
+			],
+			"touched": [
+				"rbb:custom-blocks/sb-template-5.json",
+				"rbb:custom-blocks/sb-template-6.json",
+				"rbb:custom-blocks/sb-template-7.json",
+				"rbb:custom-blocks/sb-property.json",
+				"rbb:custom-blocks/sb-template-3.json"
+			],
+			"transferBytes": 1395202
+		},
+		{
+			"round": 9,
+			"variant": "before",
+			"scenario": "shared-property",
+			"allocations": false,
+			"startupMs": 594.5999999996275,
+			"coldSheetLoadedMs": 849.6999999992549,
+			"importMs": 176.7000000011176,
+			"closeMs": 61.20000000111759,
+			"paintMs": 87.59999999962747,
+			"cpuTaskMs": 98.12900000000002,
+			"scriptMs": 20.255999999999997,
+			"layoutMs": 22.064000000000007,
+			"heapBefore": 11097716,
+			"heapAfter": 13090688,
+			"heapRetained": 11330452,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-property.json",
+					"bytes": 1704
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-property.css",
+					"bytes": 216
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-3.json",
+					"bytes": 10360
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-5.json",
+					"bytes": 3016
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-6.json",
+					"bytes": 4922
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-7.json",
+					"bytes": 3028
+				}
+			],
+			"touched": [
+				"rbb:custom-blocks/sb-template-5.json",
+				"rbb:custom-blocks/sb-template-6.json",
+				"rbb:custom-blocks/sb-template-7.json",
+				"rbb:custom-blocks/sb-property.json",
+				"rbb:custom-blocks/sb-template-3.json"
+			],
+			"transferBytes": 1394749
+		},
+		{
+			"round": 9,
+			"variant": "after",
+			"scenario": "journal-note",
+			"allocations": false,
+			"startupMs": 477.40000000037253,
+			"coldSheetLoadedMs": 770.8000000007451,
+			"importMs": 142.7000000011176,
+			"closeMs": 31.40000000037253,
+			"paintMs": 48.30000000074506,
+			"cpuTaskMs": 52.03599999999997,
+			"scriptMs": 7.062000000000013,
+			"layoutMs": 18.163999999999998,
+			"heapBefore": 11209952,
+			"heapAfter": 12192596,
+			"heapRetained": 11299508,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-1.json",
+					"bytes": 1508
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-1.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-1.json"],
+			"transferBytes": 1395202
+		},
+		{
+			"round": 9,
+			"variant": "before",
+			"scenario": "journal-note",
+			"allocations": false,
+			"startupMs": 548,
+			"coldSheetLoadedMs": 898.9000000003725,
+			"importMs": 210.10000000149012,
+			"closeMs": 29.09999999962747,
+			"paintMs": 45.79999999888241,
+			"cpuTaskMs": 47.563000000000024,
+			"scriptMs": 8.258999999999988,
+			"layoutMs": 16.502000000000002,
+			"heapBefore": 11051916,
+			"heapAfter": 11485248,
+			"heapRetained": 11176328,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-1.json",
+					"bytes": 1508
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-1.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-1.json"],
+			"transferBytes": 1394749
+		},
+		{
+			"round": 9,
+			"variant": "after",
+			"scenario": "trait-note",
+			"allocations": false,
+			"startupMs": 476.1000000014901,
+			"coldSheetLoadedMs": 730.9000000003725,
+			"importMs": 188.69999999925494,
+			"closeMs": 25.90000000037253,
+			"paintMs": 39.90000000037253,
+			"cpuTaskMs": 63.46699999999994,
+			"scriptMs": 5.041999999999991,
+			"layoutMs": 15.765,
+			"heapBefore": 11096872,
+			"heapAfter": 11966388,
+			"heapRetained": 11170968,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-2.json",
+					"bytes": 1520
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-2.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-2.json"],
+			"transferBytes": 1395202
+		},
+		{
+			"round": 9,
+			"variant": "before",
+			"scenario": "trait-note",
+			"allocations": false,
+			"startupMs": 609.6999999992549,
+			"coldSheetLoadedMs": 883.9000000003725,
+			"importMs": 200,
+			"closeMs": 31,
+			"paintMs": 46,
+			"cpuTaskMs": 48.653999999999975,
+			"scriptMs": 5.334000000000005,
+			"layoutMs": 17.893,
+			"heapBefore": 11094168,
+			"heapAfter": 11459260,
+			"heapRetained": 11207236,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-2.json",
+					"bytes": 1520
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-2.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-2.json"],
+			"transferBytes": 1394749
+		},
+		{
+			"round": 9,
+			"variant": "after",
+			"scenario": "note-layout-add",
+			"allocations": false,
+			"startupMs": 492,
+			"coldSheetLoadedMs": 756.5,
+			"importMs": 182.59999999962747,
+			"closeMs": 32.29999999888241,
+			"paintMs": 47.40000000037253,
+			"cpuTaskMs": 58.97600000000003,
+			"scriptMs": 7.335000000000008,
+			"layoutMs": 18.261,
+			"heapBefore": 11497740,
+			"heapAfter": 11871656,
+			"heapRetained": 11586504,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-1.json",
+					"bytes": 2098
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-1.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-1.json"],
+			"transferBytes": 1395202
+		},
+		{
+			"round": 9,
+			"variant": "before",
+			"scenario": "note-layout-add",
+			"allocations": false,
+			"startupMs": 594.5,
+			"coldSheetLoadedMs": 845.4000000003725,
+			"importMs": 151.80000000074506,
+			"closeMs": 31.800000000745058,
+			"paintMs": 46.5,
+			"cpuTaskMs": 52.112000000000045,
+			"scriptMs": 5.29799999999997,
+			"layoutMs": 16.702,
+			"heapBefore": 11546404,
+			"heapAfter": 12265032,
+			"heapRetained": 11671748,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-1.json",
+					"bytes": 2098
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-1.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-1.json"],
+			"transferBytes": 1394749
+		}
+	],
+	"allocations": [
+		{
+			"round": 10,
+			"variant": "before",
+			"scenario": "shared-property",
+			"allocations": true,
+			"startupMs": 531.9000000003725,
+			"coldSheetLoadedMs": 863,
+			"importMs": 245,
+			"closeMs": 70.40000000037253,
+			"paintMs": 113.09999999962747,
+			"cpuTaskMs": 116.86099999999999,
+			"scriptMs": 26.101000000000013,
+			"layoutMs": 26.682,
+			"heapBefore": 11186872,
+			"heapAfter": 13191396,
+			"heapRetained": 11417348,
+			"sampledBytes": 2170128,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-property.json",
+					"bytes": 1704
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-property.css",
+					"bytes": 216
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-3.json",
+					"bytes": 10360
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-5.json",
+					"bytes": 3016
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-6.json",
+					"bytes": 4922
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-7.json",
+					"bytes": 3028
+				}
+			],
+			"touched": [
+				"rbb:custom-blocks/sb-template-5.json",
+				"rbb:custom-blocks/sb-template-6.json",
+				"rbb:custom-blocks/sb-template-7.json",
+				"rbb:custom-blocks/sb-property.json",
+				"rbb:custom-blocks/sb-template-3.json"
+			],
+			"transferBytes": 1394749
+		},
+		{
+			"round": 10,
+			"variant": "after",
+			"scenario": "shared-property",
+			"allocations": true,
+			"startupMs": 604.5999999996275,
+			"coldSheetLoadedMs": 851,
+			"importMs": 170,
+			"closeMs": 45.30000000074506,
+			"paintMs": 69.30000000074506,
+			"cpuTaskMs": 78.07600000000004,
+			"scriptMs": 18.116999999999994,
+			"layoutMs": 17.53799999999999,
+			"heapBefore": 11104876,
+			"heapAfter": 13025388,
+			"heapRetained": 11316720,
+			"sampledBytes": 2534800,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-property.json",
+					"bytes": 1704
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-property.css",
+					"bytes": 216
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-3.json",
+					"bytes": 10360
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-5.json",
+					"bytes": 3016
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-6.json",
+					"bytes": 4922
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-7.json",
+					"bytes": 3028
+				}
+			],
+			"touched": [
+				"rbb:custom-blocks/sb-template-5.json",
+				"rbb:custom-blocks/sb-template-6.json",
+				"rbb:custom-blocks/sb-template-7.json",
+				"rbb:custom-blocks/sb-property.json",
+				"rbb:custom-blocks/sb-template-3.json"
+			],
+			"transferBytes": 1395202
+		},
+		{
+			"round": 10,
+			"variant": "before",
+			"scenario": "journal-note",
+			"allocations": true,
+			"startupMs": 483.7000000011176,
+			"coldSheetLoadedMs": 739.8000000007451,
+			"importMs": 168.40000000037253,
+			"closeMs": 29.5,
+			"paintMs": 55.69999999925494,
+			"cpuTaskMs": 57.68799999999996,
+			"scriptMs": 6.538999999999989,
+			"layoutMs": 15.800999999999995,
+			"heapBefore": 11196716,
+			"heapAfter": 11623920,
+			"heapRetained": 11223860,
+			"sampledBytes": 1297308,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-1.json",
+					"bytes": 1508
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-1.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-1.json"],
+			"transferBytes": 1394749
+		},
+		{
+			"round": 10,
+			"variant": "after",
+			"scenario": "journal-note",
+			"allocations": true,
+			"startupMs": 579.5999999996275,
+			"coldSheetLoadedMs": 903.1999999992549,
+			"importMs": 221.2000000011176,
+			"closeMs": 30.699999999254942,
+			"paintMs": 46.5,
+			"cpuTaskMs": 48.242000000000004,
+			"scriptMs": 6.427999999999989,
+			"layoutMs": 18.314999999999998,
+			"heapBefore": 11160784,
+			"heapAfter": 12143464,
+			"heapRetained": 11251776,
+			"sampledBytes": 935704,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-1.json",
+					"bytes": 1508
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-1.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-1.json"],
+			"transferBytes": 1395202
+		},
+		{
+			"round": 10,
+			"variant": "before",
+			"scenario": "trait-note",
+			"allocations": true,
+			"startupMs": 521.6999999992549,
+			"coldSheetLoadedMs": 873.1999999992549,
+			"importMs": 236.7000000011176,
+			"closeMs": 32.09999999962747,
+			"paintMs": 48.19999999925494,
+			"cpuTaskMs": 55.96600000000007,
+			"scriptMs": 5.923000000000012,
+			"layoutMs": 17.871000000000006,
+			"heapBefore": 11490700,
+			"heapAfter": 11788380,
+			"heapRetained": 11200676,
+			"sampledBytes": 1498552,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-2.json",
+					"bytes": 1520
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-2.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-2.json"],
+			"transferBytes": 1394749
+		},
+		{
+			"round": 10,
+			"variant": "after",
+			"scenario": "trait-note",
+			"allocations": true,
+			"startupMs": 570.7000000011176,
+			"coldSheetLoadedMs": 815.2000000011176,
+			"importMs": 163.40000000037253,
+			"closeMs": 28.800000000745058,
+			"paintMs": 44.30000000074506,
+			"cpuTaskMs": 45.58899999999999,
+			"scriptMs": 5.442000000000002,
+			"layoutMs": 17.995000000000005,
+			"heapBefore": 11091160,
+			"heapAfter": 11953268,
+			"heapRetained": 11167244,
+			"sampledBytes": 689856,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-2.json",
+					"bytes": 1520
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-2.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-2.json"],
+			"transferBytes": 1395202
+		},
+		{
+			"round": 10,
+			"variant": "before",
+			"scenario": "note-layout-add",
+			"allocations": true,
+			"startupMs": 486.80000000074506,
+			"coldSheetLoadedMs": 730.6999999992549,
+			"importMs": 158.2999999988824,
+			"closeMs": 33.90000000037253,
+			"paintMs": 47.30000000074506,
+			"cpuTaskMs": 55.373000000000005,
+			"scriptMs": 5.606,
+			"layoutMs": 15.550999999999995,
+			"heapBefore": 11470952,
+			"heapAfter": 12164124,
+			"heapRetained": 11595468,
+			"sampledBytes": 1446928,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-1.json",
+					"bytes": 2098
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-1.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-1.json"],
+			"transferBytes": 1394749
+		},
+		{
+			"round": 10,
+			"variant": "after",
+			"scenario": "note-layout-add",
+			"allocations": true,
+			"startupMs": 562.8000000007451,
+			"coldSheetLoadedMs": 842.0999999996275,
+			"importMs": 175.90000000037253,
+			"closeMs": 31,
+			"paintMs": 47.59999999962747,
+			"cpuTaskMs": 57.62900000000004,
+			"scriptMs": 7.336999999999982,
+			"layoutMs": 16.950999999999993,
+			"heapBefore": 11533592,
+			"heapAfter": 11943116,
+			"heapRetained": 11614576,
+			"sampledBytes": 1099572,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-1.json",
+					"bytes": 2098
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-1.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-1.json"],
+			"transferBytes": 1395202
+		},
+		{
+			"round": 11,
+			"variant": "after",
+			"scenario": "shared-property",
+			"allocations": true,
+			"startupMs": 520.8000000007451,
+			"coldSheetLoadedMs": 759.4000000003725,
+			"importMs": 154.40000000037253,
+			"closeMs": 45.90000000037253,
+			"paintMs": 86.40000000037253,
+			"cpuTaskMs": 88.68699999999995,
+			"scriptMs": 13.38600000000001,
+			"layoutMs": 18.010000000000005,
+			"heapBefore": 11107900,
+			"heapAfter": 13041856,
+			"heapRetained": 11316088,
+			"sampledBytes": 2513016,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-property.json",
+					"bytes": 1704
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-property.css",
+					"bytes": 216
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-3.json",
+					"bytes": 10360
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-5.json",
+					"bytes": 3016
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-6.json",
+					"bytes": 4922
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-7.json",
+					"bytes": 3028
+				}
+			],
+			"touched": [
+				"rbb:custom-blocks/sb-template-5.json",
+				"rbb:custom-blocks/sb-template-6.json",
+				"rbb:custom-blocks/sb-template-7.json",
+				"rbb:custom-blocks/sb-property.json",
+				"rbb:custom-blocks/sb-template-3.json"
+			],
+			"transferBytes": 1395202
+		},
+		{
+			"round": 11,
+			"variant": "before",
+			"scenario": "shared-property",
+			"allocations": true,
+			"startupMs": 580.9000000003725,
+			"coldSheetLoadedMs": 838.6999999992549,
+			"importMs": 156.40000000037253,
+			"closeMs": 44.5,
+			"paintMs": 66.5,
+			"cpuTaskMs": 75.75900000000001,
+			"scriptMs": 13.416000000000011,
+			"layoutMs": 17.114000000000004,
+			"heapBefore": 11160072,
+			"heapAfter": 13126256,
+			"heapRetained": 11390260,
+			"sampledBytes": 2708176,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-property.json",
+					"bytes": 1704
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-property.css",
+					"bytes": 216
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-3.json",
+					"bytes": 10360
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-5.json",
+					"bytes": 3016
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-6.json",
+					"bytes": 4922
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-7.json",
+					"bytes": 3028
+				}
+			],
+			"touched": [
+				"rbb:custom-blocks/sb-template-5.json",
+				"rbb:custom-blocks/sb-template-6.json",
+				"rbb:custom-blocks/sb-template-7.json",
+				"rbb:custom-blocks/sb-property.json",
+				"rbb:custom-blocks/sb-template-3.json"
+			],
+			"transferBytes": 1394749
+		},
+		{
+			"round": 11,
+			"variant": "after",
+			"scenario": "journal-note",
+			"allocations": true,
+			"startupMs": 545.0999999996275,
+			"coldSheetLoadedMs": 822.3000000007451,
+			"importMs": 180.5,
+			"closeMs": 32.69999999925494,
+			"paintMs": 48.29999999888241,
+			"cpuTaskMs": 56.81700000000001,
+			"scriptMs": 8.560000000000013,
+			"layoutMs": 16.405999999999995,
+			"heapBefore": 11571816,
+			"heapAfter": 11679552,
+			"heapRetained": 11253452,
+			"sampledBytes": 1067520,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-1.json",
+					"bytes": 1508
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-1.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-1.json"],
+			"transferBytes": 1395202
+		},
+		{
+			"round": 11,
+			"variant": "before",
+			"scenario": "journal-note",
+			"allocations": true,
+			"startupMs": 495.09999999962747,
+			"coldSheetLoadedMs": 791.1999999992549,
+			"importMs": 156.2000000011176,
+			"closeMs": 30.90000000037253,
+			"paintMs": 61.90000000037253,
+			"cpuTaskMs": 64.11299999999997,
+			"scriptMs": 6.418000000000007,
+			"layoutMs": 16.315000000000005,
+			"heapBefore": 11160972,
+			"heapAfter": 11599440,
+			"heapRetained": 11294520,
+			"sampledBytes": 1217320,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-1.json",
+					"bytes": 1508
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-1.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-1.json"],
+			"transferBytes": 1394749
+		},
+		{
+			"round": 11,
+			"variant": "after",
+			"scenario": "trait-note",
+			"allocations": true,
+			"startupMs": 469.7000000011176,
+			"coldSheetLoadedMs": 717.3000000007451,
+			"importMs": 159.5,
+			"closeMs": 28.40000000037253,
+			"paintMs": 43.70000000111759,
+			"cpuTaskMs": 45.099000000000004,
+			"scriptMs": 5.185999999999996,
+			"layoutMs": 16.613000000000003,
+			"heapBefore": 11086764,
+			"heapAfter": 11965112,
+			"heapRetained": 11160428,
+			"sampledBytes": 838652,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-2.json",
+					"bytes": 1520
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-2.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-2.json"],
+			"transferBytes": 1395202
+		},
+		{
+			"round": 11,
+			"variant": "before",
+			"scenario": "trait-note",
+			"allocations": true,
+			"startupMs": 583.5,
+			"coldSheetLoadedMs": 1015.8999999985099,
+			"importMs": 310.69999999925494,
+			"closeMs": 27,
+			"paintMs": 44.90000000037253,
+			"cpuTaskMs": 47.40399999999989,
+			"scriptMs": 4.788999999999987,
+			"layoutMs": 16.142000000000003,
+			"heapBefore": 11160144,
+			"heapAfter": 11505284,
+			"heapRetained": 11277376,
+			"sampledBytes": 905812,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-2.json",
+					"bytes": 1520
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-2.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-2.json"],
+			"transferBytes": 1394749
+		},
+		{
+			"round": 11,
+			"variant": "after",
+			"scenario": "note-layout-add",
+			"allocations": true,
+			"startupMs": 521.2999999988824,
+			"coldSheetLoadedMs": 803.7999999988824,
+			"importMs": 173.90000000037253,
+			"closeMs": 32.19999999925494,
+			"paintMs": 49.79999999888241,
+			"cpuTaskMs": 55.370999999999945,
+			"scriptMs": 8.222000000000007,
+			"layoutMs": 16.476999999999993,
+			"heapBefore": 11541664,
+			"heapAfter": 11901348,
+			"heapRetained": 11632600,
+			"sampledBytes": 1083500,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-1.json",
+					"bytes": 2098
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-1.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-1.json"],
+			"transferBytes": 1395202
+		},
+		{
+			"round": 11,
+			"variant": "before",
+			"scenario": "note-layout-add",
+			"allocations": true,
+			"startupMs": 680,
+			"coldSheetLoadedMs": 962.3000000007451,
+			"importMs": 184.09999999962747,
+			"closeMs": 35.59999999962747,
+			"paintMs": 57.30000000074506,
+			"cpuTaskMs": 67.67799999999991,
+			"scriptMs": 10.184999999999999,
+			"layoutMs": 16.796000000000006,
+			"heapBefore": 11542792,
+			"heapAfter": 12247008,
+			"heapRetained": 11668252,
+			"sampledBytes": 1348204,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-1.json",
+					"bytes": 2098
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-1.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-1.json"],
+			"transferBytes": 1394749
+		},
+		{
+			"round": 12,
+			"variant": "before",
+			"scenario": "shared-property",
+			"allocations": true,
+			"startupMs": 497.90000000037253,
+			"coldSheetLoadedMs": 760.9000000003725,
+			"importMs": 192.30000000074506,
+			"closeMs": 53.09999999962747,
+			"paintMs": 88.79999999888241,
+			"cpuTaskMs": 93.46300000000008,
+			"scriptMs": 13.803999999999983,
+			"layoutMs": 18.761,
+			"heapBefore": 11200900,
+			"heapAfter": 13189752,
+			"heapRetained": 11334060,
+			"sampledBytes": 2630252,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-property.json",
+					"bytes": 1704
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-property.css",
+					"bytes": 216
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-3.json",
+					"bytes": 10360
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-5.json",
+					"bytes": 3016
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-6.json",
+					"bytes": 4922
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-7.json",
+					"bytes": 3028
+				}
+			],
+			"touched": [
+				"rbb:custom-blocks/sb-template-5.json",
+				"rbb:custom-blocks/sb-template-6.json",
+				"rbb:custom-blocks/sb-template-7.json",
+				"rbb:custom-blocks/sb-property.json",
+				"rbb:custom-blocks/sb-template-3.json"
+			],
+			"transferBytes": 1394749
+		},
+		{
+			"round": 12,
+			"variant": "after",
+			"scenario": "shared-property",
+			"allocations": true,
+			"startupMs": 524.8000000007451,
+			"coldSheetLoadedMs": 778.2000000011176,
+			"importMs": 167.59999999962747,
+			"closeMs": 52.100000001490116,
+			"paintMs": 91.5,
+			"cpuTaskMs": 94.611,
+			"scriptMs": 15.91200000000001,
+			"layoutMs": 18.415999999999993,
+			"heapBefore": 11100324,
+			"heapAfter": 13031180,
+			"heapRetained": 11314904,
+			"sampledBytes": 2347344,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-property.json",
+					"bytes": 1704
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-property.css",
+					"bytes": 216
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-3.json",
+					"bytes": 10360
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-5.json",
+					"bytes": 3016
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-6.json",
+					"bytes": 4922
+				},
+				{
+					"key": "rbb:custom-blocks/sb-template-7.json",
+					"bytes": 3028
+				}
+			],
+			"touched": [
+				"rbb:custom-blocks/sb-template-5.json",
+				"rbb:custom-blocks/sb-template-6.json",
+				"rbb:custom-blocks/sb-template-7.json",
+				"rbb:custom-blocks/sb-property.json",
+				"rbb:custom-blocks/sb-template-3.json"
+			],
+			"transferBytes": 1395202
+		},
+		{
+			"round": 12,
+			"variant": "before",
+			"scenario": "journal-note",
+			"allocations": true,
+			"startupMs": 551.1999999992549,
+			"coldSheetLoadedMs": 793.2999999988824,
+			"importMs": 170.7000000011176,
+			"closeMs": 35,
+			"paintMs": 78.80000000074506,
+			"cpuTaskMs": 81.0200000000001,
+			"scriptMs": 12.864000000000015,
+			"layoutMs": 17.873,
+			"heapBefore": 11080716,
+			"heapAfter": 11517748,
+			"heapRetained": 11214076,
+			"sampledBytes": 1397472,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-1.json",
+					"bytes": 1508
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-1.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-1.json"],
+			"transferBytes": 1394749
+		},
+		{
+			"round": 12,
+			"variant": "after",
+			"scenario": "journal-note",
+			"allocations": true,
+			"startupMs": 505.09999999962747,
+			"coldSheetLoadedMs": 745.4000000003725,
+			"importMs": 171.2999999988824,
+			"closeMs": 29.59999999962747,
+			"paintMs": 61.59999999962747,
+			"cpuTaskMs": 65.22899999999998,
+			"scriptMs": 6.086000000000008,
+			"layoutMs": 17.126999999999995,
+			"heapBefore": 11085708,
+			"heapAfter": 12063532,
+			"heapRetained": 11179208,
+			"sampledBytes": 1099876,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-1.json",
+					"bytes": 1508
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-1.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-1.json"],
+			"transferBytes": 1395202
+		},
+		{
+			"round": 12,
+			"variant": "before",
+			"scenario": "trait-note",
+			"allocations": true,
+			"startupMs": 622.6000000014901,
+			"coldSheetLoadedMs": 973.9000000003725,
+			"importMs": 214.19999999925494,
+			"closeMs": 42.29999999888241,
+			"paintMs": 58.29999999888241,
+			"cpuTaskMs": 60.813,
+			"scriptMs": 7.505999999999958,
+			"layoutMs": 17.239000000000004,
+			"heapBefore": 11093072,
+			"heapAfter": 11459988,
+			"heapRetained": 11210780,
+			"sampledBytes": 903652,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-2.json",
+					"bytes": 1520
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-2.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-2.json"],
+			"transferBytes": 1394749
+		},
+		{
+			"round": 12,
+			"variant": "after",
+			"scenario": "trait-note",
+			"allocations": true,
+			"startupMs": 559.6000000014901,
+			"coldSheetLoadedMs": 832.5,
+			"importMs": 173.69999999925494,
+			"closeMs": 29.5,
+			"paintMs": 44.29999999888241,
+			"cpuTaskMs": 48.83599999999999,
+			"scriptMs": 5.37399999999999,
+			"layoutMs": 17.13200000000001,
+			"heapBefore": 11091880,
+			"heapAfter": 11955908,
+			"heapRetained": 11169728,
+			"sampledBytes": 740016,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-2.json",
+					"bytes": 1520
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-2.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-2.json"],
+			"transferBytes": 1395202
+		},
+		{
+			"round": 12,
+			"variant": "before",
+			"scenario": "note-layout-add",
+			"allocations": true,
+			"startupMs": 559.2999999988824,
+			"coldSheetLoadedMs": 843.8999999985099,
+			"importMs": 169.80000000074506,
+			"closeMs": 33.79999999888241,
+			"paintMs": 48.69999999925494,
+			"cpuTaskMs": 51.84499999999992,
+			"scriptMs": 5.757999999999985,
+			"layoutMs": 16.522999999999996,
+			"heapBefore": 11544104,
+			"heapAfter": 12254700,
+			"heapRetained": 11669616,
+			"sampledBytes": 1347588,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-1.json",
+					"bytes": 2098
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-1.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-1.json"],
+			"transferBytes": 1394749
+		},
+		{
+			"round": 12,
+			"variant": "after",
+			"scenario": "note-layout-add",
+			"allocations": true,
+			"startupMs": 537.6999999992549,
+			"coldSheetLoadedMs": 819.2999999988824,
+			"importMs": 188.89999999850988,
+			"closeMs": 90.79999999888241,
+			"paintMs": 143.69999999925494,
+			"cpuTaskMs": 146.76599999999996,
+			"scriptMs": 33.112,
+			"layoutMs": 46.755,
+			"heapBefore": 11496908,
+			"heapAfter": 11859360,
+			"heapRetained": 11587136,
+			"sampledBytes": 1134108,
+			"longTasks": [],
+			"writes": [
+				{
+					"key": "rbb:custom-blocks/sb-template-1.json",
+					"bytes": 2098
+				},
+				{
+					"key": "rbb:themes/default/blocks/sb-template-1.css",
+					"bytes": 216
+				}
+			],
+			"touched": ["rbb:custom-blocks/sb-template-1.json"],
+			"transferBytes": 1395202
+		}
+	]
+}

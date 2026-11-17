@@ -1,0 +1,1606 @@
+{
+	"runtime": "1.4.4",
+	"coldProcesses": 160,
+	"results": [
+		{
+			"round": 0,
+			"variant": "before",
+			"scenario": "shared-property",
+			"ms": 1.641793999999999,
+			"cpuMs": 1.933,
+			"clones": 8,
+			"dependentWrites": 4,
+			"digest": "7c010df3c5e50e2383f0e3f40114b47d119150ce503c25b8845412e244fa5cf6"
+		},
+		{
+			"round": 0,
+			"variant": "after",
+			"scenario": "shared-property",
+			"ms": 1.3377689999999998,
+			"cpuMs": 1.638,
+			"clones": 5,
+			"dependentWrites": 4,
+			"digest": "7c010df3c5e50e2383f0e3f40114b47d119150ce503c25b8845412e244fa5cf6"
+		},
+		{
+			"round": 0,
+			"variant": "before",
+			"scenario": "journal-note",
+			"ms": 1.9653059999999982,
+			"cpuMs": 1.793,
+			"clones": 8,
+			"dependentWrites": 0,
+			"digest": "bb0cfed281127ec0d88ceeab7cee578985a77e70792dde1db6c82cde9bf0a1c4"
+		},
+		{
+			"round": 0,
+			"variant": "after",
+			"scenario": "journal-note",
+			"ms": 0.8313379999999988,
+			"cpuMs": 0.917,
+			"clones": 1,
+			"dependentWrites": 0,
+			"digest": "bb0cfed281127ec0d88ceeab7cee578985a77e70792dde1db6c82cde9bf0a1c4"
+		},
+		{
+			"round": 0,
+			"variant": "before",
+			"scenario": "trait-note",
+			"ms": 1.1494729999999986,
+			"cpuMs": 1.368,
+			"clones": 8,
+			"dependentWrites": 0,
+			"digest": "a6820b04a304e691f6a162546f288f8806b0484bb7e87595717fee32e13f79f2"
+		},
+		{
+			"round": 0,
+			"variant": "after",
+			"scenario": "trait-note",
+			"ms": 0.6837610000000005,
+			"cpuMs": 0.785,
+			"clones": 1,
+			"dependentWrites": 0,
+			"digest": "a6820b04a304e691f6a162546f288f8806b0484bb7e87595717fee32e13f79f2"
+		},
+		{
+			"round": 0,
+			"variant": "before",
+			"scenario": "note-layout-add",
+			"ms": 2.146618,
+			"cpuMs": 1.696,
+			"clones": 8,
+			"dependentWrites": 0,
+			"digest": "a09041e53f7c5baed2086c297576634585e42b2c2288a8e120ba92d54b6b252f"
+		},
+		{
+			"round": 0,
+			"variant": "after",
+			"scenario": "note-layout-add",
+			"ms": 1.0597940000000001,
+			"cpuMs": 0.898,
+			"clones": 1,
+			"dependentWrites": 0,
+			"digest": "a09041e53f7c5baed2086c297576634585e42b2c2288a8e120ba92d54b6b252f"
+		},
+		{
+			"round": 1,
+			"variant": "after",
+			"scenario": "shared-property",
+			"ms": 3.236096,
+			"cpuMs": 2.11,
+			"clones": 5,
+			"dependentWrites": 4,
+			"digest": "7c010df3c5e50e2383f0e3f40114b47d119150ce503c25b8845412e244fa5cf6"
+		},
+		{
+			"round": 1,
+			"variant": "before",
+			"scenario": "shared-property",
+			"ms": 55.75794099999999,
+			"cpuMs": 2.106,
+			"clones": 8,
+			"dependentWrites": 4,
+			"digest": "7c010df3c5e50e2383f0e3f40114b47d119150ce503c25b8845412e244fa5cf6"
+		},
+		{
+			"round": 1,
+			"variant": "after",
+			"scenario": "journal-note",
+			"ms": 0.8166720000000005,
+			"cpuMs": 0.939,
+			"clones": 1,
+			"dependentWrites": 0,
+			"digest": "bb0cfed281127ec0d88ceeab7cee578985a77e70792dde1db6c82cde9bf0a1c4"
+		},
+		{
+			"round": 1,
+			"variant": "before",
+			"scenario": "journal-note",
+			"ms": 1.6257999999999981,
+			"cpuMs": 1.739,
+			"clones": 8,
+			"dependentWrites": 0,
+			"digest": "bb0cfed281127ec0d88ceeab7cee578985a77e70792dde1db6c82cde9bf0a1c4"
+		},
+		{
+			"round": 1,
+			"variant": "after",
+			"scenario": "trait-note",
+			"ms": 0.6902559999999998,
+			"cpuMs": 0.778,
+			"clones": 1,
+			"dependentWrites": 0,
+			"digest": "a6820b04a304e691f6a162546f288f8806b0484bb7e87595717fee32e13f79f2"
+		},
+		{
+			"round": 1,
+			"variant": "before",
+			"scenario": "trait-note",
+			"ms": 1.5888539999999995,
+			"cpuMs": 1.696,
+			"clones": 8,
+			"dependentWrites": 0,
+			"digest": "a6820b04a304e691f6a162546f288f8806b0484bb7e87595717fee32e13f79f2"
+		},
+		{
+			"round": 1,
+			"variant": "after",
+			"scenario": "note-layout-add",
+			"ms": 0.7134440000000026,
+			"cpuMs": 0.814,
+			"clones": 1,
+			"dependentWrites": 0,
+			"digest": "a09041e53f7c5baed2086c297576634585e42b2c2288a8e120ba92d54b6b252f"
+		},
+		{
+			"round": 1,
+			"variant": "before",
+			"scenario": "note-layout-add",
+			"ms": 1.2242039999999985,
+			"cpuMs": 1.542,
+			"clones": 8,
+			"dependentWrites": 0,
+			"digest": "a09041e53f7c5baed2086c297576634585e42b2c2288a8e120ba92d54b6b252f"
+		},
+		{
+			"round": 2,
+			"variant": "before",
+			"scenario": "shared-property",
+			"ms": 1.2031810000000007,
+			"cpuMs": 1.622,
+			"clones": 8,
+			"dependentWrites": 4,
+			"digest": "7c010df3c5e50e2383f0e3f40114b47d119150ce503c25b8845412e244fa5cf6"
+		},
+		{
+			"round": 2,
+			"variant": "after",
+			"scenario": "shared-property",
+			"ms": 1.561195999999999,
+			"cpuMs": 2.111,
+			"clones": 5,
+			"dependentWrites": 4,
+			"digest": "7c010df3c5e50e2383f0e3f40114b47d119150ce503c25b8845412e244fa5cf6"
+		},
+		{
+			"round": 2,
+			"variant": "before",
+			"scenario": "journal-note",
+			"ms": 1.1758039999999994,
+			"cpuMs": 1.33,
+			"clones": 8,
+			"dependentWrites": 0,
+			"digest": "bb0cfed281127ec0d88ceeab7cee578985a77e70792dde1db6c82cde9bf0a1c4"
+		},
+		{
+			"round": 2,
+			"variant": "after",
+			"scenario": "journal-note",
+			"ms": 0.7080660000000005,
+			"cpuMs": 0.797,
+			"clones": 1,
+			"dependentWrites": 0,
+			"digest": "bb0cfed281127ec0d88ceeab7cee578985a77e70792dde1db6c82cde9bf0a1c4"
+		},
+		{
+			"round": 2,
+			"variant": "before",
+			"scenario": "trait-note",
+			"ms": 1.5247380000000028,
+			"cpuMs": 2.019,
+			"clones": 8,
+			"dependentWrites": 0,
+			"digest": "a6820b04a304e691f6a162546f288f8806b0484bb7e87595717fee32e13f79f2"
+		},
+		{
+			"round": 2,
+			"variant": "after",
+			"scenario": "trait-note",
+			"ms": 1.243411,
+			"cpuMs": 1.322,
+			"clones": 1,
+			"dependentWrites": 0,
+			"digest": "a6820b04a304e691f6a162546f288f8806b0484bb7e87595717fee32e13f79f2"
+		},
+		{
+			"round": 2,
+			"variant": "before",
+			"scenario": "note-layout-add",
+			"ms": 1.1344569999999976,
+			"cpuMs": 1.382,
+			"clones": 8,
+			"dependentWrites": 0,
+			"digest": "a09041e53f7c5baed2086c297576634585e42b2c2288a8e120ba92d54b6b252f"
+		},
+		{
+			"round": 2,
+			"variant": "after",
+			"scenario": "note-layout-add",
+			"ms": 1.0754389999999994,
+			"cpuMs": 1.168,
+			"clones": 1,
+			"dependentWrites": 0,
+			"digest": "a09041e53f7c5baed2086c297576634585e42b2c2288a8e120ba92d54b6b252f"
+		},
+		{
+			"round": 3,
+			"variant": "after",
+			"scenario": "shared-property",
+			"ms": 2.975791000000001,
+			"cpuMs": 2.329,
+			"clones": 5,
+			"dependentWrites": 4,
+			"digest": "7c010df3c5e50e2383f0e3f40114b47d119150ce503c25b8845412e244fa5cf6"
+		},
+		{
+			"round": 3,
+			"variant": "before",
+			"scenario": "shared-property",
+			"ms": 1.5861289999999997,
+			"cpuMs": 2.082,
+			"clones": 8,
+			"dependentWrites": 4,
+			"digest": "7c010df3c5e50e2383f0e3f40114b47d119150ce503c25b8845412e244fa5cf6"
+		},
+		{
+			"round": 3,
+			"variant": "after",
+			"scenario": "journal-note",
+			"ms": 0.6863449999999993,
+			"cpuMs": 0.778,
+			"clones": 1,
+			"dependentWrites": 0,
+			"digest": "bb0cfed281127ec0d88ceeab7cee578985a77e70792dde1db6c82cde9bf0a1c4"
+		},
+		{
+			"round": 3,
+			"variant": "before",
+			"scenario": "journal-note",
+			"ms": 1.357324000000002,
+			"cpuMs": 1.709,
+			"clones": 8,
+			"dependentWrites": 0,
+			"digest": "bb0cfed281127ec0d88ceeab7cee578985a77e70792dde1db6c82cde9bf0a1c4"
+		},
+		{
+			"round": 3,
+			"variant": "after",
+			"scenario": "trait-note",
+			"ms": 0.6630880000000001,
+			"cpuMs": 0.781,
+			"clones": 1,
+			"dependentWrites": 0,
+			"digest": "a6820b04a304e691f6a162546f288f8806b0484bb7e87595717fee32e13f79f2"
+		},
+		{
+			"round": 3,
+			"variant": "before",
+			"scenario": "trait-note",
+			"ms": 2.3425270000000022,
+			"cpuMs": 2.209,
+			"clones": 8,
+			"dependentWrites": 0,
+			"digest": "a6820b04a304e691f6a162546f288f8806b0484bb7e87595717fee32e13f79f2"
+		},
+		{
+			"round": 3,
+			"variant": "after",
+			"scenario": "note-layout-add",
+			"ms": 1.1241899999999987,
+			"cpuMs": 1.268,
+			"clones": 1,
+			"dependentWrites": 0,
+			"digest": "a09041e53f7c5baed2086c297576634585e42b2c2288a8e120ba92d54b6b252f"
+		},
+		{
+			"round": 3,
+			"variant": "before",
+			"scenario": "note-layout-add",
+			"ms": 2.6355169999999966,
+			"cpuMs": 2.576,
+			"clones": 8,
+			"dependentWrites": 0,
+			"digest": "a09041e53f7c5baed2086c297576634585e42b2c2288a8e120ba92d54b6b252f"
+		},
+		{
+			"round": 4,
+			"variant": "before",
+			"scenario": "shared-property",
+			"ms": 1.2733040000000013,
+			"cpuMs": 1.563,
+			"clones": 8,
+			"dependentWrites": 4,
+			"digest": "7c010df3c5e50e2383f0e3f40114b47d119150ce503c25b8845412e244fa5cf6"
+		},
+		{
+			"round": 4,
+			"variant": "after",
+			"scenario": "shared-property",
+			"ms": 1.9656549999999982,
+			"cpuMs": 2.059,
+			"clones": 5,
+			"dependentWrites": 4,
+			"digest": "7c010df3c5e50e2383f0e3f40114b47d119150ce503c25b8845412e244fa5cf6"
+		},
+		{
+			"round": 4,
+			"variant": "before",
+			"scenario": "journal-note",
+			"ms": 1.3730390000000003,
+			"cpuMs": 1.571,
+			"clones": 8,
+			"dependentWrites": 0,
+			"digest": "bb0cfed281127ec0d88ceeab7cee578985a77e70792dde1db6c82cde9bf0a1c4"
+		},
+		{
+			"round": 4,
+			"variant": "after",
+			"scenario": "journal-note",
+			"ms": 0.6722370000000026,
+			"cpuMs": 0.763,
+			"clones": 1,
+			"dependentWrites": 0,
+			"digest": "bb0cfed281127ec0d88ceeab7cee578985a77e70792dde1db6c82cde9bf0a1c4"
+		},
+		{
+			"round": 4,
+			"variant": "before",
+			"scenario": "trait-note",
+			"ms": 1.3420290000000001,
+			"cpuMs": 1.508,
+			"clones": 8,
+			"dependentWrites": 0,
+			"digest": "a6820b04a304e691f6a162546f288f8806b0484bb7e87595717fee32e13f79f2"
+		},
+		{
+			"round": 4,
+			"variant": "after",
+			"scenario": "trait-note",
+			"ms": 1.0774650000000001,
+			"cpuMs": 1.175,
+			"clones": 1,
+			"dependentWrites": 0,
+			"digest": "a6820b04a304e691f6a162546f288f8806b0484bb7e87595717fee32e13f79f2"
+		},
+		{
+			"round": 4,
+			"variant": "before",
+			"scenario": "note-layout-add",
+			"ms": 1.7726100000000002,
+			"cpuMs": 1.781,
+			"clones": 8,
+			"dependentWrites": 0,
+			"digest": "a09041e53f7c5baed2086c297576634585e42b2c2288a8e120ba92d54b6b252f"
+		},
+		{
+			"round": 4,
+			"variant": "after",
+			"scenario": "note-layout-add",
+			"ms": 0.7133040000000008,
+			"cpuMs": 0.825,
+			"clones": 1,
+			"dependentWrites": 0,
+			"digest": "a09041e53f7c5baed2086c297576634585e42b2c2288a8e120ba92d54b6b252f"
+		},
+		{
+			"round": 5,
+			"variant": "after",
+			"scenario": "shared-property",
+			"ms": 1.3432169999999992,
+			"cpuMs": 1.609,
+			"clones": 5,
+			"dependentWrites": 4,
+			"digest": "7c010df3c5e50e2383f0e3f40114b47d119150ce503c25b8845412e244fa5cf6"
+		},
+		{
+			"round": 5,
+			"variant": "before",
+			"scenario": "shared-property",
+			"ms": 1.7170850000000009,
+			"cpuMs": 1.971,
+			"clones": 8,
+			"dependentWrites": 4,
+			"digest": "7c010df3c5e50e2383f0e3f40114b47d119150ce503c25b8845412e244fa5cf6"
+		},
+		{
+			"round": 5,
+			"variant": "after",
+			"scenario": "journal-note",
+			"ms": 1.542897,
+			"cpuMs": 1.641,
+			"clones": 1,
+			"dependentWrites": 0,
+			"digest": "bb0cfed281127ec0d88ceeab7cee578985a77e70792dde1db6c82cde9bf0a1c4"
+		},
+		{
+			"round": 5,
+			"variant": "before",
+			"scenario": "journal-note",
+			"ms": 1.136412,
+			"cpuMs": 1.407,
+			"clones": 8,
+			"dependentWrites": 0,
+			"digest": "bb0cfed281127ec0d88ceeab7cee578985a77e70792dde1db6c82cde9bf0a1c4"
+		},
+		{
+			"round": 5,
+			"variant": "after",
+			"scenario": "trait-note",
+			"ms": 2.4716660000000026,
+			"cpuMs": 1.767,
+			"clones": 1,
+			"dependentWrites": 0,
+			"digest": "a6820b04a304e691f6a162546f288f8806b0484bb7e87595717fee32e13f79f2"
+		},
+		{
+			"round": 5,
+			"variant": "before",
+			"scenario": "trait-note",
+			"ms": 2.792245000000001,
+			"cpuMs": 2.068,
+			"clones": 8,
+			"dependentWrites": 0,
+			"digest": "a6820b04a304e691f6a162546f288f8806b0484bb7e87595717fee32e13f79f2"
+		},
+		{
+			"round": 5,
+			"variant": "after",
+			"scenario": "note-layout-add",
+			"ms": 1.216731000000003,
+			"cpuMs": 1.129,
+			"clones": 1,
+			"dependentWrites": 0,
+			"digest": "a09041e53f7c5baed2086c297576634585e42b2c2288a8e120ba92d54b6b252f"
+		},
+		{
+			"round": 5,
+			"variant": "before",
+			"scenario": "note-layout-add",
+			"ms": 3.916643999999998,
+			"cpuMs": 2.217,
+			"clones": 8,
+			"dependentWrites": 0,
+			"digest": "a09041e53f7c5baed2086c297576634585e42b2c2288a8e120ba92d54b6b252f"
+		},
+		{
+			"round": 6,
+			"variant": "before",
+			"scenario": "shared-property",
+			"ms": 3.158221000000001,
+			"cpuMs": 2.155,
+			"clones": 8,
+			"dependentWrites": 4,
+			"digest": "7c010df3c5e50e2383f0e3f40114b47d119150ce503c25b8845412e244fa5cf6"
+		},
+		{
+			"round": 6,
+			"variant": "after",
+			"scenario": "shared-property",
+			"ms": 3.872084000000001,
+			"cpuMs": 2.265,
+			"clones": 5,
+			"dependentWrites": 4,
+			"digest": "7c010df3c5e50e2383f0e3f40114b47d119150ce503c25b8845412e244fa5cf6"
+		},
+		{
+			"round": 6,
+			"variant": "before",
+			"scenario": "journal-note",
+			"ms": 2.719539000000001,
+			"cpuMs": 2.046,
+			"clones": 8,
+			"dependentWrites": 0,
+			"digest": "bb0cfed281127ec0d88ceeab7cee578985a77e70792dde1db6c82cde9bf0a1c4"
+		},
+		{
+			"round": 6,
+			"variant": "after",
+			"scenario": "journal-note",
+			"ms": 1.2693930000000009,
+			"cpuMs": 1.372,
+			"clones": 1,
+			"dependentWrites": 0,
+			"digest": "bb0cfed281127ec0d88ceeab7cee578985a77e70792dde1db6c82cde9bf0a1c4"
+		},
+		{
+			"round": 6,
+			"variant": "before",
+			"scenario": "trait-note",
+			"ms": 1.1183929999999993,
+			"cpuMs": 1.494,
+			"clones": 8,
+			"dependentWrites": 0,
+			"digest": "a6820b04a304e691f6a162546f288f8806b0484bb7e87595717fee32e13f79f2"
+		},
+		{
+			"round": 6,
+			"variant": "after",
+			"scenario": "trait-note",
+			"ms": 0.7216149999999999,
+			"cpuMs": 0.83,
+			"clones": 1,
+			"dependentWrites": 0,
+			"digest": "a6820b04a304e691f6a162546f288f8806b0484bb7e87595717fee32e13f79f2"
+		},
+		{
+			"round": 6,
+			"variant": "before",
+			"scenario": "note-layout-add",
+			"ms": 1.518661999999999,
+			"cpuMs": 1.708,
+			"clones": 8,
+			"dependentWrites": 0,
+			"digest": "a09041e53f7c5baed2086c297576634585e42b2c2288a8e120ba92d54b6b252f"
+		},
+		{
+			"round": 6,
+			"variant": "after",
+			"scenario": "note-layout-add",
+			"ms": 1.7969159999999995,
+			"cpuMs": 1.014,
+			"clones": 1,
+			"dependentWrites": 0,
+			"digest": "a09041e53f7c5baed2086c297576634585e42b2c2288a8e120ba92d54b6b252f"
+		},
+		{
+			"round": 7,
+			"variant": "after",
+			"scenario": "shared-property",
+			"ms": 1.3894519999999986,
+			"cpuMs": 1.695,
+			"clones": 5,
+			"dependentWrites": 4,
+			"digest": "7c010df3c5e50e2383f0e3f40114b47d119150ce503c25b8845412e244fa5cf6"
+		},
+		{
+			"round": 7,
+			"variant": "before",
+			"scenario": "shared-property",
+			"ms": 2.3657850000000025,
+			"cpuMs": 1.6,
+			"clones": 8,
+			"dependentWrites": 4,
+			"digest": "7c010df3c5e50e2383f0e3f40114b47d119150ce503c25b8845412e244fa5cf6"
+		},
+		{
+			"round": 7,
+			"variant": "after",
+			"scenario": "journal-note",
+			"ms": 1.0588869999999986,
+			"cpuMs": 0.976,
+			"clones": 1,
+			"dependentWrites": 0,
+			"digest": "bb0cfed281127ec0d88ceeab7cee578985a77e70792dde1db6c82cde9bf0a1c4"
+		},
+		{
+			"round": 7,
+			"variant": "before",
+			"scenario": "journal-note",
+			"ms": 1.4637649999999987,
+			"cpuMs": 1.739,
+			"clones": 8,
+			"dependentWrites": 0,
+			"digest": "bb0cfed281127ec0d88ceeab7cee578985a77e70792dde1db6c82cde9bf0a1c4"
+		},
+		{
+			"round": 7,
+			"variant": "after",
+			"scenario": "trait-note",
+			"ms": 0.7934140000000003,
+			"cpuMs": 0.904,
+			"clones": 1,
+			"dependentWrites": 0,
+			"digest": "a6820b04a304e691f6a162546f288f8806b0484bb7e87595717fee32e13f79f2"
+		},
+		{
+			"round": 7,
+			"variant": "before",
+			"scenario": "trait-note",
+			"ms": 1.1957789999999981,
+			"cpuMs": 1.411,
+			"clones": 8,
+			"dependentWrites": 0,
+			"digest": "a6820b04a304e691f6a162546f288f8806b0484bb7e87595717fee32e13f79f2"
+		},
+		{
+			"round": 7,
+			"variant": "after",
+			"scenario": "note-layout-add",
+			"ms": 0.8050080000000008,
+			"cpuMs": 0.918,
+			"clones": 1,
+			"dependentWrites": 0,
+			"digest": "a09041e53f7c5baed2086c297576634585e42b2c2288a8e120ba92d54b6b252f"
+		},
+		{
+			"round": 7,
+			"variant": "before",
+			"scenario": "note-layout-add",
+			"ms": 1.382189000000002,
+			"cpuMs": 1.502,
+			"clones": 8,
+			"dependentWrites": 0,
+			"digest": "a09041e53f7c5baed2086c297576634585e42b2c2288a8e120ba92d54b6b252f"
+		},
+		{
+			"round": 8,
+			"variant": "before",
+			"scenario": "shared-property",
+			"ms": 4.2516099999999994,
+			"cpuMs": 2.614,
+			"clones": 8,
+			"dependentWrites": 4,
+			"digest": "7c010df3c5e50e2383f0e3f40114b47d119150ce503c25b8845412e244fa5cf6"
+		},
+		{
+			"round": 8,
+			"variant": "after",
+			"scenario": "shared-property",
+			"ms": 3.725624,
+			"cpuMs": 3.56,
+			"clones": 5,
+			"dependentWrites": 4,
+			"digest": "7c010df3c5e50e2383f0e3f40114b47d119150ce503c25b8845412e244fa5cf6"
+		},
+		{
+			"round": 8,
+			"variant": "before",
+			"scenario": "journal-note",
+			"ms": 3.808109,
+			"cpuMs": 3.04,
+			"clones": 8,
+			"dependentWrites": 0,
+			"digest": "bb0cfed281127ec0d88ceeab7cee578985a77e70792dde1db6c82cde9bf0a1c4"
+		},
+		{
+			"round": 8,
+			"variant": "after",
+			"scenario": "journal-note",
+			"ms": 1.4122899999999987,
+			"cpuMs": 1.581,
+			"clones": 1,
+			"dependentWrites": 0,
+			"digest": "bb0cfed281127ec0d88ceeab7cee578985a77e70792dde1db6c82cde9bf0a1c4"
+		},
+		{
+			"round": 8,
+			"variant": "before",
+			"scenario": "trait-note",
+			"ms": 1.6807659999999984,
+			"cpuMs": 2.069,
+			"clones": 8,
+			"dependentWrites": 0,
+			"digest": "a6820b04a304e691f6a162546f288f8806b0484bb7e87595717fee32e13f79f2"
+		},
+		{
+			"round": 8,
+			"variant": "after",
+			"scenario": "trait-note",
+			"ms": 0.672725999999999,
+			"cpuMs": 0.825,
+			"clones": 1,
+			"dependentWrites": 0,
+			"digest": "a6820b04a304e691f6a162546f288f8806b0484bb7e87595717fee32e13f79f2"
+		},
+		{
+			"round": 8,
+			"variant": "before",
+			"scenario": "note-layout-add",
+			"ms": 1.824154,
+			"cpuMs": 1.83,
+			"clones": 8,
+			"dependentWrites": 0,
+			"digest": "a09041e53f7c5baed2086c297576634585e42b2c2288a8e120ba92d54b6b252f"
+		},
+		{
+			"round": 8,
+			"variant": "after",
+			"scenario": "note-layout-add",
+			"ms": 0.7199400000000011,
+			"cpuMs": 0.847,
+			"clones": 1,
+			"dependentWrites": 0,
+			"digest": "a09041e53f7c5baed2086c297576634585e42b2c2288a8e120ba92d54b6b252f"
+		},
+		{
+			"round": 9,
+			"variant": "after",
+			"scenario": "shared-property",
+			"ms": 1.4222090000000005,
+			"cpuMs": 1.723,
+			"clones": 5,
+			"dependentWrites": 4,
+			"digest": "7c010df3c5e50e2383f0e3f40114b47d119150ce503c25b8845412e244fa5cf6"
+		},
+		{
+			"round": 9,
+			"variant": "before",
+			"scenario": "shared-property",
+			"ms": 1.5301150000000003,
+			"cpuMs": 1.974,
+			"clones": 8,
+			"dependentWrites": 4,
+			"digest": "7c010df3c5e50e2383f0e3f40114b47d119150ce503c25b8845412e244fa5cf6"
+		},
+		{
+			"round": 9,
+			"variant": "after",
+			"scenario": "journal-note",
+			"ms": 1.1387859999999996,
+			"cpuMs": 1.316,
+			"clones": 1,
+			"dependentWrites": 0,
+			"digest": "bb0cfed281127ec0d88ceeab7cee578985a77e70792dde1db6c82cde9bf0a1c4"
+		},
+		{
+			"round": 9,
+			"variant": "before",
+			"scenario": "journal-note",
+			"ms": 2.0366860000000013,
+			"cpuMs": 2.487,
+			"clones": 8,
+			"dependentWrites": 0,
+			"digest": "bb0cfed281127ec0d88ceeab7cee578985a77e70792dde1db6c82cde9bf0a1c4"
+		},
+		{
+			"round": 9,
+			"variant": "after",
+			"scenario": "trait-note",
+			"ms": 0.6662299999999988,
+			"cpuMs": 0.812,
+			"clones": 1,
+			"dependentWrites": 0,
+			"digest": "a6820b04a304e691f6a162546f288f8806b0484bb7e87595717fee32e13f79f2"
+		},
+		{
+			"round": 9,
+			"variant": "before",
+			"scenario": "trait-note",
+			"ms": 1.816751,
+			"cpuMs": 1.831,
+			"clones": 8,
+			"dependentWrites": 0,
+			"digest": "a6820b04a304e691f6a162546f288f8806b0484bb7e87595717fee32e13f79f2"
+		},
+		{
+			"round": 9,
+			"variant": "after",
+			"scenario": "note-layout-add",
+			"ms": 0.6924209999999995,
+			"cpuMs": 0.823,
+			"clones": 1,
+			"dependentWrites": 0,
+			"digest": "a09041e53f7c5baed2086c297576634585e42b2c2288a8e120ba92d54b6b252f"
+		},
+		{
+			"round": 9,
+			"variant": "before",
+			"scenario": "note-layout-add",
+			"ms": 2.703892999999999,
+			"cpuMs": 2.935,
+			"clones": 8,
+			"dependentWrites": 0,
+			"digest": "a09041e53f7c5baed2086c297576634585e42b2c2288a8e120ba92d54b6b252f"
+		},
+		{
+			"round": 10,
+			"variant": "before",
+			"scenario": "shared-property",
+			"ms": 1.1652570000000004,
+			"cpuMs": 1.41,
+			"clones": 8,
+			"dependentWrites": 4,
+			"digest": "7c010df3c5e50e2383f0e3f40114b47d119150ce503c25b8845412e244fa5cf6"
+		},
+		{
+			"round": 10,
+			"variant": "after",
+			"scenario": "shared-property",
+			"ms": 1.4576889999999985,
+			"cpuMs": 1.794,
+			"clones": 5,
+			"dependentWrites": 4,
+			"digest": "7c010df3c5e50e2383f0e3f40114b47d119150ce503c25b8845412e244fa5cf6"
+		},
+		{
+			"round": 10,
+			"variant": "before",
+			"scenario": "journal-note",
+			"ms": 1.093110000000003,
+			"cpuMs": 1.369,
+			"clones": 8,
+			"dependentWrites": 0,
+			"digest": "bb0cfed281127ec0d88ceeab7cee578985a77e70792dde1db6c82cde9bf0a1c4"
+		},
+		{
+			"round": 10,
+			"variant": "after",
+			"scenario": "journal-note",
+			"ms": 1.1098019999999984,
+			"cpuMs": 1.15,
+			"clones": 1,
+			"dependentWrites": 0,
+			"digest": "bb0cfed281127ec0d88ceeab7cee578985a77e70792dde1db6c82cde9bf0a1c4"
+		},
+		{
+			"round": 10,
+			"variant": "before",
+			"scenario": "trait-note",
+			"ms": 2.380241999999999,
+			"cpuMs": 2.19,
+			"clones": 8,
+			"dependentWrites": 0,
+			"digest": "a6820b04a304e691f6a162546f288f8806b0484bb7e87595717fee32e13f79f2"
+		},
+		{
+			"round": 10,
+			"variant": "after",
+			"scenario": "trait-note",
+			"ms": 0.7119070000000001,
+			"cpuMs": 0.866,
+			"clones": 1,
+			"dependentWrites": 0,
+			"digest": "a6820b04a304e691f6a162546f288f8806b0484bb7e87595717fee32e13f79f2"
+		},
+		{
+			"round": 10,
+			"variant": "before",
+			"scenario": "note-layout-add",
+			"ms": 2.3937220000000003,
+			"cpuMs": 2.668,
+			"clones": 8,
+			"dependentWrites": 0,
+			"digest": "a09041e53f7c5baed2086c297576634585e42b2c2288a8e120ba92d54b6b252f"
+		},
+		{
+			"round": 10,
+			"variant": "after",
+			"scenario": "note-layout-add",
+			"ms": 0.6912339999999979,
+			"cpuMs": 0.801,
+			"clones": 1,
+			"dependentWrites": 0,
+			"digest": "a09041e53f7c5baed2086c297576634585e42b2c2288a8e120ba92d54b6b252f"
+		},
+		{
+			"round": 11,
+			"variant": "after",
+			"scenario": "shared-property",
+			"ms": 2.1826560000000015,
+			"cpuMs": 2.5,
+			"clones": 5,
+			"dependentWrites": 4,
+			"digest": "7c010df3c5e50e2383f0e3f40114b47d119150ce503c25b8845412e244fa5cf6"
+		},
+		{
+			"round": 11,
+			"variant": "before",
+			"scenario": "shared-property",
+			"ms": 1.883519999999999,
+			"cpuMs": 2.173,
+			"clones": 8,
+			"dependentWrites": 4,
+			"digest": "7c010df3c5e50e2383f0e3f40114b47d119150ce503c25b8845412e244fa5cf6"
+		},
+		{
+			"round": 11,
+			"variant": "after",
+			"scenario": "journal-note",
+			"ms": 1.0984179999999988,
+			"cpuMs": 0.948,
+			"clones": 1,
+			"dependentWrites": 0,
+			"digest": "bb0cfed281127ec0d88ceeab7cee578985a77e70792dde1db6c82cde9bf0a1c4"
+		},
+		{
+			"round": 11,
+			"variant": "before",
+			"scenario": "journal-note",
+			"ms": 1.2950950000000017,
+			"cpuMs": 1.547,
+			"clones": 8,
+			"dependentWrites": 0,
+			"digest": "bb0cfed281127ec0d88ceeab7cee578985a77e70792dde1db6c82cde9bf0a1c4"
+		},
+		{
+			"round": 11,
+			"variant": "after",
+			"scenario": "trait-note",
+			"ms": 1.1156679999999994,
+			"cpuMs": 1.026,
+			"clones": 1,
+			"dependentWrites": 0,
+			"digest": "a6820b04a304e691f6a162546f288f8806b0484bb7e87595717fee32e13f79f2"
+		},
+		{
+			"round": 11,
+			"variant": "before",
+			"scenario": "trait-note",
+			"ms": 1.268694,
+			"cpuMs": 1.792,
+			"clones": 8,
+			"dependentWrites": 0,
+			"digest": "a6820b04a304e691f6a162546f288f8806b0484bb7e87595717fee32e13f79f2"
+		},
+		{
+			"round": 11,
+			"variant": "after",
+			"scenario": "note-layout-add",
+			"ms": 1.4594339999999981,
+			"cpuMs": 1.631,
+			"clones": 1,
+			"dependentWrites": 0,
+			"digest": "a09041e53f7c5baed2086c297576634585e42b2c2288a8e120ba92d54b6b252f"
+		},
+		{
+			"round": 11,
+			"variant": "before",
+			"scenario": "note-layout-add",
+			"ms": 1.5452019999999997,
+			"cpuMs": 1.902,
+			"clones": 8,
+			"dependentWrites": 0,
+			"digest": "a09041e53f7c5baed2086c297576634585e42b2c2288a8e120ba92d54b6b252f"
+		},
+		{
+			"round": 12,
+			"variant": "before",
+			"scenario": "shared-property",
+			"ms": 1.4166919999999994,
+			"cpuMs": 1.719,
+			"clones": 8,
+			"dependentWrites": 4,
+			"digest": "7c010df3c5e50e2383f0e3f40114b47d119150ce503c25b8845412e244fa5cf6"
+		},
+		{
+			"round": 12,
+			"variant": "after",
+			"scenario": "shared-property",
+			"ms": 3.6454439999999977,
+			"cpuMs": 3.685,
+			"clones": 5,
+			"dependentWrites": 4,
+			"digest": "7c010df3c5e50e2383f0e3f40114b47d119150ce503c25b8845412e244fa5cf6"
+		},
+		{
+			"round": 12,
+			"variant": "before",
+			"scenario": "journal-note",
+			"ms": 3.9679090000000024,
+			"cpuMs": 2.703,
+			"clones": 8,
+			"dependentWrites": 0,
+			"digest": "bb0cfed281127ec0d88ceeab7cee578985a77e70792dde1db6c82cde9bf0a1c4"
+		},
+		{
+			"round": 12,
+			"variant": "after",
+			"scenario": "journal-note",
+			"ms": 1.0884999999999998,
+			"cpuMs": 1.204,
+			"clones": 1,
+			"dependentWrites": 0,
+			"digest": "bb0cfed281127ec0d88ceeab7cee578985a77e70792dde1db6c82cde9bf0a1c4"
+		},
+		{
+			"round": 12,
+			"variant": "before",
+			"scenario": "trait-note",
+			"ms": 1.1964760000000005,
+			"cpuMs": 1.585,
+			"clones": 8,
+			"dependentWrites": 0,
+			"digest": "a6820b04a304e691f6a162546f288f8806b0484bb7e87595717fee32e13f79f2"
+		},
+		{
+			"round": 12,
+			"variant": "after",
+			"scenario": "trait-note",
+			"ms": 0.6920730000000006,
+			"cpuMs": 0.78,
+			"clones": 1,
+			"dependentWrites": 0,
+			"digest": "a6820b04a304e691f6a162546f288f8806b0484bb7e87595717fee32e13f79f2"
+		},
+		{
+			"round": 12,
+			"variant": "before",
+			"scenario": "note-layout-add",
+			"ms": 2.1433350000000004,
+			"cpuMs": 1.915,
+			"clones": 8,
+			"dependentWrites": 0,
+			"digest": "a09041e53f7c5baed2086c297576634585e42b2c2288a8e120ba92d54b6b252f"
+		},
+		{
+			"round": 12,
+			"variant": "after",
+			"scenario": "note-layout-add",
+			"ms": 1.069503000000001,
+			"cpuMs": 1.233,
+			"clones": 1,
+			"dependentWrites": 0,
+			"digest": "a09041e53f7c5baed2086c297576634585e42b2c2288a8e120ba92d54b6b252f"
+		},
+		{
+			"round": 13,
+			"variant": "after",
+			"scenario": "shared-property",
+			"ms": 4.890671999999999,
+			"cpuMs": 2.216,
+			"clones": 5,
+			"dependentWrites": 4,
+			"digest": "7c010df3c5e50e2383f0e3f40114b47d119150ce503c25b8845412e244fa5cf6"
+		},
+		{
+			"round": 13,
+			"variant": "before",
+			"scenario": "shared-property",
+			"ms": 1.226509,
+			"cpuMs": 1.539,
+			"clones": 8,
+			"dependentWrites": 4,
+			"digest": "7c010df3c5e50e2383f0e3f40114b47d119150ce503c25b8845412e244fa5cf6"
+		},
+		{
+			"round": 13,
+			"variant": "after",
+			"scenario": "journal-note",
+			"ms": 0.7043649999999992,
+			"cpuMs": 0.792,
+			"clones": 1,
+			"dependentWrites": 0,
+			"digest": "bb0cfed281127ec0d88ceeab7cee578985a77e70792dde1db6c82cde9bf0a1c4"
+		},
+		{
+			"round": 13,
+			"variant": "before",
+			"scenario": "journal-note",
+			"ms": 1.609667,
+			"cpuMs": 1.593,
+			"clones": 8,
+			"dependentWrites": 0,
+			"digest": "bb0cfed281127ec0d88ceeab7cee578985a77e70792dde1db6c82cde9bf0a1c4"
+		},
+		{
+			"round": 13,
+			"variant": "after",
+			"scenario": "trait-note",
+			"ms": 1.7694659999999995,
+			"cpuMs": 1.805,
+			"clones": 1,
+			"dependentWrites": 0,
+			"digest": "a6820b04a304e691f6a162546f288f8806b0484bb7e87595717fee32e13f79f2"
+		},
+		{
+			"round": 13,
+			"variant": "before",
+			"scenario": "trait-note",
+			"ms": 2.1580720000000007,
+			"cpuMs": 2.28,
+			"clones": 8,
+			"dependentWrites": 0,
+			"digest": "a6820b04a304e691f6a162546f288f8806b0484bb7e87595717fee32e13f79f2"
+		},
+		{
+			"round": 13,
+			"variant": "after",
+			"scenario": "note-layout-add",
+			"ms": 1.0808169999999997,
+			"cpuMs": 0.911,
+			"clones": 1,
+			"dependentWrites": 0,
+			"digest": "a09041e53f7c5baed2086c297576634585e42b2c2288a8e120ba92d54b6b252f"
+		},
+		{
+			"round": 13,
+			"variant": "before",
+			"scenario": "note-layout-add",
+			"ms": 1.1423489999999994,
+			"cpuMs": 1.471,
+			"clones": 8,
+			"dependentWrites": 0,
+			"digest": "a09041e53f7c5baed2086c297576634585e42b2c2288a8e120ba92d54b6b252f"
+		},
+		{
+			"round": 14,
+			"variant": "before",
+			"scenario": "shared-property",
+			"ms": 1.773727000000001,
+			"cpuMs": 1.904,
+			"clones": 8,
+			"dependentWrites": 4,
+			"digest": "7c010df3c5e50e2383f0e3f40114b47d119150ce503c25b8845412e244fa5cf6"
+		},
+		{
+			"round": 14,
+			"variant": "after",
+			"scenario": "shared-property",
+			"ms": 1.8384020000000003,
+			"cpuMs": 1.887,
+			"clones": 5,
+			"dependentWrites": 4,
+			"digest": "7c010df3c5e50e2383f0e3f40114b47d119150ce503c25b8845412e244fa5cf6"
+		},
+		{
+			"round": 14,
+			"variant": "before",
+			"scenario": "journal-note",
+			"ms": 1.1781089999999992,
+			"cpuMs": 1.474,
+			"clones": 8,
+			"dependentWrites": 0,
+			"digest": "bb0cfed281127ec0d88ceeab7cee578985a77e70792dde1db6c82cde9bf0a1c4"
+		},
+		{
+			"round": 14,
+			"variant": "after",
+			"scenario": "journal-note",
+			"ms": 0.74634,
+			"cpuMs": 0.891,
+			"clones": 1,
+			"dependentWrites": 0,
+			"digest": "bb0cfed281127ec0d88ceeab7cee578985a77e70792dde1db6c82cde9bf0a1c4"
+		},
+		{
+			"round": 14,
+			"variant": "before",
+			"scenario": "trait-note",
+			"ms": 1.7388060000000003,
+			"cpuMs": 1.982,
+			"clones": 8,
+			"dependentWrites": 0,
+			"digest": "a6820b04a304e691f6a162546f288f8806b0484bb7e87595717fee32e13f79f2"
+		},
+		{
+			"round": 14,
+			"variant": "after",
+			"scenario": "trait-note",
+			"ms": 0.786010000000001,
+			"cpuMs": 0.925,
+			"clones": 1,
+			"dependentWrites": 0,
+			"digest": "a6820b04a304e691f6a162546f288f8806b0484bb7e87595717fee32e13f79f2"
+		},
+		{
+			"round": 14,
+			"variant": "before",
+			"scenario": "note-layout-add",
+			"ms": 2.122034000000003,
+			"cpuMs": 1.778,
+			"clones": 8,
+			"dependentWrites": 0,
+			"digest": "a09041e53f7c5baed2086c297576634585e42b2c2288a8e120ba92d54b6b252f"
+		},
+		{
+			"round": 14,
+			"variant": "after",
+			"scenario": "note-layout-add",
+			"ms": 0.9753539999999994,
+			"cpuMs": 0.955,
+			"clones": 1,
+			"dependentWrites": 0,
+			"digest": "a09041e53f7c5baed2086c297576634585e42b2c2288a8e120ba92d54b6b252f"
+		},
+		{
+			"round": 15,
+			"variant": "after",
+			"scenario": "shared-property",
+			"ms": 1.5372400000000006,
+			"cpuMs": 1.819,
+			"clones": 5,
+			"dependentWrites": 4,
+			"digest": "7c010df3c5e50e2383f0e3f40114b47d119150ce503c25b8845412e244fa5cf6"
+		},
+		{
+			"round": 15,
+			"variant": "before",
+			"scenario": "shared-property",
+			"ms": 2.2776429999999994,
+			"cpuMs": 2.442,
+			"clones": 8,
+			"dependentWrites": 4,
+			"digest": "7c010df3c5e50e2383f0e3f40114b47d119150ce503c25b8845412e244fa5cf6"
+		},
+		{
+			"round": 15,
+			"variant": "after",
+			"scenario": "journal-note",
+			"ms": 0.8828130000000023,
+			"cpuMs": 0.952,
+			"clones": 1,
+			"dependentWrites": 0,
+			"digest": "bb0cfed281127ec0d88ceeab7cee578985a77e70792dde1db6c82cde9bf0a1c4"
+		},
+		{
+			"round": 15,
+			"variant": "before",
+			"scenario": "journal-note",
+			"ms": 1.202693,
+			"cpuMs": 1.576,
+			"clones": 8,
+			"dependentWrites": 0,
+			"digest": "bb0cfed281127ec0d88ceeab7cee578985a77e70792dde1db6c82cde9bf0a1c4"
+		},
+		{
+			"round": 15,
+			"variant": "after",
+			"scenario": "trait-note",
+			"ms": 1.051832000000001,
+			"cpuMs": 1.25,
+			"clones": 1,
+			"dependentWrites": 0,
+			"digest": "a6820b04a304e691f6a162546f288f8806b0484bb7e87595717fee32e13f79f2"
+		},
+		{
+			"round": 15,
+			"variant": "before",
+			"scenario": "trait-note",
+			"ms": 2.8996630000000003,
+			"cpuMs": 1.858,
+			"clones": 8,
+			"dependentWrites": 0,
+			"digest": "a6820b04a304e691f6a162546f288f8806b0484bb7e87595717fee32e13f79f2"
+		},
+		{
+			"round": 15,
+			"variant": "after",
+			"scenario": "note-layout-add",
+			"ms": 1.1320820000000005,
+			"cpuMs": 1.224,
+			"clones": 1,
+			"dependentWrites": 0,
+			"digest": "a09041e53f7c5baed2086c297576634585e42b2c2288a8e120ba92d54b6b252f"
+		},
+		{
+			"round": 15,
+			"variant": "before",
+			"scenario": "note-layout-add",
+			"ms": 1.1050520000000006,
+			"cpuMs": 1.374,
+			"clones": 8,
+			"dependentWrites": 0,
+			"digest": "a09041e53f7c5baed2086c297576634585e42b2c2288a8e120ba92d54b6b252f"
+		},
+		{
+			"round": 16,
+			"variant": "before",
+			"scenario": "shared-property",
+			"ms": 1.1728699999999996,
+			"cpuMs": 1.454,
+			"clones": 8,
+			"dependentWrites": 4,
+			"digest": "7c010df3c5e50e2383f0e3f40114b47d119150ce503c25b8845412e244fa5cf6"
+		},
+		{
+			"round": 16,
+			"variant": "after",
+			"scenario": "shared-property",
+			"ms": 2.0452769999999987,
+			"cpuMs": 1.957,
+			"clones": 5,
+			"dependentWrites": 4,
+			"digest": "7c010df3c5e50e2383f0e3f40114b47d119150ce503c25b8845412e244fa5cf6"
+		},
+		{
+			"round": 16,
+			"variant": "before",
+			"scenario": "journal-note",
+			"ms": 1.160927000000001,
+			"cpuMs": 1.582,
+			"clones": 8,
+			"dependentWrites": 0,
+			"digest": "bb0cfed281127ec0d88ceeab7cee578985a77e70792dde1db6c82cde9bf0a1c4"
+		},
+		{
+			"round": 16,
+			"variant": "after",
+			"scenario": "journal-note",
+			"ms": 1.475289,
+			"cpuMs": 1.256,
+			"clones": 1,
+			"dependentWrites": 0,
+			"digest": "bb0cfed281127ec0d88ceeab7cee578985a77e70792dde1db6c82cde9bf0a1c4"
+		},
+		{
+			"round": 16,
+			"variant": "before",
+			"scenario": "trait-note",
+			"ms": 1.584454000000001,
+			"cpuMs": 1.768,
+			"clones": 8,
+			"dependentWrites": 0,
+			"digest": "a6820b04a304e691f6a162546f288f8806b0484bb7e87595717fee32e13f79f2"
+		},
+		{
+			"round": 16,
+			"variant": "after",
+			"scenario": "trait-note",
+			"ms": 1.4245839999999994,
+			"cpuMs": 1.089,
+			"clones": 1,
+			"dependentWrites": 0,
+			"digest": "a6820b04a304e691f6a162546f288f8806b0484bb7e87595717fee32e13f79f2"
+		},
+		{
+			"round": 16,
+			"variant": "before",
+			"scenario": "note-layout-add",
+			"ms": 1.60806,
+			"cpuMs": 1.828,
+			"clones": 8,
+			"dependentWrites": 0,
+			"digest": "a09041e53f7c5baed2086c297576634585e42b2c2288a8e120ba92d54b6b252f"
+		},
+		{
+			"round": 16,
+			"variant": "after",
+			"scenario": "note-layout-add",
+			"ms": 1.2502560000000003,
+			"cpuMs": 1.202,
+			"clones": 1,
+			"dependentWrites": 0,
+			"digest": "a09041e53f7c5baed2086c297576634585e42b2c2288a8e120ba92d54b6b252f"
+		},
+		{
+			"round": 17,
+			"variant": "after",
+			"scenario": "shared-property",
+			"ms": 2.8787800000000026,
+			"cpuMs": 3.44,
+			"clones": 5,
+			"dependentWrites": 4,
+			"digest": "7c010df3c5e50e2383f0e3f40114b47d119150ce503c25b8845412e244fa5cf6"
+		},
+		{
+			"round": 17,
+			"variant": "before",
+			"scenario": "shared-property",
+			"ms": 2.2264479999999978,
+			"cpuMs": 2.536,
+			"clones": 8,
+			"dependentWrites": 4,
+			"digest": "7c010df3c5e50e2383f0e3f40114b47d119150ce503c25b8845412e244fa5cf6"
+		},
+		{
+			"round": 17,
+			"variant": "after",
+			"scenario": "journal-note",
+			"ms": 1.0635660000000016,
+			"cpuMs": 1.219,
+			"clones": 1,
+			"dependentWrites": 0,
+			"digest": "bb0cfed281127ec0d88ceeab7cee578985a77e70792dde1db6c82cde9bf0a1c4"
+		},
+		{
+			"round": 17,
+			"variant": "before",
+			"scenario": "journal-note",
+			"ms": 2.344552,
+			"cpuMs": 2.05,
+			"clones": 8,
+			"dependentWrites": 0,
+			"digest": "bb0cfed281127ec0d88ceeab7cee578985a77e70792dde1db6c82cde9bf0a1c4"
+		},
+		{
+			"round": 17,
+			"variant": "after",
+			"scenario": "trait-note",
+			"ms": 0.761985000000001,
+			"cpuMs": 0.965,
+			"clones": 1,
+			"dependentWrites": 0,
+			"digest": "a6820b04a304e691f6a162546f288f8806b0484bb7e87595717fee32e13f79f2"
+		},
+		{
+			"round": 17,
+			"variant": "before",
+			"scenario": "trait-note",
+			"ms": 1.161555,
+			"cpuMs": 1.481,
+			"clones": 8,
+			"dependentWrites": 0,
+			"digest": "a6820b04a304e691f6a162546f288f8806b0484bb7e87595717fee32e13f79f2"
+		},
+		{
+			"round": 17,
+			"variant": "after",
+			"scenario": "note-layout-add",
+			"ms": 3.3787140000000004,
+			"cpuMs": 2.137,
+			"clones": 1,
+			"dependentWrites": 0,
+			"digest": "a09041e53f7c5baed2086c297576634585e42b2c2288a8e120ba92d54b6b252f"
+		},
+		{
+			"round": 17,
+			"variant": "before",
+			"scenario": "note-layout-add",
+			"ms": 1.1973850000000006,
+			"cpuMs": 1.599,
+			"clones": 8,
+			"dependentWrites": 0,
+			"digest": "a09041e53f7c5baed2086c297576634585e42b2c2288a8e120ba92d54b6b252f"
+		},
+		{
+			"round": 18,
+			"variant": "before",
+			"scenario": "shared-property",
+			"ms": 1.9889130000000002,
+			"cpuMs": 1.948,
+			"clones": 8,
+			"dependentWrites": 4,
+			"digest": "7c010df3c5e50e2383f0e3f40114b47d119150ce503c25b8845412e244fa5cf6"
+		},
+		{
+			"round": 18,
+			"variant": "after",
+			"scenario": "shared-property",
+			"ms": 3.2291109999999996,
+			"cpuMs": 3.222,
+			"clones": 5,
+			"dependentWrites": 4,
+			"digest": "7c010df3c5e50e2383f0e3f40114b47d119150ce503c25b8845412e244fa5cf6"
+		},
+		{
+			"round": 18,
+			"variant": "before",
+			"scenario": "journal-note",
+			"ms": 2.0747490000000006,
+			"cpuMs": 1.605,
+			"clones": 8,
+			"dependentWrites": 0,
+			"digest": "bb0cfed281127ec0d88ceeab7cee578985a77e70792dde1db6c82cde9bf0a1c4"
+		},
+		{
+			"round": 18,
+			"variant": "after",
+			"scenario": "journal-note",
+			"ms": 0.7111399999999968,
+			"cpuMs": 0.838,
+			"clones": 1,
+			"dependentWrites": 0,
+			"digest": "bb0cfed281127ec0d88ceeab7cee578985a77e70792dde1db6c82cde9bf0a1c4"
+		},
+		{
+			"round": 18,
+			"variant": "before",
+			"scenario": "trait-note",
+			"ms": 1.094576,
+			"cpuMs": 1.395,
+			"clones": 8,
+			"dependentWrites": 0,
+			"digest": "a6820b04a304e691f6a162546f288f8806b0484bb7e87595717fee32e13f79f2"
+		},
+		{
+			"round": 18,
+			"variant": "after",
+			"scenario": "trait-note",
+			"ms": 0.7392160000000008,
+			"cpuMs": 0.824,
+			"clones": 1,
+			"dependentWrites": 0,
+			"digest": "a6820b04a304e691f6a162546f288f8806b0484bb7e87595717fee32e13f79f2"
+		},
+		{
+			"round": 18,
+			"variant": "before",
+			"scenario": "note-layout-add",
+			"ms": 1.2059750000000005,
+			"cpuMs": 1.456,
+			"clones": 8,
+			"dependentWrites": 0,
+			"digest": "a09041e53f7c5baed2086c297576634585e42b2c2288a8e120ba92d54b6b252f"
+		},
+		{
+			"round": 18,
+			"variant": "after",
+			"scenario": "note-layout-add",
+			"ms": 1.3548100000000005,
+			"cpuMs": 1.286,
+			"clones": 1,
+			"dependentWrites": 0,
+			"digest": "a09041e53f7c5baed2086c297576634585e42b2c2288a8e120ba92d54b6b252f"
+		},
+		{
+			"round": 19,
+			"variant": "after",
+			"scenario": "shared-property",
+			"ms": 1.3266639999999992,
+			"cpuMs": 1.723,
+			"clones": 5,
+			"dependentWrites": 4,
+			"digest": "7c010df3c5e50e2383f0e3f40114b47d119150ce503c25b8845412e244fa5cf6"
+		},
+		{
+			"round": 19,
+			"variant": "before",
+			"scenario": "shared-property",
+			"ms": 1.5083240000000018,
+			"cpuMs": 1.963,
+			"clones": 8,
+			"dependentWrites": 4,
+			"digest": "7c010df3c5e50e2383f0e3f40114b47d119150ce503c25b8845412e244fa5cf6"
+		},
+		{
+			"round": 19,
+			"variant": "after",
+			"scenario": "journal-note",
+			"ms": 1.1095219999999983,
+			"cpuMs": 1.118,
+			"clones": 1,
+			"dependentWrites": 0,
+			"digest": "bb0cfed281127ec0d88ceeab7cee578985a77e70792dde1db6c82cde9bf0a1c4"
+		},
+		{
+			"round": 19,
+			"variant": "before",
+			"scenario": "journal-note",
+			"ms": 1.2264400000000002,
+			"cpuMs": 1.552,
+			"clones": 8,
+			"dependentWrites": 0,
+			"digest": "bb0cfed281127ec0d88ceeab7cee578985a77e70792dde1db6c82cde9bf0a1c4"
+		},
+		{
+			"round": 19,
+			"variant": "after",
+			"scenario": "trait-note",
+			"ms": 0.6959839999999993,
+			"cpuMs": 0.859,
+			"clones": 1,
+			"dependentWrites": 0,
+			"digest": "a6820b04a304e691f6a162546f288f8806b0484bb7e87595717fee32e13f79f2"
+		},
+		{
+			"round": 19,
+			"variant": "before",
+			"scenario": "trait-note",
+			"ms": 1.6061750000000004,
+			"cpuMs": 1.975,
+			"clones": 8,
+			"dependentWrites": 0,
+			"digest": "a6820b04a304e691f6a162546f288f8806b0484bb7e87595717fee32e13f79f2"
+		},
+		{
+			"round": 19,
+			"variant": "after",
+			"scenario": "note-layout-add",
+			"ms": 0.9015310000000021,
+			"cpuMs": 1.002,
+			"clones": 1,
+			"dependentWrites": 0,
+			"digest": "a09041e53f7c5baed2086c297576634585e42b2c2288a8e120ba92d54b6b252f"
+		},
+		{
+			"round": 19,
+			"variant": "before",
+			"scenario": "note-layout-add",
+			"ms": 1.2146359999999987,
+			"cpuMs": 1.52,
+			"clones": 8,
+			"dependentWrites": 0,
+			"digest": "a09041e53f7c5baed2086c297576634585e42b2c2288a8e120ba92d54b6b252f"
+		}
+	]
+}
