@@ -1,0 +1,127 @@
+{
+	"edge": "157.0.4341.57",
+	"baseline": "5cf3923",
+	"freshBrowserPerSample": true,
+	"pairsRequested": 1,
+	"completedPairs": 1,
+	"kind": "work",
+	"results": [
+		{
+			"round": 0,
+			"item": "U7",
+			"variant": "baseline",
+			"name": "small-8",
+			"profile": false,
+			"cloneCalls": [
+				{
+					"ms": 0.5,
+					"fields": 8
+				}
+			],
+			"detachedExport": true,
+			"handlerMs": 1.799999998882413,
+			"framesMs": 44.79999999888241,
+			"taskMs": 33.87799999999999,
+			"heapBefore": 7470992,
+			"heapAfter": 8143588,
+			"retained": 7649052,
+			"jsonHash": "e85ff8d772117d99",
+			"exportBytes": 2104
+		},
+		{
+			"round": 0,
+			"item": "U7",
+			"variant": "u7",
+			"name": "small-8",
+			"profile": false,
+			"cloneCalls": [],
+			"detachedExport": true,
+			"handlerMs": 1.199999999254942,
+			"framesMs": 28.59999999962747,
+			"taskMs": 24.984,
+			"heapBefore": 7468940,
+			"heapAfter": 8137476,
+			"retained": 7643872,
+			"jsonHash": "e85ff8d772117d99",
+			"exportBytes": 2104
+		},
+		{
+			"round": 0,
+			"item": "U7",
+			"variant": "baseline",
+			"name": "smoke-238",
+			"profile": false,
+			"cloneCalls": [
+				{
+					"ms": 0.5,
+					"fields": 238
+				}
+			],
+			"detachedExport": true,
+			"handlerMs": 7.599999999627471,
+			"framesMs": 53.5,
+			"taskMs": 54.227000000000004,
+			"heapBefore": 10122688,
+			"heapAfter": 11922888,
+			"retained": 10713384,
+			"jsonHash": "277be9ca6fc29eb8",
+			"exportBytes": 498570
+		},
+		{
+			"round": 0,
+			"item": "U7",
+			"variant": "u7",
+			"name": "smoke-238",
+			"profile": false,
+			"cloneCalls": [],
+			"detachedExport": true,
+			"handlerMs": 8,
+			"framesMs": 58.80000000074506,
+			"taskMs": 59.735,
+			"heapBefore": 10116684,
+			"heapAfter": 11753900,
+			"retained": 10697340,
+			"jsonHash": "277be9ca6fc29eb8",
+			"exportBytes": 498570
+		},
+		{
+			"round": 0,
+			"item": "U7",
+			"variant": "baseline",
+			"name": "ledger-2048",
+			"profile": false,
+			"cloneCalls": [
+				{
+					"ms": 6.900000000372529,
+					"fields": 2048
+				}
+			],
+			"detachedExport": true,
+			"handlerMs": 38.69999999925494,
+			"framesMs": 81.79999999888241,
+			"taskMs": 120.69600000000001,
+			"heapBefore": 11389248,
+			"heapAfter": 13444788,
+			"retained": 12209588,
+			"jsonHash": "dbff557e86c5aa7f",
+			"exportBytes": 346462
+		},
+		{
+			"round": 0,
+			"item": "U7",
+			"variant": "u7",
+			"name": "ledger-2048",
+			"profile": false,
+			"cloneCalls": [],
+			"detachedExport": true,
+			"handlerMs": 32.5,
+			"framesMs": 77.69999999925494,
+			"taskMs": 134.963,
+			"heapBefore": 11385940,
+			"heapAfter": 14701844,
+			"retained": 12212760,
+			"jsonHash": "dbff557e86c5aa7f",
+			"exportBytes": 346462
+		}
+	]
+}

@@ -1,6 +1,6 @@
 # Code optimization deep dive
 
-Findings refreshed **2026-11-17** against **`eb6371f`**. The older reconciliation/protection microbenchmarks were run **2026-11-15** against **`485fe81`**; those functions are unchanged. C1's metadata/CSS save gate and CSS cache update are implemented. A production-browser and fresh-process comparison on the reproduced Smoke Ball sheet now supports deferring the remaining C1 work; the candidate is retained only as an experiment. Only existing findings were checked; no new optimization search.
+Findings refreshed **2026-11-18** against **`5cf3923`**. The older reconciliation/protection microbenchmarks were run **2026-11-15** against **`485fe81`**; those functions are unchanged. C1's metadata/CSS save gate and CSS cache update are implemented. A production-browser and fresh-process comparison on the reproduced Smoke Ball sheet now supports deferring the remaining C1 work; the candidate is retained only as an experiment. A second bounded evaluation covers U7, U8 and C6; C4/U6/C5 received source-only triage. Only existing findings were checked; no new optimization search.
 
 Scope: production source, tests, and tooling outside `src/lib/formula/engine.ts`. That file was not inspected and has no recommendations here. Current design uses expanded custom instances. The older compact-node experiment report describes another implementation; its results are not treated as current evidence. No glossary or ADR files were present.
 
@@ -8,20 +8,20 @@ The remaining opportunities reduce repeated work around the editor: reconciling 
 
 ## Priority and scope
 
-Impact describes the expected benefit, not a measured improvement from an implemented change. **Small** effort means a bounded local change; **medium** crosses a few callers; **large** changes synchronization or transaction bookkeeping. Performance findings distinguish confirmed repeated work from unmeasured browser benefit.
+Impact describes the expected benefit unless an explicit measured decision is linked below. Experimental candidates are not applied to production. **Small** effort means a bounded local change; **medium** crosses a few callers; **large** changes synchronization or transaction bookkeeping. Performance findings distinguish confirmed repeated work from unmeasured browser benefit.
 
 | Priority      | ID  | Opportunity                                           | Main benefit                              | Effort / risk             |
 | ------------- | --- | ----------------------------------------------------- | ----------------------------------------- | ------------------------- |
 | Profile first | C1  | Limit structural definition-save propagation          | Save cost scales with affected data       | Medium–large / medium     |
 | First         | C2  | Reconcile only affected live custom instances         | Less serialization and rebuilding on save | Medium / medium           |
 | Next          | C3  | Remove successive tree copies at ownership boundaries | Fewer allocations in creation/drag flows  | Medium / medium           |
-| Next          | C4  | Share block-kind and leaf-value metadata              | Remove duplicated policy                  | Medium / low–medium       |
-| Next          | U6  | Share inspector contract and common fields            | Remove form/type duplication              | Small–medium / low–medium |
+| Maintenance   | C4  | Share block-kind and leaf-value metadata              | Remove duplicated policy                  | Medium / low–medium       |
+| Maintenance   | U6  | Share inspector contract and common fields            | Remove form/type duplication              | Small–medium / low–medium |
 | Small cleanup | U7  | Remove export's second field clone                    | Simpler explicit export                   | Small / low               |
-| Small cleanup | U8  | Remove unused Button and HtmlTag                      | Smaller maintenance surface               | Small / low               |
-| Optional      | C5  | Share atom NodeView lifecycle                         | Remove bounded lifecycle duplication      | Small–medium / medium     |
+| Maintenance   | U8  | Remove unused Button and HtmlTag                      | Smaller maintenance surface               | Small / low               |
+| Maintenance   | C5  | Share atom NodeView lifecycle                         | Remove bounded lifecycle duplication      | Small–medium / medium     |
 | Profile first | U5  | Split independent stylesheet updates                  | Less unrelated CSS replacement            | Medium / medium           |
-| Profile first | C6  | Reuse drag geometry within a calculation              | Less layout-query work                    | Small–medium / medium     |
+| Defer         | C6  | Reuse drag geometry within a calculation              | Less layout-query work                    | Small–medium / medium     |
 | Profile first | C7  | Reduce protection's whole-document discovery scans    | Large-document transaction scaling        | Large / high              |
 | Profile first | C8  | Index definitions by type ID                          | Large-library lookup scaling              | Small–medium / medium     |
 
@@ -29,17 +29,28 @@ C1 and C2 overlap: narrowing propagation first reduces the amount of work availa
 
 ## Baseline and measured evidence
 
-The measurements cover two application paths still relevant to the remaining findings: refreshing custom-block instances (C1/C2) and checking edits against custom-block protection rules (C7). Both were rerun on **2026-11-15**. Each script ran in three fresh Bun processes, sequentially, with no concurrent tests or builds. Tables report the median of the three per-process medians and their observed ranges. These measure the current implementation, not savings from a proposed fix.
+The older microbenchmarks below cover two application paths still relevant to the remaining findings: refreshing custom-block instances (C1/C2) and checking edits against custom-block protection rules (C7). Both were rerun on **2026-11-15**. Each script ran in three fresh Bun processes, sequentially, with no concurrent tests or builds. Tables report the median of the three per-process medians and their observed ranges. These measure the current implementation, not savings from a proposed fix.
 
 ### Existing tests and type checks
 
-Unit tests and type checks rerun against the current working tree on **2026-11-17** (Bun 1.4.4):
+Unit tests and type checks rerun against the current working tree on **2026-11-18** (Bun 1.4.4):
 
 - `bun test`: **36 passed, 0 failed; 261 assertions across six files**.
 - `bun run check`: **0 errors, 0 warnings**.
 - `bunx vite build` and `bun run prepack`: **passed**.
 
 These checks establish that the reviewed code passes its existing automated checks. The focused embedded-browser regression in `scripts/test-definition-save.mjs` also passes for C1's implemented gate/cache update; remaining proposals are unimplemented. Targeted ESLint still reports two pre-existing issues in `+page.svelte`: an unused Svelte suppression and `null as any` in cleanup.
+
+### Completed smaller-item evaluation
+
+The [2026-11-18 evaluation](benchmarks/small-items/README.md) finishes U7, U8 and C6, with real Smoke Ball exports plus simple field-ledger and drag-list/board cases. It uses 100 timing sessions with a fresh external Edge process per sample, 18 separate allocation samples and six clone-count controls, under the user's task-scoped browser-policy exception. C1 was excluded.
+
+- **U7:** small export-only improvement, scaling with field count. Smoke Ball's paired handler saving is 0.70 ms; the 2,048-field sensitivity case saves 6.90 ms. Ordinary-sheet perceptibility and important retained-memory savings are not established. Keep as a cheap cleanup.
+- **U8:** before/after client JavaScript is byte-identical. Keep as source maintenance, not a runtime optimization.
+- **C6:** one fewer rectangle read per event, but no demonstrated useful latency or retained-memory benefit on 24-item lists and 240-card boards. Defer for performance.
+- **C4/U6/C5:** source-only assessments favor treating the proposals as maintainability work; no before/after runtime evidence was collected. C4's per-node array aspect remains unmeasured.
+
+**Remaining runtime evaluations:** C2, C3, U5 and C8 are open. C7 has its earlier Bun-only evidence; no incremental prototype or new browser evaluation was attempted. The smaller-items report records the completed checkpoint, limits and reproduction commands. Do not read source-only triage as completed performance testing.
 
 ### 1. Refreshing custom-block instances — supports C1 and C2
 
@@ -111,6 +122,8 @@ These are single-machine **Bun 1.4.4 / Linux x64 CPU microbenchmarks**, on an **
 
 **Optimization.** Serialize `$state.snapshot(fields)` directly; remove the outer `structuredClone`. Keep the snapshot boundary as the explicit plain-data projection. No deferred work or mutation requires a second detached copy here.
 
+**Measured decision.** The [bounded evaluation](benchmarks/small-items/README.md#u7-remove-the-second-export-field-clone) confirms one complete field-map clone is removed, matching output and export independence after later edits. Gains are modest and scale with field count; retained-memory intervals include zero. No ordinary-sheet perceptibility claim.
+
 **Expected impact, hypothesis.** Removes one complete field-object clone and its allocation per explicit export. Low absolute impact for the sample field set; larger sheets benefit more. This is primarily straightforward simplification.
 
 **Effort/risk.** Low. Check exported JSON equality and absence of field mutations. Do not replace the reactive `fields` object during import: the code explicitly preserves its identity because existing formula views reference it ([src/routes/components/mainPane/sourcePanels.svelte:115](/home/obiwk/Documenti/RolePlaying/sheet_visual_creator/src/routes/components/mainPane/sourcePanels.svelte:115)).
@@ -122,6 +135,8 @@ These are single-machine **Bun 1.4.4 / Linux x64 CPU microbenchmarks**, on an **
 **Evidence.** [src/lib/components/Button.svelte:1](/home/obiwk/Documenti/RolePlaying/sheet_visual_creator/src/lib/components/Button.svelte:1) implements a generic dynamic-tag button, custom key handling, and bound element ownership. A reference search across all `src` and `scripts`, excluding the forbidden formula engine, found no consumers: no imports or uses of `Button.svelte` were found. Other names such as `DialogButton` are unrelated. `HtmlTag` appears only in that component and its declaration at [src/lib/types/shared.ts:5](/home/obiwk/Documenti/RolePlaying/sheet_visual_creator/src/lib/types/shared.ts:5). Neither component nor type is exported by [src/lib/index.ts:1](/home/obiwk/Documenti/RolePlaying/sheet_visual_creator/src/lib/index.ts:1). Current UI uses native buttons and specialized Switch/Dropdown controls.
 
 **Optimization.** Delete the unused Button component and `HtmlTag`; remove the now-unused `SvelteHTMLElements` type import from shared types. Keep the other shared types: the sidebar uses `OpResult`, while editor/tab code uses `Listen` and `Tab`. Do not expand this into converting the many native buttons to a new component merely to justify existing dead abstraction.
+
+**Measured decision.** The [production bundle comparison](benchmarks/small-items/README.md#u8-unused-button-and-private-htmltag) has identical paths and SHA-256 hashes for all 16 client JavaScript files (1,151,218 bytes total). The component is absent from baseline client source maps. This is source maintenance with no shipped-JS saving.
 
 **Expected impact.** Removes an unused abstraction and its maintenance surface. No shipped-bundle or runtime improvement claimed: the component is unreferenced.
 
@@ -206,6 +221,8 @@ For conversion, preserve the **first normalized IDs** shared by `pendingOriginal
 
 **Optimization.** Return the chosen rect with the nearest block and pass it to the midpoint decision. Delay source measurement until after the unchanged-placeholder early return, retaining necessary source validity checks. Start with calculation-local reuse. Consider frame coalescing only after a trace establishes dragover cost; keep permission checks and `preventDefault` synchronous, and recompute/flush the final target on drop.
 
+**Measured decision: defer.** The [drag comparison](benchmarks/small-items/README.md#c6-reuse-geometry-within-a-drag-calculation) removes one read per event but shows at most small sub-millisecond changes. Existing-placeholder handling remains around 0.10 ms; no consistent retained-memory benefit appears. Actual drop targets and final documents match. This does not justify more geometry bookkeeping for performance on these workloads.
+
 **Expected impact.** Removes redundant DOM reads; gap scans still cost O(direct siblings). Browser layout savings are unmeasured. Existing code already suppresses identical preview transactions and caches decorations; adding another persistent cache is not automatically useful.
 
 **Effort/risk.** Small–medium for local reuse; higher for cross-event caches. The placeholder deliberately changes layout, so rects cannot remain valid across layout changes, scroll, resize, CSS edits, or placeholder movement.
@@ -244,7 +261,7 @@ Move reusable scenario bodies toward that existing shared-page shape and central
 
 Expected benefit is a simpler, more consistent test harness and less avoidable test wait time, not application runtime performance. Medium effort; validate the runner through the embedded browser MCP on port 7345 with localhost:5173.
 
-The linked browser scenarios retain their earlier assertions, but several controls/selectors still describe the previous UI: for example, play mode uses `.source-panels` and positional topbar buttons ([scripts/test-play-mode.mjs:17](/home/obiwk/Documenti/RolePlaying/sheet_visual_creator/scripts/test-play-mode.mjs:17)), and the stock-theme suite selects the previous theme controls ([scripts/test-stock-themes.mjs:9](/home/obiwk/Documenti/RolePlaying/sheet_visual_creator/scripts/test-stock-themes.mjs:9)). Treat them as scenario specifications for implementation verification, not as currently validated passing suites. Adapt entry steps to open the JSON/CSS drawer and select Structure in the modal before interacting with its JSON editor. No browser suites were run or changed in this refresh.
+The linked browser scenarios retain their earlier assertions, but several controls/selectors still describe the previous UI: for example, play mode uses `.source-panels` and positional topbar buttons ([scripts/test-play-mode.mjs:17](/home/obiwk/Documenti/RolePlaying/sheet_visual_creator/scripts/test-play-mode.mjs:17)), and the stock-theme suite selects the previous theme controls ([scripts/test-stock-themes.mjs:9](/home/obiwk/Documenti/RolePlaying/sheet_visual_creator/scripts/test-stock-themes.mjs:9)). Treat them as scenario specifications for implementation verification, not as currently validated passing suites. Adapt entry steps to open the JSON/CSS drawer and select Structure in the modal before interacting with its JSON editor. Those legacy suites were not run or changed; the focused C1 and smaller-item evaluations are documented separately.
 
 ## Existing optimizations worth preserving
 
