@@ -1,0 +1,450 @@
+[
+	{
+		"typeId": "sb-property",
+		"name": "Property row",
+		"rootClass": "",
+		"structure": {
+			"type": "container",
+			"attrs": {
+				"nodeId": "sb-3",
+				"class": "sb-property",
+				"customNode": false,
+				"typeId": "",
+				"instanceId": ""
+			},
+			"content": [
+				{
+					"type": "textBlock",
+					"attrs": { "nodeId": "sb-1", "class": "sb-property-label", "customNode": false },
+					"content": [{ "type": "text", "text": "Property" }]
+				},
+				{
+					"type": "formula",
+					"attrs": {
+						"nodeId": "sb-2",
+						"class": "sb-property-value",
+						"customNode": false,
+						"field": "F1_LEVEL",
+						"label": "Level",
+						"showLabel": false
+					}
+				}
+			]
+		}
+	},
+	{
+		"typeId": "sb-template-1",
+		"name": "New Note",
+		"rootClass": "",
+		"structure": {
+			"type": "container",
+			"attrs": {
+				"nodeId": "sb-6",
+				"class": "sb-card sb-row",
+				"customNode": false,
+				"typeId": "",
+				"instanceId": ""
+			},
+			"content": [
+				{
+					"type": "textBlock",
+					"attrs": { "nodeId": "sb-4", "class": "sb-title", "customNode": false },
+					"content": [{ "type": "text", "text": "New Note" }]
+				},
+				{
+					"type": "textBlock",
+					"attrs": { "nodeId": "sb-5", "class": "sb-description", "customNode": false },
+					"content": []
+				}
+			]
+		}
+	},
+	{
+		"typeId": "sb-template-2",
+		"name": "New Feature",
+		"rootClass": "",
+		"structure": {
+			"type": "container",
+			"attrs": {
+				"nodeId": "sb-9",
+				"class": "sb-card sb-row",
+				"customNode": false,
+				"typeId": "",
+				"instanceId": ""
+			},
+			"content": [
+				{
+					"type": "textBlock",
+					"attrs": { "nodeId": "sb-7", "class": "sb-title", "customNode": false },
+					"content": [{ "type": "text", "text": "New Feature" }]
+				},
+				{
+					"type": "textBlock",
+					"attrs": { "nodeId": "sb-8", "class": "sb-description", "customNode": false },
+					"content": []
+				}
+			]
+		}
+	},
+	{
+		"typeId": "sb-template-3",
+		"name": "Ranged Weapon",
+		"rootClass": "",
+		"structure": {
+			"type": "container",
+			"attrs": {
+				"nodeId": "sb-30",
+				"class": "sb-card sb-row",
+				"customNode": false,
+				"typeId": "",
+				"instanceId": ""
+			},
+			"content": [
+				{
+					"type": "textBlock",
+					"attrs": { "nodeId": "sb-10", "class": "sb-title", "customNode": false },
+					"content": [{ "type": "text", "text": "Ranged Weapon" }]
+				},
+				{
+					"type": "formula",
+					"attrs": {
+						"nodeId": "sb-11",
+						"class": "sb-primary",
+						"customNode": false,
+						"field": "F117_AMMUNITION",
+						"label": "Ammunition",
+						"showLabel": false
+					}
+				},
+				{
+					"type": "textBlock",
+					"attrs": { "nodeId": "sb-12", "class": "sb-counter-separator", "customNode": false },
+					"content": [{ "type": "text", "text": "/" }]
+				},
+				{
+					"type": "formula",
+					"attrs": {
+						"nodeId": "sb-13",
+						"class": "sb-counter-max",
+						"customNode": false,
+						"field": "F120_MAX_AMMUNITION",
+						"label": "Max Ammunition",
+						"showLabel": false
+					}
+				},
+				{
+					"type": "container",
+					"attrs": {
+						"nodeId": "sb-17",
+						"class": "sb-property",
+						"customNode": true,
+						"typeId": "sb-property",
+						"instanceId": "sb-instance-17"
+					},
+					"content": [
+						{
+							"type": "textBlock",
+							"attrs": { "nodeId": "sb-1", "class": "sb-property-label", "customNode": false },
+							"content": [{ "type": "text", "text": "Attack" }]
+						},
+						{
+							"type": "formula",
+							"attrs": {
+								"nodeId": "sb-2",
+								"class": "sb-property-value",
+								"customNode": false,
+								"field": "F113_ATTACK",
+								"label": "Attack",
+								"showLabel": false
+							}
+						}
+					]
+				},
+				{
+					"type": "container",
+					"attrs": {
+						"nodeId": "sb-21",
+						"class": "sb-property",
+						"customNode": true,
+						"typeId": "sb-property",
+						"instanceId": "sb-instance-21"
+					},
+					"content": [
+						{
+							"type": "textBlock",
+							"attrs": { "nodeId": "sb-1", "class": "sb-property-label", "customNode": false },
+							"content": [{ "type": "text", "text": "Damage" }]
+						},
+						{
+							"type": "formula",
+							"attrs": {
+								"nodeId": "sb-2",
+								"class": "sb-property-value",
+								"customNode": false,
+								"field": "F114_DAMAGE",
+								"label": "Damage",
+								"showLabel": false
+							}
+						}
+					]
+				},
+				{
+					"type": "container",
+					"attrs": {
+						"nodeId": "sb-25",
+						"class": "sb-property",
+						"customNode": true,
+						"typeId": "sb-property",
+						"instanceId": "sb-instance-25"
+					},
+					"content": [
+						{
+							"type": "textBlock",
+							"attrs": { "nodeId": "sb-1", "class": "sb-property-label", "customNode": false },
+							"content": [{ "type": "text", "text": "Range" }]
+						},
+						{
+							"type": "formula",
+							"attrs": {
+								"nodeId": "sb-2",
+								"class": "sb-property-value",
+								"customNode": false,
+								"field": "F115_RANGE",
+								"label": "Range",
+								"showLabel": false
+							}
+						}
+					]
+				},
+				{
+					"type": "container",
+					"attrs": {
+						"nodeId": "sb-29",
+						"class": "sb-property",
+						"customNode": true,
+						"typeId": "sb-property",
+						"instanceId": "sb-instance-29"
+					},
+					"content": [
+						{
+							"type": "textBlock",
+							"attrs": { "nodeId": "sb-1", "class": "sb-property-label", "customNode": false },
+							"content": [{ "type": "text", "text": "Range Max" }]
+						},
+						{
+							"type": "formula",
+							"attrs": {
+								"nodeId": "sb-2",
+								"class": "sb-property-value",
+								"customNode": false,
+								"field": "F122_RANGE_MAX",
+								"label": "Range Max",
+								"showLabel": false
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	{
+		"typeId": "sb-template-4",
+		"name": "New Item",
+		"rootClass": "",
+		"structure": {
+			"type": "container",
+			"attrs": {
+				"nodeId": "sb-32",
+				"class": "sb-card sb-row",
+				"customNode": false,
+				"typeId": "",
+				"instanceId": ""
+			},
+			"content": [
+				{
+					"type": "textBlock",
+					"attrs": { "nodeId": "sb-31", "class": "sb-title", "customNode": false },
+					"content": [{ "type": "text", "text": "New Item" }]
+				}
+			]
+		}
+	},
+	{
+		"typeId": "sb-template-5",
+		"name": "New Armor",
+		"rootClass": "",
+		"structure": {
+			"type": "container",
+			"attrs": {
+				"nodeId": "sb-38",
+				"class": "sb-card sb-row",
+				"customNode": false,
+				"typeId": "",
+				"instanceId": ""
+			},
+			"content": [
+				{
+					"type": "textBlock",
+					"attrs": { "nodeId": "sb-33", "class": "sb-title", "customNode": false },
+					"content": [{ "type": "text", "text": "New Armor" }]
+				},
+				{
+					"type": "container",
+					"attrs": {
+						"nodeId": "sb-37",
+						"class": "sb-property",
+						"customNode": true,
+						"typeId": "sb-property",
+						"instanceId": "sb-instance-37"
+					},
+					"content": [
+						{
+							"type": "textBlock",
+							"attrs": { "nodeId": "sb-1", "class": "sb-property-label", "customNode": false },
+							"content": [{ "type": "text", "text": "Worn" }]
+						},
+						{
+							"type": "formula",
+							"attrs": {
+								"nodeId": "sb-2",
+								"class": "sb-property-value",
+								"customNode": false,
+								"field": "F131_WORN",
+								"label": "Worn",
+								"showLabel": false
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	{
+		"typeId": "sb-template-6",
+		"name": "Melee Weapon",
+		"rootClass": "",
+		"structure": {
+			"type": "container",
+			"attrs": {
+				"nodeId": "sb-48",
+				"class": "sb-card sb-row",
+				"customNode": false,
+				"typeId": "",
+				"instanceId": ""
+			},
+			"content": [
+				{
+					"type": "textBlock",
+					"attrs": { "nodeId": "sb-39", "class": "sb-title", "customNode": false },
+					"content": [{ "type": "text", "text": "Melee Weapon" }]
+				},
+				{
+					"type": "container",
+					"attrs": {
+						"nodeId": "sb-43",
+						"class": "sb-property",
+						"customNode": true,
+						"typeId": "sb-property",
+						"instanceId": "sb-instance-43"
+					},
+					"content": [
+						{
+							"type": "textBlock",
+							"attrs": { "nodeId": "sb-1", "class": "sb-property-label", "customNode": false },
+							"content": [{ "type": "text", "text": "Attack" }]
+						},
+						{
+							"type": "formula",
+							"attrs": {
+								"nodeId": "sb-2",
+								"class": "sb-property-value",
+								"customNode": false,
+								"field": "F134_ATTACK",
+								"label": "Attack",
+								"showLabel": false
+							}
+						}
+					]
+				},
+				{
+					"type": "container",
+					"attrs": {
+						"nodeId": "sb-47",
+						"class": "sb-property",
+						"customNode": true,
+						"typeId": "sb-property",
+						"instanceId": "sb-instance-47"
+					},
+					"content": [
+						{
+							"type": "textBlock",
+							"attrs": { "nodeId": "sb-1", "class": "sb-property-label", "customNode": false },
+							"content": [{ "type": "text", "text": "Damage" }]
+						},
+						{
+							"type": "formula",
+							"attrs": {
+								"nodeId": "sb-2",
+								"class": "sb-property-value",
+								"customNode": false,
+								"field": "F135_DAMAGE",
+								"label": "Damage",
+								"showLabel": false
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	{
+		"typeId": "sb-template-7",
+		"name": "New Spell",
+		"rootClass": "",
+		"structure": {
+			"type": "container",
+			"attrs": {
+				"nodeId": "sb-54",
+				"class": "sb-card sb-row",
+				"customNode": false,
+				"typeId": "",
+				"instanceId": ""
+			},
+			"content": [
+				{
+					"type": "textBlock",
+					"attrs": { "nodeId": "sb-49", "class": "sb-title", "customNode": false },
+					"content": [{ "type": "text", "text": "New Spell" }]
+				},
+				{
+					"type": "container",
+					"attrs": {
+						"nodeId": "sb-53",
+						"class": "sb-property",
+						"customNode": true,
+						"typeId": "sb-property",
+						"instanceId": "sb-instance-53"
+					},
+					"content": [
+						{
+							"type": "textBlock",
+							"attrs": { "nodeId": "sb-1", "class": "sb-property-label", "customNode": false },
+							"content": [{ "type": "text", "text": "Damage" }]
+						},
+						{
+							"type": "formula",
+							"attrs": {
+								"nodeId": "sb-2",
+								"class": "sb-property-value",
+								"customNode": false,
+								"field": "F142_DAMAGE",
+								"label": "Damage",
+								"showLabel": false
+							}
+						}
+					]
+				}
+			]
+		}
+	}
+]

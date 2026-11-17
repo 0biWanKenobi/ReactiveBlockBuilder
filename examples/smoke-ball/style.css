@@ -1,0 +1,183 @@
+/* Source screenshots: dark lists, compact rows, framed ability cards. */
+.sheet-content {
+	background: #1e1e1e;
+	color: #eee;
+	font-family: system-ui, sans-serif;
+}
+.sheet-content,
+.sheet-content * {
+	box-sizing: border-box;
+}
+.sheet-content .sheet-document {
+	padding: 24px;
+}
+.sb-character {
+	padding: 14px 0 24px;
+	border-bottom: 2px solid #606060;
+	margin-bottom: 24px;
+}
+.sb-character-name {
+	display: block;
+	font-size: 2rem;
+	font-weight: 500;
+	letter-spacing: 0.02em;
+}
+.sb-character-subtitle {
+	display: block;
+	margin-top: 8px;
+	color: #aaa;
+	font-size: 0.9rem;
+}
+.sb-page {
+	display: grid;
+	grid-template-columns: repeat(12, minmax(0, 1fr));
+	gap: 12px;
+	margin: 24px 0 40px;
+}
+.sb-page-title {
+	grid-column: 1 / -1;
+	font-size: 1.6rem;
+	font-weight: 500;
+	padding: 12px 0;
+	color: #bbb;
+}
+.sb-card {
+	grid-column: 1 / -1;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px 12px;
+	border-bottom: 1px solid #555;
+	padding: 14px 4px;
+	min-width: 0;
+}
+.sb-title {
+	font-size: 1.05rem;
+	font-weight: 450;
+	flex: 1;
+	min-width: 0;
+	overflow-wrap: anywhere;
+}
+.sb-description {
+	flex-basis: 100%;
+	white-space: pre-wrap;
+	line-height: 1.6;
+	font-size: 0.92rem;
+	color: #bbb;
+	overflow-wrap: anywhere;
+}
+.sb-info {
+	flex-basis: 100%;
+	color: #bbb;
+	font-size: 0.9rem;
+}
+.sb-short-row {
+	grid-column: span 6;
+	border: 1px solid #666;
+	border-radius: 5px;
+	padding: 10px 12px;
+}
+.sb-shield,
+.sb-small-shield {
+	grid-column: span 4;
+	flex-direction: column;
+	text-align: center;
+	justify-content: center;
+	border: 2px double #777;
+	border-radius: 10px;
+	padding: 10px 8px;
+}
+.sb-small-shield {
+	grid-column: span 3;
+}
+.sb-shield .sb-title,
+.sb-small-shield .sb-title {
+	flex: none;
+	min-width: 0;
+	font-size: 0.8rem;
+}
+.sb-primary {
+	font-weight: 450;
+	font-size: 1.15rem;
+}
+.sb-shield .sb-primary,
+.sb-small-shield .sb-primary {
+	font-size: 2.15rem;
+}
+.sb-secondary {
+	font-size: 0.9rem;
+	color: #ddd;
+}
+.sb-counter-max,
+.sb-counter-separator {
+	font-size: 1rem;
+}
+.sb-header {
+	border-bottom: 2px solid #606060;
+	margin-top: 16px;
+	padding: 12px 0;
+}
+.sb-header .sb-title {
+	font-size: 1.35rem;
+	font-weight: 650;
+}
+.sb-property {
+	flex: 0 0 auto;
+	width: 100%;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	text-align: left;
+	min-width: 0;
+}
+.sb-property-label {
+	flex: 1;
+	min-width: 0;
+	overflow-wrap: anywhere;
+	color: #bbb;
+	font-size: 0.86rem;
+}
+.sb-property-value {
+	font-size: 0.9rem;
+	min-width: 0;
+	overflow-wrap: anywhere;
+}
+.sb-short-row .sb-property-label,
+.sb-row > .sb-property:only-child .sb-property-label {
+	font-size: 1rem;
+	color: #eee;
+}
+.sb-small-shield > .sb-property:only-child {
+	flex-direction: column;
+	text-align: center;
+}
+.sb-small-shield > .sb-property:only-child .sb-property-value {
+	font-size: 1.8rem;
+}
+.sb-roll .rbb-formula-value {
+	display: none;
+}
+.sb-roll .rbb-roll,
+.sheet-content .rbb-roll {
+	background: #292929;
+	color: #ddd;
+	border-color: #666;
+	padding: 3px 6px;
+}
+.sheet-content .rbb-formula-error {
+	color: #ff9191;
+}
+@media (max-width: 700px) {
+	.sheet-content .sheet-document {
+		padding: 12px;
+	}
+	.sb-page {
+		gap: 8px;
+	}
+	.sb-card {
+		gap: 8px;
+	}
+	.sb-title {
+		font-size: 0.95rem;
+	}
+}

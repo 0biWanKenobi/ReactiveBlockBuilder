@@ -26,3 +26,6 @@ vite.config.ts.timestamp-*
 # IDE
 *.code-workspace
 .vscode
+
+# Generated example payload
+/static/smoke-ball-bench.json

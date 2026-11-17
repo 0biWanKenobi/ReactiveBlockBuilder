@@ -1,0 +1,6065 @@
+{
+	"version": 1,
+	"themeId": "default",
+	"fields": {
+		"F0_BASE_D20_ROLL": { "id": "F0_BASE_D20_ROLL", "formula": "(1)d20" },
+		"F1_LEVEL": { "id": "F1_LEVEL", "formula": "17" },
+		"F2_AC": {
+			"id": "F2_AC",
+			"formula": "(({F146_ARM_CUOIO_BORCHIATO}+{F13_DEX})+({F144_MISC_BONUS}*{F145_BONUS_ACTIVE}))"
+		},
+		"F3_DEXTERITY": { "id": "F3_DEXTERITY", "formula": "(20+{F108_SACRED_KNIVES_WIELDER})" },
+		"F4_STRENGTH": { "id": "F4_STRENGTH", "formula": "10" },
+		"F5_CONSTITUTION": { "id": "F5_CONSTITUTION", "formula": "16" },
+		"F6_INTELLIGENCE": { "id": "F6_INTELLIGENCE", "formula": "16" },
+		"F7_WISDOM": { "id": "F7_WISDOM", "formula": "11" },
+		"F8_CHARISMA": { "id": "F8_CHARISMA", "formula": "18" },
+		"F9_INITIATIVE": {
+			"id": "F9_INITIATIVE",
+			"formula": "({F13_DEX})+({F143_AUDACIA_DEL_FANFARONE})*{F17_CHA}"
+		},
+		"F10_COMPETENZA": { "id": "F10_COMPETENZA", "formula": "floor((({F1_LEVEL}+7)/4))" },
+		"F11_HP": { "id": "F11_HP", "formula": "(136+{F77_TEMPORARY_HP})" },
+		"F12_STR": { "id": "F12_STR", "formula": "floor((({F4_STRENGTH}/2)-5))" },
+		"F13_DEX": { "id": "F13_DEX", "formula": "floor((({F3_DEXTERITY}/2)-5))" },
+		"F14_CON": {
+			"id": "F14_CON",
+			"formula": "floor(((({F5_CONSTITUTION}/2)-5)+{F150_ABILITA_IMPECCABILE}))"
+		},
+		"F15_INT": { "id": "F15_INT", "formula": "floor((({F6_INTELLIGENCE}/2)-5))" },
+		"F16_WIS": { "id": "F16_WIS", "formula": "floor((({F7_WISDOM}/2)-5))" },
+		"F17_CHA": { "id": "F17_CHA", "formula": "floor((({F8_CHARISMA}/2)-5))" },
+		"F18_STRENGTH_SAVE_PROFICIENCY": { "id": "F18_STRENGTH_SAVE_PROFICIENCY", "formula": "false" },
+		"F19_DEXTERITY_SAVE_PROFICIENCY": { "id": "F19_DEXTERITY_SAVE_PROFICIENCY", "formula": "true" },
+		"F20_CONSTITUTION_SAVE_PROFICIENCY": {
+			"id": "F20_CONSTITUTION_SAVE_PROFICIENCY",
+			"formula": "false"
+		},
+		"F21_INTELLIGENCE_SAVE_PROFICIENCY": {
+			"id": "F21_INTELLIGENCE_SAVE_PROFICIENCY",
+			"formula": "true"
+		},
+		"F22_COMPETENZA_SAG_MENTE_SFUGGENTE": {
+			"id": "F22_COMPETENZA_SAG_MENTE_SFUGGENTE",
+			"formula": "true"
+		},
+		"F23_CHARISMA_SAVE_PROFICIENCY": { "id": "F23_CHARISMA_SAVE_PROFICIENCY", "formula": "false" },
+		"F24_STRENGTH_SAVE": {
+			"id": "F24_STRENGTH_SAVE",
+			"formula": "(({F12_STR}+({F10_COMPETENZA}*{F18_STRENGTH_SAVE_PROFICIENCY}))+{F110_RESURRECTION_MALUS})"
+		},
+		"F25_DEXTERITY_SAVE": {
+			"id": "F25_DEXTERITY_SAVE",
+			"formula": "(({F13_DEX}+({F10_COMPETENZA}*{F19_DEXTERITY_SAVE_PROFICIENCY}))+{F110_RESURRECTION_MALUS})"
+		},
+		"F26_CONSTITUTION_SAVE": {
+			"id": "F26_CONSTITUTION_SAVE",
+			"formula": "({F14_CON}+({F10_COMPETENZA}*{F20_CONSTITUTION_SAVE_PROFICIENCY}))"
+		},
+		"F27_INTELLIGENCE_SAVE": {
+			"id": "F27_INTELLIGENCE_SAVE",
+			"formula": "(({F15_INT}+({F10_COMPETENZA}*{F21_INTELLIGENCE_SAVE_PROFICIENCY}))+{F110_RESURRECTION_MALUS})"
+		},
+		"F28_WISDOM_SAVE": {
+			"id": "F28_WISDOM_SAVE",
+			"formula": "({F16_WIS}+({F10_COMPETENZA}*{F22_COMPETENZA_SAG_MENTE_SFUGGENTE}))"
+		},
+		"F29_CHARISMA_SAVE": {
+			"id": "F29_CHARISMA_SAVE",
+			"formula": "(({F17_CHA}+({F10_COMPETENZA}*{F23_CHARISMA_SAVE_PROFICIENCY}))+{F110_RESURRECTION_MALUS})"
+		},
+		"F30_HP_PER_LEVEL": { "id": "F30_HP_PER_LEVEL", "formula": "8" },
+		"F31_FIRST_LEVEL_HP": { "id": "F31_FIRST_LEVEL_HP", "formula": "10" },
+		"F32_MAX_HP": {
+			"id": "F32_MAX_HP",
+			"formula": "(({F31_FIRST_LEVEL_HP}+{F101_ROLLED_HP})+{F77_TEMPORARY_HP})"
+		},
+		"F33_ACROBATICS_PROFICIENCY": { "id": "F33_ACROBATICS_PROFICIENCY", "formula": "true" },
+		"F34_SURVIVAL_PROFICIENCY": { "id": "F34_SURVIVAL_PROFICIENCY", "formula": "false" },
+		"F35_STEALTH_PROFICIENCY": { "id": "F35_STEALTH_PROFICIENCY", "formula": "true" },
+		"F36_SLEIGHT_OF_HAND_PROFICIENCY": {
+			"id": "F36_SLEIGHT_OF_HAND_PROFICIENCY",
+			"formula": "true"
+		},
+		"F37_RELIGION_PROFICIENCY_INSEGNATA_DA_SMOKE_NEL_MONDO_DEI_SOGNI": {
+			"id": "F37_RELIGION_PROFICIENCY_INSEGNATA_DA_SMOKE_NEL_MONDO_DEI_SOGNI",
+			"formula": "true"
+		},
+		"F38_COMPETENZA_IN_PERSUASIONE": { "id": "F38_COMPETENZA_IN_PERSUASIONE", "formula": "true" },
+		"F39_PERFORMANCE_PROFICIENCY": { "id": "F39_PERFORMANCE_PROFICIENCY", "formula": "false" },
+		"F40_PERCEPTION_PROFICIENCY": { "id": "F40_PERCEPTION_PROFICIENCY", "formula": "true" },
+		"F41_NATURE_PROFICIENCY": { "id": "F41_NATURE_PROFICIENCY", "formula": "false" },
+		"F42_MEDICINE_PROFICIENCY": { "id": "F42_MEDICINE_PROFICIENCY", "formula": "true" },
+		"F43_INVESTIGATION_PROFICIENCY": { "id": "F43_INVESTIGATION_PROFICIENCY", "formula": "true" },
+		"F44_INTIMIDATION_PROFICIENCY": { "id": "F44_INTIMIDATION_PROFICIENCY", "formula": "false" },
+		"F45_INSIGHT_PROFICIENCY": { "id": "F45_INSIGHT_PROFICIENCY", "formula": "true" },
+		"F46_HISTORY_PROFICIENCY": { "id": "F46_HISTORY_PROFICIENCY", "formula": "false" },
+		"F47_DECEPTION_PROFICIENCY": { "id": "F47_DECEPTION_PROFICIENCY", "formula": "true" },
+		"F48_ATHLETICS_PROFICIENCY": { "id": "F48_ATHLETICS_PROFICIENCY", "formula": "false" },
+		"F49_ARCANA_PROFICIENCY": { "id": "F49_ARCANA_PROFICIENCY", "formula": "false" },
+		"F50_ANIMAL_HANDLING_PROFICIENCY": {
+			"id": "F50_ANIMAL_HANDLING_PROFICIENCY",
+			"formula": "false"
+		},
+		"F51_SURVIVAL": {
+			"id": "F51_SURVIVAL",
+			"formula": "(({F16_WIS}+({F10_COMPETENZA}*{F34_SURVIVAL_PROFICIENCY}))+3)"
+		},
+		"F52_STEALTH": {
+			"id": "F52_STEALTH",
+			"formula": "(({F13_DEX}+({F10_COMPETENZA}*{F35_STEALTH_PROFICIENCY}))+({F10_COMPETENZA}*{F105_MAESTRIA_IN_FURTIVITA}))"
+		},
+		"F53_SLEIGHT_OF_HAND": {
+			"id": "F53_SLEIGHT_OF_HAND",
+			"formula": "((({F13_DEX}+({F10_COMPETENZA}*{F36_SLEIGHT_OF_HAND_PROFICIENCY}))+{F110_RESURRECTION_MALUS}))+({F201_INDOSSATI})*{F200_RAPIDITA_DI_MANO}"
+		},
+		"F54_RELIGION": {
+			"id": "F54_RELIGION",
+			"formula": "({F15_INT}+({F10_COMPETENZA}*{F37_RELIGION_PROFICIENCY_INSEGNATA_DA_SMOKE_NEL_MONDO_DEI_SOGNI}))"
+		},
+		"F55_PERSUASION": {
+			"id": "F55_PERSUASION",
+			"formula": "((({F17_CHA}+({F10_COMPETENZA}*{F38_COMPETENZA_IN_PERSUASIONE}))+({F10_COMPETENZA}*{F103_MAESTRIA_IN_PERSUASIONE}))-{F110_RESURRECTION_MALUS})"
+		},
+		"F56_PERFORMANCE": {
+			"id": "F56_PERFORMANCE",
+			"formula": "({F17_CHA}+({F10_COMPETENZA}*{F39_PERFORMANCE_PROFICIENCY}))"
+		},
+		"F57_PERCEPTION": {
+			"id": "F57_PERCEPTION",
+			"formula": "((({F16_WIS}+({F10_COMPETENZA}*{F40_PERCEPTION_PROFICIENCY}))+({F10_COMPETENZA}*{F104_MAESTRIA_IN_PERCEZIONE}))+{F110_RESURRECTION_MALUS})"
+		},
+		"F58_NATURE": {
+			"id": "F58_NATURE",
+			"formula": "(({F15_INT}+({F10_COMPETENZA}*{F41_NATURE_PROFICIENCY}))+{F110_RESURRECTION_MALUS})"
+		},
+		"F59_MEDICINE": {
+			"id": "F59_MEDICINE",
+			"formula": "({F16_WIS}+({F10_COMPETENZA}*{F42_MEDICINE_PROFICIENCY}))"
+		},
+		"F60_INVESTIGATION": {
+			"id": "F60_INVESTIGATION",
+			"formula": "(({F15_INT}+({F10_COMPETENZA}*{F43_INVESTIGATION_PROFICIENCY}))+({F10_COMPETENZA}*{F111_MAESTRIA_IN_INVESTIGARE}))"
+		},
+		"F61_INTIMIDATION": {
+			"id": "F61_INTIMIDATION",
+			"formula": "(({F17_CHA}+({F10_COMPETENZA}*{F38_COMPETENZA_IN_PERSUASIONE}))+{F110_RESURRECTION_MALUS})"
+		},
+		"F62_INSIGHT": {
+			"id": "F62_INSIGHT",
+			"formula": "(({F16_WIS}+({F10_COMPETENZA}*{F45_INSIGHT_PROFICIENCY}))+{F110_RESURRECTION_MALUS})"
+		},
+		"F63_HISTORY": {
+			"id": "F63_HISTORY",
+			"formula": "({F15_INT}+({F10_COMPETENZA}*{F46_HISTORY_PROFICIENCY}))"
+		},
+		"F64_DECEPTION": {
+			"id": "F64_DECEPTION",
+			"formula": "({F17_CHA}+({F10_COMPETENZA}*{F47_DECEPTION_PROFICIENCY}))"
+		},
+		"F65_ATHLETICS": {
+			"id": "F65_ATHLETICS",
+			"formula": "(({F12_STR}+({F10_COMPETENZA}*{F48_ATHLETICS_PROFICIENCY}))+{F110_RESURRECTION_MALUS})"
+		},
+		"F66_ARCANA": {
+			"id": "F66_ARCANA",
+			"formula": "({F15_INT}+({F10_COMPETENZA}*{F49_ARCANA_PROFICIENCY}))"
+		},
+		"F67_ANIMAL_HANDLING": {
+			"id": "F67_ANIMAL_HANDLING",
+			"formula": "((({F16_WIS}+({F10_COMPETENZA}*{F50_ANIMAL_HANDLING_PROFICIENCY}))+3)+{F110_RESURRECTION_MALUS})"
+		},
+		"F68_ACROBATICS": {
+			"id": "F68_ACROBATICS",
+			"formula": "((({F13_DEX}+({F10_COMPETENZA}*{F33_ACROBATICS_PROFICIENCY}))+({F10_COMPETENZA}*{F106_MAESTRIA_IN_ACROBAZIA}))+{F110_RESURRECTION_MALUS})"
+		},
+		"F69_SPEED": { "id": "F69_SPEED", "formula": "30" },
+		"F70_WEIGHT": {
+			"id": "F70_WEIGHT",
+			"formula": "((((((0)+(1)*{F162_BONUS_TO_WEIGHT})+(1)*{F182_BONUS_TO_WEIGHT})+(1)*{F190_BONUS_TO_WEIGHT})+(1)*{F192_BONUS_TO_WEIGHT})+(1)*{F197_BONUS_TO_WEIGHT})+(1)*{F199_BONUS_TO_WEIGHT}"
+		},
+		"F71_MAX_WEIGHT": { "id": "F71_MAX_WEIGHT", "formula": "({F4_STRENGTH}*15)" },
+		"F72_PP": { "id": "F72_PP", "formula": "0" },
+		"F73_GP": { "id": "F73_GP", "formula": "3592" },
+		"F74_SP": { "id": "F74_SP", "formula": "0" },
+		"F75_CP": { "id": "F75_CP", "formula": "0" },
+		"F76_MAX_MEDIUM_ARMOR_AC_BONUS": { "id": "F76_MAX_MEDIUM_ARMOR_AC_BONUS", "formula": "2" },
+		"F77_TEMPORARY_HP": { "id": "F77_TEMPORARY_HP", "formula": "0" },
+		"F78_HIT_DICE": { "id": "F78_HIT_DICE", "formula": "17" },
+		"F79_1ST_LEVEL_SPELL_SLOTS": { "id": "F79_1ST_LEVEL_SPELL_SLOTS", "formula": "0" },
+		"F80_MAX_1ST_LEVEL_SPELL_SLOTS": { "id": "F80_MAX_1ST_LEVEL_SPELL_SLOTS", "formula": "0" },
+		"F81_2ND_LEVEL_SPELL_SLOTS": { "id": "F81_2ND_LEVEL_SPELL_SLOTS", "formula": "0" },
+		"F82_MAX_2ND_LEVEL_SPELL_SLOTS": { "id": "F82_MAX_2ND_LEVEL_SPELL_SLOTS", "formula": "0" },
+		"F83_3RD_LEVEL_SPELL_SLOTS": { "id": "F83_3RD_LEVEL_SPELL_SLOTS", "formula": "0" },
+		"F84_MAX_3RD_LEVEL_SPELL_SLOTS": { "id": "F84_MAX_3RD_LEVEL_SPELL_SLOTS", "formula": "0" },
+		"F85_4TH_LEVEL_SPELL_SLOTS": { "id": "F85_4TH_LEVEL_SPELL_SLOTS", "formula": "0" },
+		"F86_MAX_4TH_LEVEL_SPELL_SLOTS": { "id": "F86_MAX_4TH_LEVEL_SPELL_SLOTS", "formula": "0" },
+		"F87_5TH_LEVEL_SPELL_SLOTS": { "id": "F87_5TH_LEVEL_SPELL_SLOTS", "formula": "0" },
+		"F88_MAX_5TH_LEVEL_SPELL_SLOTS": { "id": "F88_MAX_5TH_LEVEL_SPELL_SLOTS", "formula": "0" },
+		"F89_6TH_LEVEL_SPELL_SLOTS": { "id": "F89_6TH_LEVEL_SPELL_SLOTS", "formula": "0" },
+		"F90_MAX_6TH_LEVEL_SPELL_SLOTS": { "id": "F90_MAX_6TH_LEVEL_SPELL_SLOTS", "formula": "0" },
+		"F91_7TH_LEVEL_SPELL_SLOTS": { "id": "F91_7TH_LEVEL_SPELL_SLOTS", "formula": "0" },
+		"F92_MAX_7TH_LEVEL_SPELL_SLOTS": { "id": "F92_MAX_7TH_LEVEL_SPELL_SLOTS", "formula": "0" },
+		"F93_8TH_LEVEL_SPELL_SLOTS": { "id": "F93_8TH_LEVEL_SPELL_SLOTS", "formula": "0" },
+		"F94_MAX_8TH_LEVEL_SPELL_SLOTS": { "id": "F94_MAX_8TH_LEVEL_SPELL_SLOTS", "formula": "0" },
+		"F95_9TH_LEVEL_SPELL_SLOTS": { "id": "F95_9TH_LEVEL_SPELL_SLOTS", "formula": "0" },
+		"F96_MAX_9TH_LEVEL_SPELL_SLOTS": { "id": "F96_MAX_9TH_LEVEL_SPELL_SLOTS", "formula": "0" },
+		"F97_PACT_SPELL_SLOTS": { "id": "F97_PACT_SPELL_SLOTS", "formula": "0" },
+		"F98_MAX_PACT_SPELL_SLOTS": { "id": "F98_MAX_PACT_SPELL_SLOTS", "formula": "0" },
+		"F99_PACT_SPELLS_LEVEL": { "id": "F99_PACT_SPELLS_LEVEL", "formula": "1" },
+		"F100_SNEAK_ATTACK_DICE": {
+			"id": "F100_SNEAK_ATTACK_DICE",
+			"formula": "((({F1_LEVEL}+1)/2))d6"
+		},
+		"F101_ROLLED_HP": { "id": "F101_ROLLED_HP", "formula": "126" },
+		"F102_SNEAK_ATTACK": { "id": "F102_SNEAK_ATTACK", "formula": "true" },
+		"F103_MAESTRIA_IN_PERSUASIONE": { "id": "F103_MAESTRIA_IN_PERSUASIONE", "formula": "true" },
+		"F104_MAESTRIA_IN_PERCEZIONE": { "id": "F104_MAESTRIA_IN_PERCEZIONE", "formula": "true" },
+		"F105_MAESTRIA_IN_FURTIVITA": { "id": "F105_MAESTRIA_IN_FURTIVITA", "formula": "true" },
+		"F106_MAESTRIA_IN_ACROBAZIA": { "id": "F106_MAESTRIA_IN_ACROBAZIA", "formula": "true" },
+		"F107_TEST": { "id": "F107_TEST", "formula": "(-1)" },
+		"F108_SACRED_KNIVES_WIELDER": { "id": "F108_SACRED_KNIVES_WIELDER", "formula": "4" },
+		"F109_PUNTI_ISPIRAZIONE": { "id": "F109_PUNTI_ISPIRAZIONE", "formula": "0" },
+		"F110_RESURRECTION_MALUS": { "id": "F110_RESURRECTION_MALUS", "formula": "0" },
+		"F111_MAESTRIA_IN_INVESTIGARE": { "id": "F111_MAESTRIA_IN_INVESTIGARE", "formula": "true" },
+		"F112_THROWN": { "id": "F112_THROWN", "formula": "false" },
+		"F113_ATTACK": {
+			"id": "F113_ATTACK",
+			"formula": "(({F10_COMPETENZA}*{F121_PROFICIENT})+{F13_DEX})"
+		},
+		"F114_DAMAGE": { "id": "F114_DAMAGE", "formula": "({F116_DAMAGE_DICE}+{F13_DEX})" },
+		"F115_RANGE": { "id": "F115_RANGE", "formula": "30" },
+		"F116_DAMAGE_DICE": { "id": "F116_DAMAGE_DICE", "formula": "(1)d6" },
+		"F117_AMMUNITION": { "id": "F117_AMMUNITION", "formula": "20" },
+		"F118_AMMUNITION_WEIGHT": { "id": "F118_AMMUNITION_WEIGHT", "formula": "0" },
+		"F119_WEIGHT": { "id": "F119_WEIGHT", "formula": "1" },
+		"F120_MAX_AMMUNITION": { "id": "F120_MAX_AMMUNITION", "formula": "20" },
+		"F121_PROFICIENT": { "id": "F121_PROFICIENT", "formula": "false" },
+		"F122_RANGE_MAX": { "id": "F122_RANGE_MAX", "formula": "120" },
+		"F123_BONUS_TO_WEIGHT": {
+			"id": "F123_BONUS_TO_WEIGHT",
+			"formula": "({F119_WEIGHT}+({F118_AMMUNITION_WEIGHT}*{F117_AMMUNITION}))"
+		},
+		"F124_WEIGHT": { "id": "F124_WEIGHT", "formula": "1" },
+		"F125_BONUS_TO_WEIGHT": { "id": "F125_BONUS_TO_WEIGHT", "formula": "{F124_WEIGHT}" },
+		"F126_LIGHT": { "id": "F126_LIGHT", "formula": "false" },
+		"F127_MEDIUM": { "id": "F127_MEDIUM", "formula": "false" },
+		"F128_HEAVY": { "id": "F128_HEAVY", "formula": "false" },
+		"F129_FINAL_AC": {
+			"id": "F129_FINAL_AC",
+			"formula": "({F130_BASE_AC}+max(({F13_DEX}*{F126_LIGHT}),(min({F13_DEX},{F76_MAX_MEDIUM_ARMOR_AC_BONUS})*{F127_MEDIUM})))"
+		},
+		"F130_BASE_AC": { "id": "F130_BASE_AC", "formula": "11" },
+		"F131_WORN": { "id": "F131_WORN", "formula": "false" },
+		"F132_WEIGHT": { "id": "F132_WEIGHT", "formula": "1" },
+		"F133_BONUS_TO_WEIGHT": { "id": "F133_BONUS_TO_WEIGHT", "formula": "{F132_WEIGHT}" },
+		"F134_ATTACK": {
+			"id": "F134_ATTACK",
+			"formula": "((({F10_COMPETENZA}*{F138_PROFICIENT})+({F12_STR}*({F136_FINESSE}==false)))+(max({F12_STR},{F13_DEX})*{F136_FINESSE}))"
+		},
+		"F135_DAMAGE": {
+			"id": "F135_DAMAGE",
+			"formula": "(({F140_DAMAGE_DICE}+({F12_STR}*({F136_FINESSE}==false)))+(max({F13_DEX},{F12_STR})*{F136_FINESSE}))"
+		},
+		"F136_FINESSE": { "id": "F136_FINESSE", "formula": "false" },
+		"F137_WEIGHT": { "id": "F137_WEIGHT", "formula": "1" },
+		"F138_PROFICIENT": { "id": "F138_PROFICIENT", "formula": "false" },
+		"F139_THROWN": { "id": "F139_THROWN", "formula": "false" },
+		"F140_DAMAGE_DICE": { "id": "F140_DAMAGE_DICE", "formula": "(1)d6" },
+		"F141_BONUS_TO_WEIGHT": { "id": "F141_BONUS_TO_WEIGHT", "formula": "{F137_WEIGHT}" },
+		"F142_DAMAGE": { "id": "F142_DAMAGE", "formula": "0" },
+		"F143_AUDACIA_DEL_FANFARONE": { "id": "F143_AUDACIA_DEL_FANFARONE", "formula": "true" },
+		"F144_MISC_BONUS": { "id": "F144_MISC_BONUS", "formula": "2" },
+		"F145_BONUS_ACTIVE": { "id": "F145_BONUS_ACTIVE", "formula": "false" },
+		"F146_ARM_CUOIO_BORCHIATO": { "id": "F146_ARM_CUOIO_BORCHIATO", "formula": "12" },
+		"F147_PERCEZIONE_PASSIVA": {
+			"id": "F147_PERCEZIONE_PASSIVA",
+			"formula": "(10+{F57_PERCEPTION})"
+		},
+		"F148_SCUROVISIONE": { "id": "F148_SCUROVISIONE", "formula": "30" },
+		"F149_VISTA_CIECA": { "id": "F149_VISTA_CIECA", "formula": "0" },
+		"F150_ABILITA_IMPECCABILE": { "id": "F150_ABILITA_IMPECCABILE", "formula": "1" },
+		"F151_THROWN": { "id": "F151_THROWN", "formula": "false" },
+		"F152_ATTACK": {
+			"id": "F152_ATTACK",
+			"formula": "(({F10_COMPETENZA}*{F160_PROFICIENT})+{F13_DEX})"
+		},
+		"F153_DAMAGE": {
+			"id": "F153_DAMAGE",
+			"formula": "(({F155_DAMAGE_DICE}+{F13_DEX})+({F164_SNEAK_ATTACK}*{F163_SNEAK_ATTACK_DICE}))"
+		},
+		"F154_RANGE": { "id": "F154_RANGE", "formula": "30" },
+		"F155_DAMAGE_DICE": { "id": "F155_DAMAGE_DICE", "formula": "(1)d6" },
+		"F156_AMMUNITION": { "id": "F156_AMMUNITION", "formula": "18" },
+		"F157_AMMUNITION_WEIGHT": { "id": "F157_AMMUNITION_WEIGHT", "formula": "0" },
+		"F158_WEIGHT": { "id": "F158_WEIGHT", "formula": "1" },
+		"F159_MAX_AMMUNITION": { "id": "F159_MAX_AMMUNITION", "formula": "20" },
+		"F160_PROFICIENT": { "id": "F160_PROFICIENT", "formula": "false" },
+		"F161_RANGE_MAX": { "id": "F161_RANGE_MAX", "formula": "120" },
+		"F162_BONUS_TO_WEIGHT": {
+			"id": "F162_BONUS_TO_WEIGHT",
+			"formula": "({F158_WEIGHT}+({F157_AMMUNITION_WEIGHT}*{F156_AMMUNITION}))"
+		},
+		"F163_SNEAK_ATTACK_DICE": {
+			"id": "F163_SNEAK_ATTACK_DICE",
+			"formula": "((({F1_LEVEL}+1)/2))d6"
+		},
+		"F164_SNEAK_ATTACK": { "id": "F164_SNEAK_ATTACK", "formula": "true" },
+		"F165_ATTACK": {
+			"id": "F165_ATTACK",
+			"formula": "(((({F10_COMPETENZA}*{F179_PROFICIENT})+({F12_STR}*({F177_FINESSE}==false)))+(max({F12_STR},{F13_DEX})*{F177_FINESSE}))+{F169_TELEPORT_ATTACK_BONUS})"
+		},
+		"F166_SNEAK_ATTACK": { "id": "F166_SNEAK_ATTACK", "formula": "true" },
+		"F167_DAMAGE": {
+			"id": "F167_DAMAGE",
+			"formula": "(((((({F181_DAMAGE_DICE}+({F12_STR}*({F177_FINESSE}==false)))+(max({F13_DEX},{F12_STR})*{F177_FINESSE}))+({F166_SNEAK_ATTACK}*{F100_SNEAK_ATTACK_DICE}))+{F170_DAMAGE_BONUS})+(({F171_TELEPORT_DAMAGE_BONUS}+{F172_TELEPORT_PSYCHIC_DAMAGE})*{F168_TELEPORT_ATTACK}))+(4)d8)"
+		},
+		"F168_TELEPORT_ATTACK": { "id": "F168_TELEPORT_ATTACK", "formula": "true" },
+		"F169_TELEPORT_ATTACK_BONUS": { "id": "F169_TELEPORT_ATTACK_BONUS", "formula": "3" },
+		"F170_DAMAGE_BONUS": { "id": "F170_DAMAGE_BONUS", "formula": "3" },
+		"F171_TELEPORT_DAMAGE_BONUS": { "id": "F171_TELEPORT_DAMAGE_BONUS", "formula": "(2)d4" },
+		"F172_TELEPORT_PSYCHIC_DAMAGE": {
+			"id": "F172_TELEPORT_PSYCHIC_DAMAGE",
+			"formula": "((1)d8*{F175_ACTIVE_PSYCHIC_DAMAGE})"
+		},
+		"F173_TP_ATTACK_CHARGES": { "id": "F173_TP_ATTACK_CHARGES", "formula": "4" },
+		"F174_TP_RECHARGE": { "id": "F174_TP_RECHARGE", "formula": "((1)d4+1)" },
+		"F175_ACTIVE_PSYCHIC_DAMAGE": { "id": "F175_ACTIVE_PSYCHIC_DAMAGE", "formula": "true" },
+		"F176_TP_MAX_CHARGES": { "id": "F176_TP_MAX_CHARGES", "formula": "6" },
+		"F177_FINESSE": { "id": "F177_FINESSE", "formula": "true" },
+		"F178_WEIGHT": { "id": "F178_WEIGHT", "formula": "1" },
+		"F179_PROFICIENT": { "id": "F179_PROFICIENT", "formula": "true" },
+		"F180_THROWN": { "id": "F180_THROWN", "formula": "false" },
+		"F181_DAMAGE_DICE": { "id": "F181_DAMAGE_DICE", "formula": "(1)d6" },
+		"F182_BONUS_TO_WEIGHT": { "id": "F182_BONUS_TO_WEIGHT", "formula": "{F178_WEIGHT}" },
+		"F183_ATTACK": {
+			"id": "F183_ATTACK",
+			"formula": "((({F10_COMPETENZA}*{F187_PROFICIENT})+({F12_STR}*({F185_FINESSE}==false)))+(max({F12_STR},{F13_DEX})*{F185_FINESSE}))"
+		},
+		"F184_DAMAGE": {
+			"id": "F184_DAMAGE",
+			"formula": "(({F189_DAMAGE_DICE}+({F12_STR}*({F185_FINESSE}==false)))+(max({F13_DEX},{F12_STR})*{F185_FINESSE}))"
+		},
+		"F185_FINESSE": { "id": "F185_FINESSE", "formula": "false" },
+		"F186_WEIGHT": { "id": "F186_WEIGHT", "formula": "1" },
+		"F187_PROFICIENT": { "id": "F187_PROFICIENT", "formula": "false" },
+		"F188_THROWN": { "id": "F188_THROWN", "formula": "false" },
+		"F189_DAMAGE_DICE": { "id": "F189_DAMAGE_DICE", "formula": "(1)d6" },
+		"F190_BONUS_TO_WEIGHT": { "id": "F190_BONUS_TO_WEIGHT", "formula": "{F186_WEIGHT}" },
+		"F191_WEIGHT": { "id": "F191_WEIGHT", "formula": "1" },
+		"F192_BONUS_TO_WEIGHT": { "id": "F192_BONUS_TO_WEIGHT", "formula": "{F191_WEIGHT}" },
+		"F193_DANNO": { "id": "F193_DANNO", "formula": "(8)d10" },
+		"F194_VITA": { "id": "F194_VITA", "formula": "((8)d4+8)" },
+		"F195_VITA": { "id": "F195_VITA", "formula": "((4)d4+4)" },
+		"F196_WEIGHT": { "id": "F196_WEIGHT", "formula": "1" },
+		"F197_BONUS_TO_WEIGHT": { "id": "F197_BONUS_TO_WEIGHT", "formula": "{F196_WEIGHT}" },
+		"F198_WEIGHT": { "id": "F198_WEIGHT", "formula": "0" },
+		"F199_BONUS_TO_WEIGHT": { "id": "F199_BONUS_TO_WEIGHT", "formula": "{F198_WEIGHT}" },
+		"F200_RAPIDITA_DI_MANO": { "id": "F200_RAPIDITA_DI_MANO", "formula": "5" },
+		"F201_INDOSSATI": { "id": "F201_INDOSSATI", "formula": "false" },
+		"F9_INITIATIVE_ROLL": {
+			"id": "F9_INITIATIVE_ROLL",
+			"formula": "{F0_BASE_D20_ROLL}+{F9_INITIATIVE}"
+		},
+		"F12_STR_ROLL": { "id": "F12_STR_ROLL", "formula": "{F0_BASE_D20_ROLL}+{F12_STR}" },
+		"F13_DEX_ROLL": { "id": "F13_DEX_ROLL", "formula": "{F0_BASE_D20_ROLL}+{F13_DEX}" },
+		"F14_CON_ROLL": { "id": "F14_CON_ROLL", "formula": "{F0_BASE_D20_ROLL}+{F14_CON}" },
+		"F15_INT_ROLL": { "id": "F15_INT_ROLL", "formula": "{F0_BASE_D20_ROLL}+{F15_INT}" },
+		"F16_WIS_ROLL": { "id": "F16_WIS_ROLL", "formula": "{F0_BASE_D20_ROLL}+{F16_WIS}" },
+		"F17_CHA_ROLL": { "id": "F17_CHA_ROLL", "formula": "{F0_BASE_D20_ROLL}+{F17_CHA}" },
+		"F24_STRENGTH_SAVE_ROLL": {
+			"id": "F24_STRENGTH_SAVE_ROLL",
+			"formula": "{F0_BASE_D20_ROLL}+{F24_STRENGTH_SAVE}"
+		},
+		"F25_DEXTERITY_SAVE_ROLL": {
+			"id": "F25_DEXTERITY_SAVE_ROLL",
+			"formula": "{F0_BASE_D20_ROLL}+{F25_DEXTERITY_SAVE}"
+		},
+		"F26_CONSTITUTION_SAVE_ROLL": {
+			"id": "F26_CONSTITUTION_SAVE_ROLL",
+			"formula": "{F0_BASE_D20_ROLL}+{F26_CONSTITUTION_SAVE}"
+		},
+		"F27_INTELLIGENCE_SAVE_ROLL": {
+			"id": "F27_INTELLIGENCE_SAVE_ROLL",
+			"formula": "{F0_BASE_D20_ROLL}+{F27_INTELLIGENCE_SAVE}"
+		},
+		"F28_WISDOM_SAVE_ROLL": {
+			"id": "F28_WISDOM_SAVE_ROLL",
+			"formula": "{F0_BASE_D20_ROLL}+{F28_WISDOM_SAVE}"
+		},
+		"F29_CHARISMA_SAVE_ROLL": {
+			"id": "F29_CHARISMA_SAVE_ROLL",
+			"formula": "{F0_BASE_D20_ROLL}+{F29_CHARISMA_SAVE}"
+		},
+		"F51_SURVIVAL_ROLL": {
+			"id": "F51_SURVIVAL_ROLL",
+			"formula": "{F0_BASE_D20_ROLL}+{F51_SURVIVAL}"
+		},
+		"F52_STEALTH_ROLL": { "id": "F52_STEALTH_ROLL", "formula": "{F0_BASE_D20_ROLL}+{F52_STEALTH}" },
+		"F53_SLEIGHT_OF_HAND_ROLL": {
+			"id": "F53_SLEIGHT_OF_HAND_ROLL",
+			"formula": "{F0_BASE_D20_ROLL}+{F53_SLEIGHT_OF_HAND}"
+		},
+		"F54_RELIGION_ROLL": {
+			"id": "F54_RELIGION_ROLL",
+			"formula": "{F0_BASE_D20_ROLL}+{F54_RELIGION}"
+		},
+		"F55_PERSUASION_ROLL": {
+			"id": "F55_PERSUASION_ROLL",
+			"formula": "{F0_BASE_D20_ROLL}+{F55_PERSUASION}"
+		},
+		"F56_PERFORMANCE_ROLL": {
+			"id": "F56_PERFORMANCE_ROLL",
+			"formula": "{F0_BASE_D20_ROLL}+{F56_PERFORMANCE}"
+		},
+		"F57_PERCEPTION_ROLL": {
+			"id": "F57_PERCEPTION_ROLL",
+			"formula": "{F0_BASE_D20_ROLL}+{F57_PERCEPTION}"
+		},
+		"F58_NATURE_ROLL": { "id": "F58_NATURE_ROLL", "formula": "{F0_BASE_D20_ROLL}+{F58_NATURE}" },
+		"F59_MEDICINE_ROLL": {
+			"id": "F59_MEDICINE_ROLL",
+			"formula": "{F0_BASE_D20_ROLL}+{F59_MEDICINE}"
+		},
+		"F60_INVESTIGATION_ROLL": {
+			"id": "F60_INVESTIGATION_ROLL",
+			"formula": "{F0_BASE_D20_ROLL}+{F60_INVESTIGATION}"
+		},
+		"F61_INTIMIDATION_ROLL": {
+			"id": "F61_INTIMIDATION_ROLL",
+			"formula": "{F0_BASE_D20_ROLL}+{F61_INTIMIDATION}"
+		},
+		"F62_INSIGHT_ROLL": { "id": "F62_INSIGHT_ROLL", "formula": "{F0_BASE_D20_ROLL}+{F62_INSIGHT}" },
+		"F63_HISTORY_ROLL": { "id": "F63_HISTORY_ROLL", "formula": "{F0_BASE_D20_ROLL}+{F63_HISTORY}" },
+		"F64_DECEPTION_ROLL": {
+			"id": "F64_DECEPTION_ROLL",
+			"formula": "{F0_BASE_D20_ROLL}+{F64_DECEPTION}"
+		},
+		"F65_ATHLETICS_ROLL": {
+			"id": "F65_ATHLETICS_ROLL",
+			"formula": "{F0_BASE_D20_ROLL}+{F65_ATHLETICS}"
+		},
+		"F66_ARCANA_ROLL": { "id": "F66_ARCANA_ROLL", "formula": "{F0_BASE_D20_ROLL}+{F66_ARCANA}" },
+		"F67_ANIMAL_HANDLING_ROLL": {
+			"id": "F67_ANIMAL_HANDLING_ROLL",
+			"formula": "{F0_BASE_D20_ROLL}+{F67_ANIMAL_HANDLING}"
+		},
+		"F68_ACROBATICS_ROLL": {
+			"id": "F68_ACROBATICS_ROLL",
+			"formula": "{F0_BASE_D20_ROLL}+{F68_ACROBATICS}"
+		},
+		"F113_ATTACK_ROLL": { "id": "F113_ATTACK_ROLL", "formula": "{F0_BASE_D20_ROLL}+{F113_ATTACK}" },
+		"F134_ATTACK_ROLL": { "id": "F134_ATTACK_ROLL", "formula": "{F0_BASE_D20_ROLL}+{F134_ATTACK}" },
+		"F152_ATTACK_ROLL": { "id": "F152_ATTACK_ROLL", "formula": "{F0_BASE_D20_ROLL}+{F152_ATTACK}" },
+		"F165_ATTACK_ROLL": { "id": "F165_ATTACK_ROLL", "formula": "{F0_BASE_D20_ROLL}+{F165_ATTACK}" },
+		"F183_ATTACK_ROLL": { "id": "F183_ATTACK_ROLL", "formula": "{F0_BASE_D20_ROLL}+{F183_ATTACK}" }
+	},
+	"document": {
+		"type": "doc",
+		"content": [
+			{
+				"type": "container",
+				"attrs": {
+					"nodeId": "sb-732",
+					"class": "sb-character",
+					"customNode": false,
+					"typeId": "",
+					"instanceId": ""
+				},
+				"content": [
+					{
+						"type": "textBlock",
+						"attrs": { "nodeId": "sb-730", "class": "sb-character-name", "customNode": false },
+						"content": [{ "type": "text", "text": "Smoke Ball" }]
+					},
+					{
+						"type": "textBlock",
+						"attrs": { "nodeId": "sb-731", "class": "sb-character-subtitle", "customNode": false },
+						"content": [{ "type": "text", "text": "Tabaxi · Ladro / Spadaccino · Livello 17" }]
+					}
+				]
+			},
+			{
+				"type": "container",
+				"attrs": {
+					"nodeId": "sb-282",
+					"class": "sb-page sb-page-1",
+					"customNode": false,
+					"typeId": "",
+					"instanceId": ""
+				},
+				"content": [
+					{
+						"type": "textBlock",
+						"attrs": { "nodeId": "sb-55", "class": "sb-page-title", "customNode": false },
+						"content": [{ "type": "text", "text": "PG" }]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-60",
+							"class": "sb-card sb-short-row",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-59",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-59"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Livello" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F1_LEVEL",
+											"label": "Level",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-65",
+							"class": "sb-card sb-short-row",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-64",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-64"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Competenza" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F10_COMPETENZA",
+											"label": "Competenza",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-70",
+							"class": "sb-card sb-small-shield",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-69",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-69"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Velocità" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F69_SPEED",
+											"label": "Speed",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-78",
+							"class": "sb-card sb-small-shield",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-71", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Iniziativa" }]
+							},
+							{
+								"type": "formula",
+								"attrs": {
+									"nodeId": "sb-72",
+									"class": "sb-primary",
+									"customNode": false,
+									"field": "F9_INITIATIVE",
+									"label": "Initiative",
+									"showLabel": false
+								}
+							},
+							{
+								"type": "formula",
+								"attrs": {
+									"nodeId": "sb-73",
+									"class": "sb-roll",
+									"customNode": false,
+									"field": "F9_INITIATIVE_ROLL",
+									"label": "Initiative",
+									"showLabel": false
+								}
+							},
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-77",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-77"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Audacia del Fanfarone" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F143_AUDACIA_DEL_FANFARONE",
+											"label": "Audacia del Fanfarone",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-93",
+							"class": "sb-card sb-small-shield",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-79", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "CA" }]
+							},
+							{
+								"type": "formula",
+								"attrs": {
+									"nodeId": "sb-80",
+									"class": "sb-primary",
+									"customNode": false,
+									"field": "F2_AC",
+									"label": "AC",
+									"showLabel": false
+								}
+							},
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-84",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-84"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Misc Bonus" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F144_MISC_BONUS",
+											"label": "Misc Bonus",
+											"showLabel": false
+										}
+									}
+								]
+							},
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-88",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-88"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Bonus Active" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F145_BONUS_ACTIVE",
+											"label": "Bonus Active",
+											"showLabel": false
+										}
+									}
+								]
+							},
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-92",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-92"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Arm. Cuoio Borchiato" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F146_ARM_CUOIO_BORCHIATO",
+											"label": "Arm. Cuoio Borchiato",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-98",
+							"class": "sb-card sb-small-shield",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-94", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "PF" }]
+							},
+							{
+								"type": "formula",
+								"attrs": {
+									"nodeId": "sb-95",
+									"class": "sb-primary",
+									"customNode": false,
+									"field": "F11_HP",
+									"label": "HP",
+									"showLabel": false
+								}
+							},
+							{
+								"type": "textBlock",
+								"attrs": {
+									"nodeId": "sb-96",
+									"class": "sb-counter-separator",
+									"customNode": false
+								},
+								"content": [{ "type": "text", "text": "/" }]
+							},
+							{
+								"type": "formula",
+								"attrs": {
+									"nodeId": "sb-97",
+									"class": "sb-counter-max",
+									"customNode": false,
+									"field": "F32_MAX_HP",
+									"label": "Max HP",
+									"showLabel": false
+								}
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-103",
+							"class": "sb-card sb-short-row",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-99", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "DV" }]
+							},
+							{
+								"type": "formula",
+								"attrs": {
+									"nodeId": "sb-100",
+									"class": "sb-primary",
+									"customNode": false,
+									"field": "F78_HIT_DICE",
+									"label": "Hit Dice",
+									"showLabel": false
+								}
+							},
+							{
+								"type": "textBlock",
+								"attrs": {
+									"nodeId": "sb-101",
+									"class": "sb-counter-separator",
+									"customNode": false
+								},
+								"content": [{ "type": "text", "text": "/" }]
+							},
+							{
+								"type": "formula",
+								"attrs": {
+									"nodeId": "sb-102",
+									"class": "sb-counter-max",
+									"customNode": false,
+									"field": "F1_LEVEL",
+									"label": "Level",
+									"showLabel": false
+								}
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-108",
+							"class": "sb-card sb-short-row",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-107",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-107"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "PF Temporanei" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F77_TEMPORARY_HP",
+											"label": "Temporary HP",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-111",
+							"class": "sb-card sb-header",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-109", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Punti Ispirazione" }]
+							},
+							{
+								"type": "formula",
+								"attrs": {
+									"nodeId": "sb-110",
+									"class": "sb-primary",
+									"customNode": false,
+									"field": "F109_PUNTI_ISPIRAZIONE",
+									"label": "Punti Ispirazione",
+									"showLabel": false
+								}
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-125",
+							"class": "sb-card sb-row",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-112", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Sensi" }]
+							},
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-116",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-116"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Percezione Passiva" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F147_PERCEZIONE_PASSIVA",
+											"label": "Percezione Passiva",
+											"showLabel": false
+										}
+									}
+								]
+							},
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-120",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-120"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Scurovisione" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F148_SCUROVISIONE",
+											"label": "Scurovisione",
+											"showLabel": false
+										}
+									}
+								]
+							},
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-124",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-124"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Vista cieca" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F149_VISTA_CIECA",
+											"label": "Vista cieca",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-127",
+							"class": "sb-card sb-header",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-126", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Caratteristiche" }]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-132",
+							"class": "sb-card sb-shield",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-128", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Forza" }]
+							},
+							{
+								"type": "formula",
+								"attrs": {
+									"nodeId": "sb-129",
+									"class": "sb-primary",
+									"customNode": false,
+									"field": "F12_STR",
+									"label": "STR",
+									"showLabel": false
+								}
+							},
+							{
+								"type": "formula",
+								"attrs": {
+									"nodeId": "sb-130",
+									"class": "sb-roll",
+									"customNode": false,
+									"field": "F12_STR_ROLL",
+									"label": "STR",
+									"showLabel": false
+								}
+							},
+							{
+								"type": "formula",
+								"attrs": {
+									"nodeId": "sb-131",
+									"class": "sb-secondary",
+									"customNode": false,
+									"field": "F4_STRENGTH",
+									"label": "Strength",
+									"showLabel": false
+								}
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-137",
+							"class": "sb-card sb-shield",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-133", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Destrezza" }]
+							},
+							{
+								"type": "formula",
+								"attrs": {
+									"nodeId": "sb-134",
+									"class": "sb-primary",
+									"customNode": false,
+									"field": "F13_DEX",
+									"label": "DEX",
+									"showLabel": false
+								}
+							},
+							{
+								"type": "formula",
+								"attrs": {
+									"nodeId": "sb-135",
+									"class": "sb-roll",
+									"customNode": false,
+									"field": "F13_DEX_ROLL",
+									"label": "DEX",
+									"showLabel": false
+								}
+							},
+							{
+								"type": "formula",
+								"attrs": {
+									"nodeId": "sb-136",
+									"class": "sb-secondary",
+									"customNode": false,
+									"field": "F3_DEXTERITY",
+									"label": "Dexterity",
+									"showLabel": false
+								}
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-142",
+							"class": "sb-card sb-shield",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-138", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Costituzione" }]
+							},
+							{
+								"type": "formula",
+								"attrs": {
+									"nodeId": "sb-139",
+									"class": "sb-primary",
+									"customNode": false,
+									"field": "F14_CON",
+									"label": "CON",
+									"showLabel": false
+								}
+							},
+							{
+								"type": "formula",
+								"attrs": {
+									"nodeId": "sb-140",
+									"class": "sb-roll",
+									"customNode": false,
+									"field": "F14_CON_ROLL",
+									"label": "CON",
+									"showLabel": false
+								}
+							},
+							{
+								"type": "formula",
+								"attrs": {
+									"nodeId": "sb-141",
+									"class": "sb-secondary",
+									"customNode": false,
+									"field": "F5_CONSTITUTION",
+									"label": "Constitution",
+									"showLabel": false
+								}
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-147",
+							"class": "sb-card sb-shield",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-143", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Intelligenza" }]
+							},
+							{
+								"type": "formula",
+								"attrs": {
+									"nodeId": "sb-144",
+									"class": "sb-primary",
+									"customNode": false,
+									"field": "F15_INT",
+									"label": "INT",
+									"showLabel": false
+								}
+							},
+							{
+								"type": "formula",
+								"attrs": {
+									"nodeId": "sb-145",
+									"class": "sb-roll",
+									"customNode": false,
+									"field": "F15_INT_ROLL",
+									"label": "INT",
+									"showLabel": false
+								}
+							},
+							{
+								"type": "formula",
+								"attrs": {
+									"nodeId": "sb-146",
+									"class": "sb-secondary",
+									"customNode": false,
+									"field": "F6_INTELLIGENCE",
+									"label": "Intelligence",
+									"showLabel": false
+								}
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-152",
+							"class": "sb-card sb-shield",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-148", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Saggezza" }]
+							},
+							{
+								"type": "formula",
+								"attrs": {
+									"nodeId": "sb-149",
+									"class": "sb-primary",
+									"customNode": false,
+									"field": "F16_WIS",
+									"label": "WIS",
+									"showLabel": false
+								}
+							},
+							{
+								"type": "formula",
+								"attrs": {
+									"nodeId": "sb-150",
+									"class": "sb-roll",
+									"customNode": false,
+									"field": "F16_WIS_ROLL",
+									"label": "WIS",
+									"showLabel": false
+								}
+							},
+							{
+								"type": "formula",
+								"attrs": {
+									"nodeId": "sb-151",
+									"class": "sb-secondary",
+									"customNode": false,
+									"field": "F7_WISDOM",
+									"label": "Wisdom",
+									"showLabel": false
+								}
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-157",
+							"class": "sb-card sb-shield",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-153", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Carisma" }]
+							},
+							{
+								"type": "formula",
+								"attrs": {
+									"nodeId": "sb-154",
+									"class": "sb-primary",
+									"customNode": false,
+									"field": "F17_CHA",
+									"label": "CHA",
+									"showLabel": false
+								}
+							},
+							{
+								"type": "formula",
+								"attrs": {
+									"nodeId": "sb-155",
+									"class": "sb-roll",
+									"customNode": false,
+									"field": "F17_CHA_ROLL",
+									"label": "CHA",
+									"showLabel": false
+								}
+							},
+							{
+								"type": "formula",
+								"attrs": {
+									"nodeId": "sb-156",
+									"class": "sb-secondary",
+									"customNode": false,
+									"field": "F8_CHARISMA",
+									"label": "Charisma",
+									"showLabel": false
+								}
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-159",
+							"class": "sb-card sb-header",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-158", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Tiri Salvezza" }]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-164",
+							"class": "sb-card sb-short-row",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-163",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-163"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Forza" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F24_STRENGTH_SAVE",
+											"label": "Strength Save",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-169",
+							"class": "sb-card sb-short-row",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-168",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-168"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Intelligenza" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F27_INTELLIGENCE_SAVE",
+											"label": "Intelligence Save",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-174",
+							"class": "sb-card sb-short-row",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-173",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-173"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Destrezza" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F25_DEXTERITY_SAVE",
+											"label": "Dexterity Save",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-179",
+							"class": "sb-card sb-short-row",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-178",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-178"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Saggezza" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F28_WISDOM_SAVE",
+											"label": "Wisdom Save",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-184",
+							"class": "sb-card sb-short-row",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-183",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-183"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Costituzione" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F26_CONSTITUTION_SAVE",
+											"label": "Constitution Save",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-189",
+							"class": "sb-card sb-short-row",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-188",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-188"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Carisma" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F29_CHARISMA_SAVE",
+											"label": "Charisma Save",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-191",
+							"class": "sb-card sb-header",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-190", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Abilità" }]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-196",
+							"class": "sb-card sb-short-row",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-195",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-195"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Acrobazia" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F68_ACROBATICS",
+											"label": "Acrobatics",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-201",
+							"class": "sb-card sb-short-row",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-200",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-200"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Addestrare Animali" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F67_ANIMAL_HANDLING",
+											"label": "Animal Handling",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-206",
+							"class": "sb-card sb-short-row",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-205",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-205"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Arcano" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F66_ARCANA",
+											"label": "Arcana",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-211",
+							"class": "sb-card sb-short-row",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-210",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-210"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Atletica" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F65_ATHLETICS",
+											"label": "Athletics",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-216",
+							"class": "sb-card sb-short-row",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-215",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-215"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Furtività" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F52_STEALTH",
+											"label": "Stealth",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-221",
+							"class": "sb-card sb-short-row",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-220",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-220"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Indagare" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F60_INVESTIGATION",
+											"label": "Investigation",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-226",
+							"class": "sb-card sb-short-row",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-225",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-225"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Inganno" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F64_DECEPTION",
+											"label": "Deception",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-231",
+							"class": "sb-card sb-short-row",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-230",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-230"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Intimidire" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F61_INTIMIDATION",
+											"label": "Intimidation",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-236",
+							"class": "sb-card sb-short-row",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-235",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-235"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Intrattenere" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F56_PERFORMANCE",
+											"label": "Performance",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-241",
+							"class": "sb-card sb-short-row",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-240",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-240"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Intuizione" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F62_INSIGHT",
+											"label": "Insight",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-246",
+							"class": "sb-card sb-short-row",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-245",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-245"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Medicina" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F59_MEDICINE",
+											"label": "Medicine",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-251",
+							"class": "sb-card sb-short-row",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-250",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-250"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Natura" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F58_NATURE",
+											"label": "Nature",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-256",
+							"class": "sb-card sb-short-row",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-255",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-255"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Percezione" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F57_PERCEPTION",
+											"label": "Perception",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-261",
+							"class": "sb-card sb-short-row",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-260",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-260"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Persuasione" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F55_PERSUASION",
+											"label": "Persuasion",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-266",
+							"class": "sb-card sb-short-row",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-265",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-265"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Rapidità di Mano" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F53_SLEIGHT_OF_HAND",
+											"label": "Sleight Of Hand",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-271",
+							"class": "sb-card sb-short-row",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-270",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-270"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Religione" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F54_RELIGION",
+											"label": "Religion",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-276",
+							"class": "sb-card sb-short-row",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-275",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-275"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Sopravvivenza" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F51_SURVIVAL",
+											"label": "Survival",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-281",
+							"class": "sb-card sb-short-row",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-280",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-280"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Storia" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F63_HISTORY",
+											"label": "History",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					}
+				]
+			},
+			{
+				"type": "container",
+				"attrs": {
+					"nodeId": "sb-350",
+					"class": "sb-page sb-page-2",
+					"customNode": false,
+					"typeId": "",
+					"instanceId": ""
+				},
+				"content": [
+					{
+						"type": "textBlock",
+						"attrs": { "nodeId": "sb-283", "class": "sb-page-title", "customNode": false },
+						"content": [{ "type": "text", "text": "Caratteristiche" }]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-285",
+							"class": "sb-card sb-header",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-284", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Talenti" }]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-289",
+							"class": "sb-card sb-row",
+							"customNode": true,
+							"typeId": "sb-template-2",
+							"instanceId": "sb-instance-289"
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-7", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "2°: Azione scaltra" }]
+							},
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-8", "class": "sb-description", "customNode": false },
+								"content": [
+									{
+										"type": "text",
+										"text": "Ho una azione extra per nascondermi, disimpegnarmi o scattare"
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-293",
+							"class": "sb-card sb-row",
+							"customNode": true,
+							"typeId": "sb-template-2",
+							"instanceId": "sb-instance-293"
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-7", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "5°: Schivata prodigiosa" }]
+							},
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-8", "class": "sb-description", "customNode": false },
+								"content": [
+									{
+										"type": "text",
+										"text": "Quando un nemico che posso vedere mi colpisce con un attacco, posso usare una reazione per dimezzare il danno. \n\nUna volta per turno. "
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-297",
+							"class": "sb-card sb-row",
+							"customNode": true,
+							"typeId": "sb-template-2",
+							"instanceId": "sb-instance-297"
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-7", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "7°: Elusione" }]
+							},
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-8", "class": "sb-description", "customNode": false },
+								"content": [
+									{
+										"type": "text",
+										"text": "Azzero i danni su TS Dex riuscito, dimezzo se fallito "
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-301",
+							"class": "sb-card sb-row",
+							"customNode": true,
+							"typeId": "sb-template-2",
+							"instanceId": "sb-instance-301"
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-7", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "11°: Dote affidabile" }]
+							},
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-8", "class": "sb-description", "customNode": false },
+								"content": [
+									{
+										"type": "text",
+										"text": "Quando devo fare un tiro su abilità in cui ho competenza, il risultato minimo è 10"
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-305",
+							"class": "sb-card sb-row",
+							"customNode": true,
+							"typeId": "sb-template-2",
+							"instanceId": "sb-instance-305"
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-7", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "14° Percezione Cieca" }]
+							},
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-8", "class": "sb-description", "customNode": false },
+								"content": [
+									{
+										"type": "text",
+										"text": "A partire dal 14° livello, se sei in grado di udirla, sei consapevole della posizione di qualsiasi creatura invisibile o nascosta entro 3 metri da te."
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-309",
+							"class": "sb-card sb-row",
+							"customNode": true,
+							"typeId": "sb-template-2",
+							"instanceId": "sb-instance-309"
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-7", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "15° Mente Sfuggente" }]
+							},
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-8", "class": "sb-description", "customNode": false },
+								"content": [
+									{
+										"type": "text",
+										"text": "Per il 15° livello, la tua mente ha acquisito una grande forza. Ottieni la competenza nei tiri salvezza su Saggezza."
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-313",
+							"class": "sb-card sb-row",
+							"customNode": true,
+							"typeId": "sb-template-2",
+							"instanceId": "sb-instance-313"
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-7", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Stile penetrante" }]
+							},
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-8", "class": "sb-description", "customNode": false },
+								"content": [
+									{
+										"type": "text",
+										"text": "Se colpisco, posso rerollare un dado di danno, prendo il risultato. Se critto, aggiungo un dado di danno."
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-317",
+							"class": "sb-card sb-row",
+							"customNode": true,
+							"typeId": "sb-template-2",
+							"instanceId": "sb-instance-317"
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-7", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Abilità Impeccabile (Skill Expert)" }]
+							},
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-8", "class": "sb-description", "customNode": false },
+								"content": [
+									{
+										"type": "text",
+										"text": "Hai affinato la tua competenza con abilità particolari, garantendoti i seguenti vantaggi: \n\nAumenta un punteggio di caratteristica a tua scelta di 1, fino a un massimo di 20.\n\nOttieni competenza in un'abilità a tua scelta.\n\nScegli un'abilità in cui hai Competenza. Acquisisci Maestria con quell'abilità, il che significa che il tuo bonus di competenza viene raddoppiato per qualsiasi prova di caratteristica effettuata con essa. L'abilità scelta deve essere una di quelle che non beneficiano già di una caratteristica, come Competenza, che raddoppia il tuo bonus di competenza."
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-319",
+							"class": "sb-card sb-header",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-318", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Archetipo Spadaccino" }]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-323",
+							"class": "sb-card sb-row",
+							"customNode": true,
+							"typeId": "sb-template-2",
+							"instanceId": "sb-instance-323"
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-7", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Arch-3°: Audacia del Fanfarone" }]
+							},
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-8", "class": "sb-description", "customNode": false },
+								"content": [
+									{
+										"type": "text",
+										"text": "Bonus iniziativa aggiuntivo pari al mio mod CAR. Inoltre posso usare Furtivo su un nemico se è entro 1.5mt da me, non ci sono altre creature entro 1.5mt, e non ho svantaggio. "
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-327",
+							"class": "sb-card sb-row",
+							"customNode": true,
+							"typeId": "sb-template-2",
+							"instanceId": "sb-instance-327"
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-7", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Arch-3°: Gioco di Gambe" }]
+							},
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-8", "class": "sb-description", "customNode": false },
+								"content": [
+									{
+										"type": "text",
+										"text": "Se attacco in mischia un avversario, gli nego AdO per il resto del mio turno"
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-331",
+							"class": "sb-card sb-row",
+							"customNode": true,
+							"typeId": "sb-template-2",
+							"instanceId": "sb-instance-331"
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-7", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Arch-9°: Panache" }]
+							},
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-8", "class": "sb-description", "customNode": false },
+								"content": [
+									{
+										"type": "text",
+										"text": "Provoco o charmo il bersaglio, che deve fare roll contestato carisma vs saggezza a svantaggio. Se fallisce, ha svantaggio sui TPC verso i miei alleati può fare AdO solo su di me, per un minuto. L'effetto finisce se uno dei miei alleati fa qualunque cosa di dannoso per il bersaglio. \n\nSe la creatura non è ostile, diventa amichevole e mi tratta come una persona che conosce. L'effetto finisce se uno dei miei alleati fa qualunque cosa di dannoso per il bersaglio. "
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-335",
+							"class": "sb-card sb-row",
+							"customNode": true,
+							"typeId": "sb-template-2",
+							"instanceId": "sb-instance-335"
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-7", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Arch-13° Manovra elegante" }]
+							},
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-8", "class": "sb-description", "customNode": false },
+								"content": [
+									{
+										"type": "text",
+										"text": "Questa capacità vi permette, grazie al sacrificio dell’azione bonus, di avere vantaggio ai check di Forza e Destrezza."
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-339",
+							"class": "sb-card sb-row",
+							"customNode": true,
+							"typeId": "sb-template-2",
+							"instanceId": "sb-instance-339"
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-7", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Arch-17° Maestro di Duello" }]
+							},
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-8", "class": "sb-description", "customNode": false },
+								"content": [
+									{
+										"type": "text",
+										"text": "Posso ripetere un attacco fallito come azione bonus, oppure prendere +10 al danno e -5 al TPC"
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-341",
+							"class": "sb-card sb-header",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-340", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Abilità Soprannaturali" }]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-345",
+							"class": "sb-card sb-row",
+							"customNode": true,
+							"typeId": "sb-template-2",
+							"instanceId": "sb-instance-345"
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-7", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Tempesta convergente" }]
+							},
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-8", "class": "sb-description", "customNode": false },
+								"content": [
+									{
+										"type": "text",
+										"text": "Una volta per combattimento , come reazione all’essere colpito da una magia o da un attacco, l’utilizzatore può teletrasportarsi immediatamente dietro la posizione della creatura che lo sta bersagliando e può quindi effettuare un attacco a vantaggio contro il bersaglio, attaccandolo alle spalle."
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-349",
+							"class": "sb-card sb-row",
+							"customNode": true,
+							"typeId": "sb-template-2",
+							"instanceId": "sb-instance-349"
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-7", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Fusione Del Destino" }]
+							},
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-8", "class": "sb-description", "customNode": false },
+								"content": [
+									{
+										"type": "text",
+										"text": "Fusione del Destino è un’abilità sovrannaturale che permette al ladro di vedere e comprendere i fili del destino che legano le persone e gli eventi del mondo. Questi fili appaiono come grandi matasse di fili bianchi intrecciati che si estendono verso il cielo all'infinito, rappresentando le connessioni tra individui, scelte e conseguenze future.\n\nEffetto: \nQuando il ladro attiva Fusione del Destino, può scegliere un singolo obiettivo o una situazione critica e osservare i fili del destino a esso collegati. Questo gli permette di ottenere informazioni extra riguardo al futuro e di comprendere quali scelte siano le migliori per raggiungere il suo obiettivo.\n\nAttivazione: \nL'abilità richiede un'azione completa per essere attivata. Il ladro entra in uno stato di profonda concentrazione, durante il quale i fili del destino diventano visibili solo a lui.\n\nInformazioni Fornite: \nIl DM fornirà al ladro informazioni extra che potrebbero non essere immediatamente evidenti. Questo potrebbe includere suggerimenti sulle azioni migliori da intraprendere, visioni di potenziali futuri, o la comprensione delle connessioni nascoste tra personaggi ed eventi.\n\nEffetti Secondari: \nUtilizzare Fusione del Destino è estremamente faticoso. Dopo aver utilizzato l'abilità, il ladro ottiene immediatamente 2 livelli di esausto. Questi livelli di esausto rappresentano il peso fisico e mentale di interagire con i fili del destino, che richiede uno sforzo sovrumano."
+									}
+								]
+							}
+						]
+					}
+				]
+			},
+			{
+				"type": "container",
+				"attrs": {
+					"nodeId": "sb-364",
+					"class": "sb-page sb-page-3",
+					"customNode": false,
+					"typeId": "",
+					"instanceId": ""
+				},
+				"content": [
+					{
+						"type": "textBlock",
+						"attrs": { "nodeId": "sb-351", "class": "sb-page-title", "customNode": false },
+						"content": [{ "type": "text", "text": "Competenze" }]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-354",
+							"class": "sb-card sb-header",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-352", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Armi" }]
+							},
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-353", "class": "sb-description", "customNode": false },
+								"content": [
+									{
+										"type": "text",
+										"text": "Armi semplici\nBalestra a mano\nSpada lunga\nStiletto \nSpada Corta"
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-357",
+							"class": "sb-card sb-header",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-355", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Armature" }]
+							},
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-356", "class": "sb-description", "customNode": false },
+								"content": [{ "type": "text", "text": "Armatura Leggera" }]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-360",
+							"class": "sb-card sb-header",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-358", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Abilità Tabaxi" }]
+							},
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-359", "class": "sb-description", "customNode": false },
+								"content": [{ "type": "text", "text": "Percezione \nFurtività" }]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-363",
+							"class": "sb-card sb-header",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-361", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Abilità Rogue" }]
+							},
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-362", "class": "sb-description", "customNode": false },
+								"content": [
+									{ "type": "text", "text": "Acrobazia \nIndagare\nPercezione \nRapidità di Mano" }
+								]
+							}
+						]
+					}
+				]
+			},
+			{
+				"type": "container",
+				"attrs": {
+					"nodeId": "sb-488",
+					"class": "sb-page sb-page-4",
+					"customNode": false,
+					"typeId": "",
+					"instanceId": ""
+				},
+				"content": [
+					{
+						"type": "textBlock",
+						"attrs": { "nodeId": "sb-365", "class": "sb-page-title", "customNode": false },
+						"content": [{ "type": "text", "text": "Equip" }]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-368",
+							"class": "sb-card sb-row",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-366", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Weight" }]
+							},
+							{
+								"type": "formula",
+								"attrs": {
+									"nodeId": "sb-367",
+									"class": "sb-primary",
+									"customNode": false,
+									"field": "F70_WEIGHT",
+									"label": "Weight",
+									"showLabel": false
+								}
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-373",
+							"class": "sb-card sb-small-shield",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-372",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-372"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "PP" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F72_PP",
+											"label": "PP",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-378",
+							"class": "sb-card sb-small-shield",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-377",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-377"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "GP" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F73_GP",
+											"label": "GP",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-383",
+							"class": "sb-card sb-small-shield",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-382",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-382"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "SP" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F74_SP",
+											"label": "SP",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-388",
+							"class": "sb-card sb-small-shield",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-387",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-387"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "CP" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F75_CP",
+											"label": "CP",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-390",
+							"class": "sb-card sb-header",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-389", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Armi" }]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-419",
+							"class": "sb-card sb-row",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-391", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Balestra" }]
+							},
+							{
+								"type": "formula",
+								"attrs": {
+									"nodeId": "sb-392",
+									"class": "sb-primary",
+									"customNode": false,
+									"field": "F156_AMMUNITION",
+									"label": "Ammunition",
+									"showLabel": false
+								}
+							},
+							{
+								"type": "textBlock",
+								"attrs": {
+									"nodeId": "sb-393",
+									"class": "sb-counter-separator",
+									"customNode": false
+								},
+								"content": [{ "type": "text", "text": "/" }]
+							},
+							{
+								"type": "formula",
+								"attrs": {
+									"nodeId": "sb-394",
+									"class": "sb-counter-max",
+									"customNode": false,
+									"field": "F159_MAX_AMMUNITION",
+									"label": "Max Ammunition",
+									"showLabel": false
+								}
+							},
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-398",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-398"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Attack" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F152_ATTACK",
+											"label": "Attack",
+											"showLabel": false
+										}
+									}
+								]
+							},
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-402",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-402"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Damage" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F153_DAMAGE",
+											"label": "Damage",
+											"showLabel": false
+										}
+									}
+								]
+							},
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-406",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-406"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Range" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F154_RANGE",
+											"label": "Range",
+											"showLabel": false
+										}
+									}
+								]
+							},
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-410",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-410"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Range Max" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F161_RANGE_MAX",
+											"label": "Range Max",
+											"showLabel": false
+										}
+									}
+								]
+							},
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-414",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-414"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Sneak Attack Dice" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F163_SNEAK_ATTACK_DICE",
+											"label": "Sneak Attack Dice",
+											"showLabel": false
+										}
+									}
+								]
+							},
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-418",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-418"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Sneak Attack" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F164_SNEAK_ATTACK",
+											"label": "Sneak Attack",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-424",
+							"class": "sb-card sb-row",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-420", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Huggin e Mumin" }]
+							},
+							{
+								"type": "formula",
+								"attrs": {
+									"nodeId": "sb-421",
+									"class": "sb-primary",
+									"customNode": false,
+									"field": "F165_ATTACK",
+									"label": "Attack",
+									"showLabel": false
+								}
+							},
+							{
+								"type": "formula",
+								"attrs": {
+									"nodeId": "sb-422",
+									"class": "sb-roll",
+									"customNode": false,
+									"field": "F165_ATTACK_ROLL",
+									"label": "Attack",
+									"showLabel": false
+								}
+							},
+							{
+								"type": "formula",
+								"attrs": {
+									"nodeId": "sb-423",
+									"class": "sb-secondary",
+									"customNode": false,
+									"field": "F167_DAMAGE",
+									"label": "Damage",
+									"showLabel": false
+								}
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-435",
+							"class": "sb-card sb-row",
+							"customNode": true,
+							"typeId": "sb-template-6",
+							"instanceId": "sb-instance-435"
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-39", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Melee Weapon" }]
+							},
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-43",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-429"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Attack" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F183_ATTACK",
+											"label": "Attack",
+											"showLabel": false
+										}
+									}
+								]
+							},
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-47",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-433"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Damage" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F184_DAMAGE",
+											"label": "Damage",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-437",
+							"class": "sb-card sb-header",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-436", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Oggetti" }]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-444",
+							"class": "sb-card sb-row",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-438", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Ordigno Arcano" }]
+							},
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-439", "class": "sb-info", "customNode": false },
+								"content": [{ "type": "text", "text": "Danni Da Forza" }]
+							},
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-443",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-443"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Danno" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F193_DANNO",
+											"label": "Danno",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-448",
+							"class": "sb-card sb-row",
+							"customNode": true,
+							"typeId": "sb-template-1",
+							"instanceId": "sb-instance-448"
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-4", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Pozione Resistenza Acido" }]
+							},
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-5", "class": "sb-description", "customNode": false },
+								"content": []
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-452",
+							"class": "sb-card sb-row",
+							"customNode": true,
+							"typeId": "sb-template-1",
+							"instanceId": "sb-instance-452"
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-4", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Pozione Resistenza Necrotica" }]
+							},
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-5", "class": "sb-description", "customNode": false },
+								"content": []
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-455",
+							"class": "sb-card sb-row",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-453", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Velo Magico" }]
+							},
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-454", "class": "sb-info", "customNode": false },
+								"content": [{ "type": "text", "text": "+2 CA" }]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-462",
+							"class": "sb-card sb-row",
+							"customNode": true,
+							"typeId": "sb-template-5",
+							"instanceId": "sb-instance-462"
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-33", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Pozione Cura Superiore / Usata" }]
+							},
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-37",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-460"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Vita" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F194_VITA",
+											"label": "Vita",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-469",
+							"class": "sb-card sb-row",
+							"customNode": true,
+							"typeId": "sb-template-5",
+							"instanceId": "sb-instance-469"
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-33", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Pozione Maggiore x 1" }]
+							},
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-37",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-467"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Vita" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F195_VITA",
+											"label": "Vita",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-472",
+							"class": "sb-card sb-row",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-470", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Anello Invisibilità" }]
+							},
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-471", "class": "sb-description", "customNode": false },
+								"content": [
+									{
+										"type": "text",
+										"text": "I tiri per colpire contro la creatura subiscono svantaggio, mentre i tiri per colpire della creatura ottengono Vantaggio.\n"
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-483",
+							"class": "sb-card sb-row",
+							"customNode": true,
+							"typeId": "sb-template-6",
+							"instanceId": "sb-instance-483"
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-39", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Guanti del Furto" }]
+							},
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-43",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-477"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Rapidità di mano" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F200_RAPIDITA_DI_MANO",
+											"label": "Rapidità di mano",
+											"showLabel": false
+										}
+									}
+								]
+							},
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-47",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-481"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Indossati" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F201_INDOSSATI",
+											"label": "Indossati",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-487",
+							"class": "sb-card sb-row",
+							"customNode": true,
+							"typeId": "sb-template-1",
+							"instanceId": "sb-instance-487"
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-4", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Ghost Step Tattoo" }]
+							},
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-5", "class": "sb-description", "customNode": false },
+								"content": [
+									{
+										"type": "text",
+										"text": "Il tatuaggio ha 3 cariche, che si ricaricano all’alba. Come azione bonus, puoi spendere 1 carica per diventare incorporeo fino alla fine del tuo prossimo turno, ottenendo:\n\nResistenza ai danni contundenti, perforanti e taglienti da attacchi non magici.\n\nNon puoi essere afferrato o trattenuto.\n\nPuoi attraversare creature e oggetti solidi come terreno difficile.\n\nSe finisci il turno o l’effetto termina mentre sei dentro un oggetto solido, vieni spostato nello spazio libero più vicino e subisci danni da forza (1d10 o più a seconda della distanza)."
+									}
+								]
+							}
+						]
+					}
+				]
+			},
+			{
+				"type": "container",
+				"attrs": {
+					"nodeId": "sb-562",
+					"class": "sb-page sb-page-5",
+					"customNode": false,
+					"typeId": "",
+					"instanceId": ""
+				},
+				"content": [
+					{
+						"type": "textBlock",
+						"attrs": { "nodeId": "sb-489", "class": "sb-page-title", "customNode": false },
+						"content": [{ "type": "text", "text": "Diario" }]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-491",
+							"class": "sb-card sb-header",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-490", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Team" }]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-493",
+							"class": "sb-card sb-header",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-492", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Notes" }]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-497",
+							"class": "sb-card sb-row",
+							"customNode": true,
+							"typeId": "sb-template-1",
+							"instanceId": "sb-instance-497"
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-4", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Astrid Beck" }]
+							},
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-5", "class": "sb-description", "customNode": false },
+								"content": [
+									{
+										"type": "text",
+										"text": "drappeggi rosso scarlatto, colore dei vollstrucker\n\n"
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-501",
+							"class": "sb-card sb-row",
+							"customNode": true,
+							"typeId": "sb-template-1",
+							"instanceId": "sb-instance-501"
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-4", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "New Note" }]
+							},
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-5", "class": "sb-description", "customNode": false },
+								"content": [
+									{
+										"type": "text",
+										"text": "elfo maschera piume che discute con tielfing capelli argento (nobile)\n\ngruppo accademici minori che parla di strana spedizione nello shorass \n\nqualcuno ha parlato di strani eventi, drago ha distrutto mezza città, nessuna conferma\n\ndonna elegante maschera avorio a forma di farfalla, vestito viola profondo\n\nuomo dalla pelle brunito, capelli biondi, occhi grigi, in disparte, vestito elegante ma semplice, barba incolta\nincolta\n\ngiovane mulatta umana, accompagnata da umano mulatto biondo, lei è Genna Iresor, arcimago industria\n\nabito largo, umano, capelli lunghi raccolti di lato, 60 anni uomo, capelli forse tinti, baffi all'insù. Accompagnatrice giovane. Athesia Suludan, arcimago diplomazia.\n\nDonna umana abito viola, tatuaggi in rilievo lungo le braccia. capelli biondi corti e cicatrice sul volto. Astrid Beck, arcimago influenza civile. Piccola sfera di cristallo fluttuante le amplifica la voce.\n\n\n"
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-505",
+							"class": "sb-card sb-row",
+							"customNode": true,
+							"typeId": "sb-template-1",
+							"instanceId": "sb-instance-505"
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-4", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Cerberus" }]
+							},
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-5", "class": "sb-description", "customNode": false },
+								"content": [
+									{
+										"type": "text",
+										"text": "trent ikaton incarcerato e giustiziato, mago delle antichità \n\nastrid eckart era la sua assistente\n\nimperatore bertrand dwendal"
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-509",
+							"class": "sb-card sb-row",
+							"customNode": true,
+							"typeId": "sb-template-1",
+							"instanceId": "sb-instance-509"
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-4", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Prestiti" }]
+							},
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-5", "class": "sb-description", "customNode": false },
+								"content": [{ "type": "text", "text": "500 mo per vestito ballo a Zanoth" }]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-513",
+							"class": "sb-card sb-row",
+							"customNode": true,
+							"typeId": "sb-template-1",
+							"instanceId": "sb-instance-513"
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-4", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "New Note" }]
+							},
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-5", "class": "sb-description", "customNode": false },
+								"content": [
+									{
+										"type": "text",
+										"text": "mavria prelata\nivlis capitano\narven alchimista di mavria \n--\ncindra tabaxi\nvelna tiefling\nezrea drow\n\n"
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-517",
+							"class": "sb-card sb-row",
+							"customNode": true,
+							"typeId": "sb-template-1",
+							"instanceId": "sb-instance-517"
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-4", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Loot Oasi Shorass" }]
+							},
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-5", "class": "sb-description", "customNode": false },
+								"content": [
+									{
+										"type": "text",
+										"text": "2630 mo\n230 mo in gemme lavorate\namuleto sacro della Cambia Fato 5mo\nflauto d'osso \nsacchetta polvere rossa\n\n"
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-521",
+							"class": "sb-card sb-row",
+							"customNode": true,
+							"typeId": "sb-template-1",
+							"instanceId": "sb-instance-521"
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-4", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Identità Shorass" }]
+							},
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-5", "class": "sb-description", "customNode": false },
+								"content": [{ "type": "text", "text": "Ta-fei\n" }]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-525",
+							"class": "sb-card sb-row",
+							"customNode": true,
+							"typeId": "sb-template-1",
+							"instanceId": "sb-instance-525"
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-4", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Seconda Parte Campagna" }]
+							},
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-5", "class": "sb-description", "customNode": false },
+								"content": []
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-529",
+							"class": "sb-card sb-row",
+							"customNode": true,
+							"typeId": "sb-template-1",
+							"instanceId": "sb-instance-529"
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-4", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Rexxentrum IV" }]
+							},
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-5", "class": "sb-description", "customNode": false },
+								"content": [
+									{
+										"type": "text",
+										"text": "abbiamo incontrato Morgan della miriade del Sangue.\n\na guardia della prigione c'è un Solar."
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-533",
+							"class": "sb-card sb-row",
+							"customNode": true,
+							"typeId": "sb-template-1",
+							"instanceId": "sb-instance-533"
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-4", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Rexxentrum III" }]
+							},
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-5", "class": "sb-description", "customNode": false },
+								"content": [
+									{
+										"type": "text",
+										"text": "Si è svolto il processo ad Halena, e anche se le hanno abbassato i gradi, ha anche ottenuto il ruolo di archivista nomade. \n\nAbbiamo scoperto un negozio di tatuaggi magici, e Smoke ha deciso per un effetto molto particolare, detto Passo Fantasma.\n\nRagionando sugli eventi passati, abbiamo ipotizzato che gli Harvester ed i Cavalieri rappresentano probabilmente le fazioni caotica e malvagia alleati ai rispettivi aspetti di Zaman. \n\nInoltre probabilmente le nostre azioni non fanno parte di questa linea temporale e quindi i Cavalieri non possono prevederle.\n\n"
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-537",
+							"class": "sb-card sb-row",
+							"customNode": true,
+							"typeId": "sb-template-1",
+							"instanceId": "sb-instance-537"
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-4", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Rexxentrum II" }]
+							},
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-5", "class": "sb-description", "customNode": false },
+								"content": [
+									{
+										"type": "text",
+										"text": "Esplorazione di Rexxentrum\n\n- negozio di vestiti, abbiamo prenotato\n- zona termale, gougrnourch ha mandato in bancarotta l'all you can eat\n\n- abbiamo incontrato Snake, che ci ha rivelato la presenza di strane auree di non-morte in città, causate quasi certamente dai nostro avversari\n\n- i pugnali di Smoke sono stati risvegliati\n\n- la signora dei corvi ha assegnato a Smoke la missione di risolvere questo mistero \n\n- abbiamo abbozzato un piano per causare una sommossa, approfittando della quale saremmo entrati in prigione per parlare con Eynvar\n\n- abbiamo un accordo per parlare con un alleato di Eynvar, di nome Valard \n\n\n\n"
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-541",
+							"class": "sb-card sb-row",
+							"customNode": true,
+							"typeId": "sb-template-1",
+							"instanceId": "sb-instance-541"
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-4", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Rexxentrum" }]
+							},
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-5", "class": "sb-description", "customNode": false },
+								"content": [
+									{
+										"type": "text",
+										"text": "Arrivati a Rexxentrum ci rechiamo alla sede della cobalt soul. L'alta curatrice Yudala Fon ci accoglie, ed è molto fredda nei nostri confronti. \n \nDopo aver trovato alloggio alla Cobalt Soul, incontriamo per caso una piccola protesta. La protesta si sta svolgendo vicino alla Torre di Scrittura. Sui cartelli dei manifestanti c'è scritto \"Liberate Eynvar\". \n\nSecondo le guardie di Scrittura, Eynvar sarebbe in combutta con la Miriade.\n\nLa Torre rappresenta la legge in città ed ha una sua divinità tutelare.\n\nParlando con i manifestanti abbiamo scoperto che in realtà la popolazione è più arrabbiata con il governo che con le classi nobili.  C'è un gruppo di nobili detto Vigilantes che cerca di aiutare i poveri della città.\n\n\n\n\n"
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-545",
+							"class": "sb-card sb-row",
+							"customNode": true,
+							"typeId": "sb-template-1",
+							"instanceId": "sb-instance-545"
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-4", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Beriel e Beriel" }]
+							},
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-5", "class": "sb-description", "customNode": false },
+								"content": [
+									{
+										"type": "text",
+										"text": "Il rituale per fondere le due Beriel è stato un successo, ma per riuscirci siamo entrati nel mondo della clessidra (dove Goug era già stato). \n\nIn questo luogo mistico abbiamo recuperato i frammenti di ricordo delle Beriel, per poi unirli all'entità Beriel che si stava creando\n\nPer farlo, ci siamo dovuti spostare tra vari spezzoni di roccia fluttuanti - ciascuno una sorta di micromondo con le sue condizioni avverse particolari.\n\nL'ultimo ostacolo è stato una colonna d'acqua verticale, che abbiamo trasformato in ghiaccio grazie al Seme di Luna in possesso di Winder. L'abbiamo poi scalata con corde e rampini per saltare infine sulla sfera dove le due Beriel si stavano unendo.\n\nTornati a Stonewood, Goug si è dato da fare per curare seguendo le istruzioni di DottieDee.\n\nInfine ci siamo dati a una casereccia cena in piazza per festeggiare il successo.\n\n"
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-549",
+							"class": "sb-card sb-row",
+							"customNode": true,
+							"typeId": "sb-template-1",
+							"instanceId": "sb-instance-549"
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-4", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Ritorno a Stonewood" }]
+							},
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-5", "class": "sb-description", "customNode": false },
+								"content": [
+									{
+										"type": "text",
+										"text": "Abbiamo incontrato entrambe le Beriel, e le abbiamo convinte a parlare tra loro tramite rocciofono.\n\nEntrambe sono in realtà molto spaventate per il rituale che dovranno affrontare. Nonostante questo, Naltur pensa che utilizzando la tecnica simile a quella della resurrezione, possa aumentare la probabilità che le due anime sopravvivano.\n\nTrivia: Denim si sta costruendo una taverna da solo. Brera ha migliorato il villaggio aggiungendo luci, tubature e termo riscaldamento.\n\nYoussa: idea di contattarlo perché potrebbe aiutarci. Ha fatto parte dell'accademia Cerberus, gli otto maghi al servizio dell'imperatore. \nL'accademia alla fine risultò corrotta, ma Youssa l'aveva abbandonata prima. Lui è un dunomante.\n\nSiamo andati in una pianura isolata dove Goug ha aiutato nei preparativi del rituale. Youssa ha aperto un suo semipiano personale perché beh, è un figo.\n\n"
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-553",
+							"class": "sb-card sb-row",
+							"customNode": true,
+							"typeId": "sb-template-1",
+							"instanceId": "sb-instance-553"
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-4", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Dopo il labirinto" }]
+							},
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-5", "class": "sb-description", "customNode": false },
+								"content": [
+									{
+										"type": "text",
+										"text": "Zeraline ci svela che cos'è Zanoth è sepolto sulle montagne di Ashkeeper.\n\n\nLa moglie Gomluga di Goug si trova nelle paludi dello Shorash, la seconda moglie potrebbe essere nelle fogne di Rexxentrum.\n\nL'indizio dell'indovinello riguardante il cimitero degli angeli riguarda un massacro di Aasimar avvenuto nelle paludi dello Shorass. Purtroppo però in quella zona c'è un miasma che riporta in vita i morti. \n\n"
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-557",
+							"class": "sb-card sb-row",
+							"customNode": true,
+							"typeId": "sb-template-1",
+							"instanceId": "sb-instance-557"
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-4", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Prova del Labirinto" }]
+							},
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-5", "class": "sb-description", "customNode": false },
+								"content": [
+									{
+										"type": "text",
+										"text": "La maestra della gilda è Zeraline. Abbiamo superato il labirinto affrontando noi stessi e il nostro passato, nonché le nostre scelte. \n\nZeraline credeva che alcuni di noi non ce l'avrebbero fatta.\n\nC'è una sfinge per continente, e mantengono l'equilibrio nel mondo. In qualche modo sono in grado di vedere attraverso le dimensioni, e Zeraline conosce cosa ci è successo a Zadash.\n\nGrazie a una sfera magica Zeraline ci mostra gli Harvester che litigano, qualcosa che non ci aspettavamo. Sembra che non siano poi così uniti sulle decisioni da prendere."
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-561",
+							"class": "sb-card sb-row",
+							"customNode": true,
+							"typeId": "sb-template-1",
+							"instanceId": "sb-instance-561"
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-4", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "arrivo a Crocevia dell'Ambra" }]
+							},
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-5", "class": "sb-description", "customNode": false },
+								"content": [
+									{
+										"type": "text",
+										"text": "Introdotti a gilda avventurieri, guidata da Dama Blyat. Abbiamo conosciuto l'aeormaton Acacia e il guardiano goliath Uziel. \n\nCi hanno fatto entrare nei ranghi speciali della gilda, nei quali vengono offerte missioni particolari.\n\nSiamo alla locanda Vera Ambra, Winder ha reincontrato la sua amica barda.\n\nIo e Goug abbiamo tentato di esplorare l'accampamento dei gitani dove si sono diretti i bardi, cantando e ballando. Abbiamo scoperto solo che alcune carovane hanno della magia particolare, che fa sì che sfuggano allo sguardo.\n\nDobbiamo affrontare la prova del Labirinto della gilda degli avventurieri.\n\nDal negozio itinerante di Pumat Sol ho finalmente lasciato l'anello dell'invisibilità per essere riparato.\n\n"
+									}
+								]
+							}
+						]
+					}
+				]
+			},
+			{
+				"type": "container",
+				"attrs": {
+					"nodeId": "sb-729",
+					"class": "sb-page sb-page-6",
+					"customNode": false,
+					"typeId": "",
+					"instanceId": ""
+				},
+				"content": [
+					{
+						"type": "textBlock",
+						"attrs": { "nodeId": "sb-563", "class": "sb-page-title", "customNode": false },
+						"content": [{ "type": "text", "text": "Gestione PG" }]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-568",
+							"class": "sb-card sb-row",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-567",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-567"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Livello" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F1_LEVEL",
+											"label": "Level",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-573",
+							"class": "sb-card sb-row",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-572",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-572"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "First Level HP" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F31_FIRST_LEVEL_HP",
+											"label": "First Level HP",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-578",
+							"class": "sb-card sb-row",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-577",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-577"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "HP Per Level After First" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F30_HP_PER_LEVEL",
+											"label": "HP Per Level",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-580",
+							"class": "sb-card sb-header",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-579", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Ability Scores" }]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-584",
+							"class": "sb-card sb-shield",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-581", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Strength" }]
+							},
+							{
+								"type": "formula",
+								"attrs": {
+									"nodeId": "sb-582",
+									"class": "sb-primary",
+									"customNode": false,
+									"field": "F4_STRENGTH",
+									"label": "Strength",
+									"showLabel": false
+								}
+							},
+							{
+								"type": "formula",
+								"attrs": {
+									"nodeId": "sb-583",
+									"class": "sb-secondary",
+									"customNode": false,
+									"field": "F12_STR",
+									"label": "STR",
+									"showLabel": false
+								}
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-588",
+							"class": "sb-card sb-shield",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-585", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Dexterity" }]
+							},
+							{
+								"type": "formula",
+								"attrs": {
+									"nodeId": "sb-586",
+									"class": "sb-primary",
+									"customNode": false,
+									"field": "F3_DEXTERITY",
+									"label": "Dexterity",
+									"showLabel": false
+								}
+							},
+							{
+								"type": "formula",
+								"attrs": {
+									"nodeId": "sb-587",
+									"class": "sb-secondary",
+									"customNode": false,
+									"field": "F13_DEX",
+									"label": "DEX",
+									"showLabel": false
+								}
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-592",
+							"class": "sb-card sb-shield",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-589", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Constitution" }]
+							},
+							{
+								"type": "formula",
+								"attrs": {
+									"nodeId": "sb-590",
+									"class": "sb-primary",
+									"customNode": false,
+									"field": "F5_CONSTITUTION",
+									"label": "Constitution",
+									"showLabel": false
+								}
+							},
+							{
+								"type": "formula",
+								"attrs": {
+									"nodeId": "sb-591",
+									"class": "sb-secondary",
+									"customNode": false,
+									"field": "F14_CON",
+									"label": "CON",
+									"showLabel": false
+								}
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-596",
+							"class": "sb-card sb-shield",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-593", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Intelligence" }]
+							},
+							{
+								"type": "formula",
+								"attrs": {
+									"nodeId": "sb-594",
+									"class": "sb-primary",
+									"customNode": false,
+									"field": "F6_INTELLIGENCE",
+									"label": "Intelligence",
+									"showLabel": false
+								}
+							},
+							{
+								"type": "formula",
+								"attrs": {
+									"nodeId": "sb-595",
+									"class": "sb-secondary",
+									"customNode": false,
+									"field": "F15_INT",
+									"label": "INT",
+									"showLabel": false
+								}
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-600",
+							"class": "sb-card sb-shield",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-597", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Wisdom" }]
+							},
+							{
+								"type": "formula",
+								"attrs": {
+									"nodeId": "sb-598",
+									"class": "sb-primary",
+									"customNode": false,
+									"field": "F7_WISDOM",
+									"label": "Wisdom",
+									"showLabel": false
+								}
+							},
+							{
+								"type": "formula",
+								"attrs": {
+									"nodeId": "sb-599",
+									"class": "sb-secondary",
+									"customNode": false,
+									"field": "F16_WIS",
+									"label": "WIS",
+									"showLabel": false
+								}
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-604",
+							"class": "sb-card sb-shield",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-601", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Charisma" }]
+							},
+							{
+								"type": "formula",
+								"attrs": {
+									"nodeId": "sb-602",
+									"class": "sb-primary",
+									"customNode": false,
+									"field": "F8_CHARISMA",
+									"label": "Charisma",
+									"showLabel": false
+								}
+							},
+							{
+								"type": "formula",
+								"attrs": {
+									"nodeId": "sb-603",
+									"class": "sb-secondary",
+									"customNode": false,
+									"field": "F17_CHA",
+									"label": "CHA",
+									"showLabel": false
+								}
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-606",
+							"class": "sb-card sb-header",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-605", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Saving Throws Proficiency" }]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-611",
+							"class": "sb-card sb-short-row",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-610",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-610"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Strength" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F18_STRENGTH_SAVE_PROFICIENCY",
+											"label": "Strength Save Proficiency",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-616",
+							"class": "sb-card sb-short-row",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-615",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-615"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Intelligence" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F21_INTELLIGENCE_SAVE_PROFICIENCY",
+											"label": "Intelligence Save Proficiency",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-621",
+							"class": "sb-card sb-short-row",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-620",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-620"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Dexterity" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F19_DEXTERITY_SAVE_PROFICIENCY",
+											"label": "Dexterity Save Proficiency",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-626",
+							"class": "sb-card sb-short-row",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-625",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-625"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Wisdom" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F22_COMPETENZA_SAG_MENTE_SFUGGENTE",
+											"label": "Competenza SAG (Mente Sfuggente)",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-631",
+							"class": "sb-card sb-short-row",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-630",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-630"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Constitution" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F20_CONSTITUTION_SAVE_PROFICIENCY",
+											"label": "Constitution Save Proficiency",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-636",
+							"class": "sb-card sb-short-row",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-635",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-635"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Charisma" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F23_CHARISMA_SAVE_PROFICIENCY",
+											"label": "Charisma Save Proficiency",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-638",
+							"class": "sb-card sb-header",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "textBlock",
+								"attrs": { "nodeId": "sb-637", "class": "sb-title", "customNode": false },
+								"content": [{ "type": "text", "text": "Skills Proficiency" }]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-643",
+							"class": "sb-card sb-row",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-642",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-642"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Acrobatics" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F33_ACROBATICS_PROFICIENCY",
+											"label": "Acrobatics Proficiency",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-648",
+							"class": "sb-card sb-row",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-647",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-647"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Animal Handling" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F50_ANIMAL_HANDLING_PROFICIENCY",
+											"label": "Animal Handling Proficiency",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-653",
+							"class": "sb-card sb-row",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-652",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-652"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Arcana" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F49_ARCANA_PROFICIENCY",
+											"label": "Arcana Proficiency",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-658",
+							"class": "sb-card sb-row",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-657",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-657"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Athletics" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F48_ATHLETICS_PROFICIENCY",
+											"label": "Athletics Proficiency",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-663",
+							"class": "sb-card sb-row",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-662",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-662"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Deception" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F47_DECEPTION_PROFICIENCY",
+											"label": "Deception Proficiency",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-668",
+							"class": "sb-card sb-row",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-667",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-667"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "History" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F46_HISTORY_PROFICIENCY",
+											"label": "History Proficiency",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-673",
+							"class": "sb-card sb-row",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-672",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-672"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Insight" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F45_INSIGHT_PROFICIENCY",
+											"label": "Insight Proficiency",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-678",
+							"class": "sb-card sb-row",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-677",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-677"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Intimidation" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F44_INTIMIDATION_PROFICIENCY",
+											"label": "Intimidation Proficiency",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-683",
+							"class": "sb-card sb-row",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-682",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-682"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Investigation" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F43_INVESTIGATION_PROFICIENCY",
+											"label": "Investigation Proficiency",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-688",
+							"class": "sb-card sb-row",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-687",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-687"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Medicine" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F42_MEDICINE_PROFICIENCY",
+											"label": "Medicine Proficiency",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-693",
+							"class": "sb-card sb-row",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-692",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-692"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Nature" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F41_NATURE_PROFICIENCY",
+											"label": "Nature Proficiency",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-698",
+							"class": "sb-card sb-row",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-697",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-697"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Perception" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F40_PERCEPTION_PROFICIENCY",
+											"label": "Perception Proficiency",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-703",
+							"class": "sb-card sb-row",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-702",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-702"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Performance" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F39_PERFORMANCE_PROFICIENCY",
+											"label": "Performance Proficiency",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-708",
+							"class": "sb-card sb-row",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-707",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-707"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Persuasion" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F38_COMPETENZA_IN_PERSUASIONE",
+											"label": "Competenza In Persuasione",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-713",
+							"class": "sb-card sb-row",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-712",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-712"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Religion" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F37_RELIGION_PROFICIENCY_INSEGNATA_DA_SMOKE_NEL_MONDO_DEI_SOGNI",
+											"label": "Religion Proficiency (Insegnata Da Smoke Nel Mondo Dei Sogni)",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-718",
+							"class": "sb-card sb-row",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-717",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-717"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Sleight Of Hand" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F36_SLEIGHT_OF_HAND_PROFICIENCY",
+											"label": "Sleight Of Hand Proficiency",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-723",
+							"class": "sb-card sb-row",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-722",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-722"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Stealth" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F35_STEALTH_PROFICIENCY",
+											"label": "Stealth Proficiency",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "container",
+						"attrs": {
+							"nodeId": "sb-728",
+							"class": "sb-card sb-row",
+							"customNode": false,
+							"typeId": "",
+							"instanceId": ""
+						},
+						"content": [
+							{
+								"type": "container",
+								"attrs": {
+									"nodeId": "sb-727",
+									"class": "sb-property",
+									"customNode": true,
+									"typeId": "sb-property",
+									"instanceId": "sb-instance-727"
+								},
+								"content": [
+									{
+										"type": "textBlock",
+										"attrs": {
+											"nodeId": "sb-1",
+											"class": "sb-property-label",
+											"customNode": false
+										},
+										"content": [{ "type": "text", "text": "Survival" }]
+									},
+									{
+										"type": "formula",
+										"attrs": {
+											"nodeId": "sb-2",
+											"class": "sb-property-value",
+											"customNode": false,
+											"field": "F34_SURVIVAL_PROFICIENCY",
+											"label": "Survival Proficiency",
+											"showLabel": false
+										}
+									}
+								]
+							}
+						]
+					}
+				]
+			}
+		]
+	}
+}

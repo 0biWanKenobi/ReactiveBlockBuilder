@@ -1,0 +1,1253 @@
+{
+	"metadata": {
+		"name": "Smoke Ball",
+		"sourceSha256": "f3cc4690f89f8eb0714289e095815504f83b77f1c5bbbf9cf3eee5ab9b637acd",
+		"pages": [
+			{ "name": "PG", "elements": 43 },
+			{ "name": "Caratteristiche", "elements": 18 },
+			{ "name": "Competenze", "elements": 4 },
+			{ "name": "Equip", "elements": 19 },
+			{ "name": "Diario", "elements": 19 },
+			{ "name": "Gestione PG", "elements": 36 }
+		],
+		"sourceProperties": 202,
+		"fields": 238,
+		"sourceTemplates": 7,
+		"definitions": 8,
+		"documentNodes": 770,
+		"definitionNodes": 63,
+		"templates": [
+			{ "id": "sb-property", "name": "Property row" },
+			{ "id": "sb-template-1", "name": "New Note" },
+			{ "id": "sb-template-2", "name": "New Feature" },
+			{ "id": "sb-template-3", "name": "Ranged Weapon" },
+			{ "id": "sb-template-4", "name": "New Item" },
+			{ "id": "sb-template-5", "name": "New Armor" },
+			{ "id": "sb-template-6", "name": "Melee Weapon" },
+			{ "id": "sb-template-7", "name": "New Spell" }
+		],
+		"adaptations": [
+			"Pages are stacked sections; no native page navigation.",
+			"Counters/checkboxes use editable formula fields; no counter buttons.",
+			"Descriptions are plain text with preserved line breaks; visibility follows source flags.",
+			"Pages and one-off equipment are stock blocks; only source templates and property rows are custom.",
+			"Active item bonuses are folded into formulas; template armor overrides remain inactive.",
+			"D&D ability modifiers/proficiency use floor; original formulas retained in audit.",
+			"No source images were present."
+		]
+	},
+	"formulaAudit": [
+		{
+			"uid": "4c13eccf-048d-4d5a-b158-9088a541ae54",
+			"name": "Base d20 Roll",
+			"original": "d20",
+			"translated": "(1)d20"
+		},
+		{
+			"uid": "764c8e2a-8194-49d1-a17e-a8c10056d370",
+			"name": "Level",
+			"original": "17",
+			"translated": "17"
+		},
+		{
+			"uid": "cf74481a-40d6-4ad8-b65d-238e4a21cdc4",
+			"name": "AC",
+			"original": "{31ac79e3-2d88-4983-8564-5bd52f89b373}+{00f196c5-455c-4621-9c14-b964c986a877}+{3d575322-8016-450a-bf4b-cdf82dc2a8ca}*{da2f468e-4799-4df5-8037-c223dcca50e9}",
+			"translated": "(({F146_ARM_CUOIO_BORCHIATO}+{F13_DEX})+({F144_MISC_BONUS}*{F145_BONUS_ACTIVE}))"
+		},
+		{
+			"uid": "81358183-cbe7-4d2d-bad2-bf9bd406fa98",
+			"name": "Dexterity",
+			"original": "20+{b7207e7a-45e9-4bbc-8b01-1cbf615cdc93}",
+			"translated": "(20+{F108_SACRED_KNIVES_WIELDER})"
+		},
+		{
+			"uid": "8f1aef16-415b-4379-968d-6bbd086e080d",
+			"name": "Strength",
+			"original": "10",
+			"translated": "10"
+		},
+		{
+			"uid": "d5556049-2e60-4411-b81c-ba2e5ccb4322",
+			"name": "Constitution",
+			"original": "16",
+			"translated": "16"
+		},
+		{
+			"uid": "68cfc27f-e04a-4c19-8945-dd3f77607fc8",
+			"name": "Intelligence",
+			"original": "16",
+			"translated": "16"
+		},
+		{
+			"uid": "613ce037-950d-4551-bacf-7d3918c0561d",
+			"name": "Wisdom",
+			"original": "11",
+			"translated": "11"
+		},
+		{
+			"uid": "922a34af-47a8-40b5-9d10-71fc863b6689",
+			"name": "Charisma",
+			"original": "18",
+			"translated": "18"
+		},
+		{
+			"uid": "f5514afe-d71c-489a-b0e5-1a26728342c0",
+			"name": "Initiative",
+			"original": "{00f196c5-455c-4621-9c14-b964c986a877}",
+			"translated": "{F13_DEX}"
+		},
+		{
+			"uid": "a7196370-534b-439a-a60d-f34e0d148cec",
+			"name": "Competenza",
+			"original": "({764c8e2a-8194-49d1-a17e-a8c10056d370}+7)/4",
+			"translated": "floor((({F1_LEVEL}+7)/4))"
+		},
+		{
+			"uid": "f6d93a91-db63-4838-a452-94d9c9fa4f25",
+			"name": "HP",
+			"original": "136+{3e160ceb-963b-4667-ba73-b64f19b2fbf1}",
+			"translated": "(136+{F77_TEMPORARY_HP})"
+		},
+		{
+			"uid": "5cd191c8-6ab3-443d-bad8-a26c36694f0b",
+			"name": "STR",
+			"original": "{8f1aef16-415b-4379-968d-6bbd086e080d}/2-5",
+			"translated": "floor((({F4_STRENGTH}/2)-5))"
+		},
+		{
+			"uid": "00f196c5-455c-4621-9c14-b964c986a877",
+			"name": "DEX",
+			"original": "{81358183-cbe7-4d2d-bad2-bf9bd406fa98}/2-5",
+			"translated": "floor((({F3_DEXTERITY}/2)-5))"
+		},
+		{
+			"uid": "32333b2b-a049-477a-b6de-a69152d025e7",
+			"name": "CON",
+			"original": "{d5556049-2e60-4411-b81c-ba2e5ccb4322}/2-5+{272c9a1f-1bc4-4bfe-b78a-6eda02bd89fb}",
+			"translated": "floor(((({F5_CONSTITUTION}/2)-5)+{F150_ABILITA_IMPECCABILE}))"
+		},
+		{
+			"uid": "26ba6012-97e3-4654-9bd2-d4f7580dcf16",
+			"name": "INT",
+			"original": "{68cfc27f-e04a-4c19-8945-dd3f77607fc8}/2-5",
+			"translated": "floor((({F6_INTELLIGENCE}/2)-5))"
+		},
+		{
+			"uid": "88bce7e5-f1ce-46cc-bf2e-61bc8023797d",
+			"name": "WIS",
+			"original": "{613ce037-950d-4551-bacf-7d3918c0561d}/2-5",
+			"translated": "floor((({F7_WISDOM}/2)-5))"
+		},
+		{
+			"uid": "3608ffff-50a3-4dd3-9d95-018f7c1c24ff",
+			"name": "CHA",
+			"original": "{922a34af-47a8-40b5-9d10-71fc863b6689}/2-5",
+			"translated": "floor((({F8_CHARISMA}/2)-5))"
+		},
+		{
+			"uid": "9dbe6049-08f4-4682-bc58-86683148ddc2",
+			"name": "Strength Save Proficiency",
+			"original": "false",
+			"translated": "false"
+		},
+		{
+			"uid": "42cd8ef8-e914-428b-b043-a88231834887",
+			"name": "Dexterity Save Proficiency",
+			"original": "true",
+			"translated": "true"
+		},
+		{
+			"uid": "ecb06813-102b-4788-9918-dc3b94f60306",
+			"name": "Constitution Save Proficiency",
+			"original": "false",
+			"translated": "false"
+		},
+		{
+			"uid": "4aa9250c-abc2-4e9b-9ef4-fd60c2d47dd0",
+			"name": "Intelligence Save Proficiency",
+			"original": "true",
+			"translated": "true"
+		},
+		{
+			"uid": "a9d7aa3e-fc1e-46ca-b42d-36460638dcb0",
+			"name": "Competenza SAG (Mente Sfuggente)",
+			"original": "true",
+			"translated": "true"
+		},
+		{
+			"uid": "5951e54a-261c-4e2d-9535-1316473a6a95",
+			"name": "Charisma Save Proficiency",
+			"original": "false",
+			"translated": "false"
+		},
+		{
+			"uid": "a4d2a5f4-9b27-4424-9016-bc044d590bb1",
+			"name": "Strength Save",
+			"original": "{5cd191c8-6ab3-443d-bad8-a26c36694f0b}+{a7196370-534b-439a-a60d-f34e0d148cec}*{9dbe6049-08f4-4682-bc58-86683148ddc2}+{49fd63b5-3831-4cea-bad5-e9cef1081fa3}",
+			"translated": "(({F12_STR}+({F10_COMPETENZA}*{F18_STRENGTH_SAVE_PROFICIENCY}))+{F110_RESURRECTION_MALUS})"
+		},
+		{
+			"uid": "7efd4186-8f88-4a3e-815e-a8186745afa2",
+			"name": "Dexterity Save",
+			"original": "{00f196c5-455c-4621-9c14-b964c986a877}+{a7196370-534b-439a-a60d-f34e0d148cec}*{42cd8ef8-e914-428b-b043-a88231834887}+{49fd63b5-3831-4cea-bad5-e9cef1081fa3}",
+			"translated": "(({F13_DEX}+({F10_COMPETENZA}*{F19_DEXTERITY_SAVE_PROFICIENCY}))+{F110_RESURRECTION_MALUS})"
+		},
+		{
+			"uid": "bedc3cd8-ec41-49db-8387-83d0a76b4326",
+			"name": "Constitution Save",
+			"original": "{32333b2b-a049-477a-b6de-a69152d025e7}+{a7196370-534b-439a-a60d-f34e0d148cec}*{ecb06813-102b-4788-9918-dc3b94f60306}",
+			"translated": "({F14_CON}+({F10_COMPETENZA}*{F20_CONSTITUTION_SAVE_PROFICIENCY}))"
+		},
+		{
+			"uid": "fcb22313-80b0-4870-8962-537ed4230fe5",
+			"name": "Intelligence Save",
+			"original": "{26ba6012-97e3-4654-9bd2-d4f7580dcf16}+{a7196370-534b-439a-a60d-f34e0d148cec}*{4aa9250c-abc2-4e9b-9ef4-fd60c2d47dd0}+{49fd63b5-3831-4cea-bad5-e9cef1081fa3}",
+			"translated": "(({F15_INT}+({F10_COMPETENZA}*{F21_INTELLIGENCE_SAVE_PROFICIENCY}))+{F110_RESURRECTION_MALUS})"
+		},
+		{
+			"uid": "09ef1aa5-0104-443d-9560-b843119a46d5",
+			"name": "Wisdom Save",
+			"original": "{88bce7e5-f1ce-46cc-bf2e-61bc8023797d}+{a7196370-534b-439a-a60d-f34e0d148cec}*{a9d7aa3e-fc1e-46ca-b42d-36460638dcb0}",
+			"translated": "({F16_WIS}+({F10_COMPETENZA}*{F22_COMPETENZA_SAG_MENTE_SFUGGENTE}))"
+		},
+		{
+			"uid": "b3758bbd-f02c-4af9-84c3-2c3fe9fdeb37",
+			"name": "Charisma Save",
+			"original": "{3608ffff-50a3-4dd3-9d95-018f7c1c24ff}+{a7196370-534b-439a-a60d-f34e0d148cec}*{5951e54a-261c-4e2d-9535-1316473a6a95}+{49fd63b5-3831-4cea-bad5-e9cef1081fa3}",
+			"translated": "(({F17_CHA}+({F10_COMPETENZA}*{F23_CHARISMA_SAVE_PROFICIENCY}))+{F110_RESURRECTION_MALUS})"
+		},
+		{
+			"uid": "00872284-d252-4685-b792-c301bb85f6f6",
+			"name": "HP Per Level",
+			"original": "8",
+			"translated": "8"
+		},
+		{
+			"uid": "5989e4c3-9d5d-4c46-8b67-73f748fb2233",
+			"name": "First Level HP",
+			"original": "10",
+			"translated": "10"
+		},
+		{
+			"uid": "3dad45b4-7d11-470f-b215-1ec58d065164",
+			"name": "Max HP",
+			"original": "{5989e4c3-9d5d-4c46-8b67-73f748fb2233}+{9b1574dd-8116-432d-adf2-922692dfa570}+{3e160ceb-963b-4667-ba73-b64f19b2fbf1}",
+			"translated": "(({F31_FIRST_LEVEL_HP}+{F101_ROLLED_HP})+{F77_TEMPORARY_HP})"
+		},
+		{
+			"uid": "439feb3f-348b-4a48-afb0-c2de2b418299",
+			"name": "Acrobatics Proficiency",
+			"original": "true",
+			"translated": "true"
+		},
+		{
+			"uid": "c552567e-9769-431e-aba6-701cca27b2a7",
+			"name": "Survival Proficiency",
+			"original": "false",
+			"translated": "false"
+		},
+		{
+			"uid": "de7ec48e-630c-419f-bbf9-1f5ff150a9cf",
+			"name": "Stealth Proficiency",
+			"original": "true",
+			"translated": "true"
+		},
+		{
+			"uid": "c795c8a6-a01a-42da-aa5a-2f55baad681e",
+			"name": "Sleight Of Hand Proficiency",
+			"original": "true",
+			"translated": "true"
+		},
+		{
+			"uid": "89d5934a-ba71-45d2-93ed-0149992a7d35",
+			"name": "Religion Proficiency (Insegnata Da Smoke Nel Mondo Dei Sogni)",
+			"original": "true",
+			"translated": "true"
+		},
+		{
+			"uid": "c1dfcbcc-10be-4b02-b831-90f68f5dd10e",
+			"name": "Competenza In Persuasione",
+			"original": "true",
+			"translated": "true"
+		},
+		{
+			"uid": "3d596a7c-ed1a-46b7-9ac5-97404033e983",
+			"name": "Performance Proficiency",
+			"original": "false",
+			"translated": "false"
+		},
+		{
+			"uid": "78ab48f9-0a87-401f-8d65-c2a80899337d",
+			"name": "Perception Proficiency",
+			"original": "true",
+			"translated": "true"
+		},
+		{
+			"uid": "800609fa-6058-4002-b291-54f075e0b40a",
+			"name": "Nature Proficiency",
+			"original": "false",
+			"translated": "false"
+		},
+		{
+			"uid": "1ff9375e-6e6c-4d15-b5d0-d39752990841",
+			"name": "Medicine Proficiency",
+			"original": "true",
+			"translated": "true"
+		},
+		{
+			"uid": "3961de00-a5a2-40e0-b526-140c64368187",
+			"name": "Investigation Proficiency",
+			"original": "true",
+			"translated": "true"
+		},
+		{
+			"uid": "a0daa574-6f11-4cb7-a473-a4a254245994",
+			"name": "Intimidation Proficiency",
+			"original": "false",
+			"translated": "false"
+		},
+		{
+			"uid": "abbb7062-eaab-4d3c-b69d-32651aa8ee2c",
+			"name": "Insight Proficiency",
+			"original": "true",
+			"translated": "true"
+		},
+		{
+			"uid": "f0d21187-28f0-4eb4-b91e-0cd8a5c6bd2b",
+			"name": "History Proficiency",
+			"original": "false",
+			"translated": "false"
+		},
+		{
+			"uid": "6c088c26-0a25-4471-849c-41a6b9bec02d",
+			"name": "Deception Proficiency",
+			"original": "true",
+			"translated": "true"
+		},
+		{
+			"uid": "3369fb2c-b01f-4e51-90b4-0042cb7ec90e",
+			"name": "Athletics Proficiency",
+			"original": "false",
+			"translated": "false"
+		},
+		{
+			"uid": "31b6aa26-28b0-48bf-9e85-2c49715c586a",
+			"name": "Arcana Proficiency",
+			"original": "false",
+			"translated": "false"
+		},
+		{
+			"uid": "81be7b1b-896d-41e6-a743-4f2655cf15dd",
+			"name": "Animal Handling Proficiency",
+			"original": "false",
+			"translated": "false"
+		},
+		{
+			"uid": "c7c925ca-2ffd-4e21-97e8-76a39c9de1e9",
+			"name": "Survival",
+			"original": "{88bce7e5-f1ce-46cc-bf2e-61bc8023797d}+{a7196370-534b-439a-a60d-f34e0d148cec}*{c552567e-9769-431e-aba6-701cca27b2a7}+3",
+			"translated": "(({F16_WIS}+({F10_COMPETENZA}*{F34_SURVIVAL_PROFICIENCY}))+3)"
+		},
+		{
+			"uid": "b75517f0-1aa8-4051-973f-3859bf92aa63",
+			"name": "Stealth",
+			"original": "{00f196c5-455c-4621-9c14-b964c986a877}+{a7196370-534b-439a-a60d-f34e0d148cec}*{de7ec48e-630c-419f-bbf9-1f5ff150a9cf}+{a7196370-534b-439a-a60d-f34e0d148cec}*{3b7330d3-6958-4d3c-9317-30b02ad337e3}",
+			"translated": "(({F13_DEX}+({F10_COMPETENZA}*{F35_STEALTH_PROFICIENCY}))+({F10_COMPETENZA}*{F105_MAESTRIA_IN_FURTIVITA}))"
+		},
+		{
+			"uid": "080e8f3c-f268-4ec2-b5c8-9e1809615553",
+			"name": "Sleight Of Hand",
+			"original": "({00f196c5-455c-4621-9c14-b964c986a877}+{a7196370-534b-439a-a60d-f34e0d148cec}*{c795c8a6-a01a-42da-aa5a-2f55baad681e})+{49fd63b5-3831-4cea-bad5-e9cef1081fa3}",
+			"translated": "(({F13_DEX}+({F10_COMPETENZA}*{F36_SLEIGHT_OF_HAND_PROFICIENCY}))+{F110_RESURRECTION_MALUS})"
+		},
+		{
+			"uid": "0e696ed1-e530-4fc2-ad52-46cf1cd6d7ab",
+			"name": "Religion",
+			"original": "{26ba6012-97e3-4654-9bd2-d4f7580dcf16}+{a7196370-534b-439a-a60d-f34e0d148cec}*{89d5934a-ba71-45d2-93ed-0149992a7d35}",
+			"translated": "({F15_INT}+({F10_COMPETENZA}*{F37_RELIGION_PROFICIENCY_INSEGNATA_DA_SMOKE_NEL_MONDO_DEI_SOGNI}))"
+		},
+		{
+			"uid": "495d7fef-cb3d-4385-a8a8-3b357b7e4124",
+			"name": "Persuasion",
+			"original": "({3608ffff-50a3-4dd3-9d95-018f7c1c24ff}+{a7196370-534b-439a-a60d-f34e0d148cec}*{c1dfcbcc-10be-4b02-b831-90f68f5dd10e}+{a7196370-534b-439a-a60d-f34e0d148cec}*{1a2d8f79-f72b-48df-80c0-bff7e9f326d0})-{49fd63b5-3831-4cea-bad5-e9cef1081fa3}",
+			"translated": "((({F17_CHA}+({F10_COMPETENZA}*{F38_COMPETENZA_IN_PERSUASIONE}))+({F10_COMPETENZA}*{F103_MAESTRIA_IN_PERSUASIONE}))-{F110_RESURRECTION_MALUS})"
+		},
+		{
+			"uid": "24c2b78e-36de-44dd-90c0-bc4334e331f6",
+			"name": "Performance",
+			"original": "{3608ffff-50a3-4dd3-9d95-018f7c1c24ff}+{a7196370-534b-439a-a60d-f34e0d148cec}*{3d596a7c-ed1a-46b7-9ac5-97404033e983}",
+			"translated": "({F17_CHA}+({F10_COMPETENZA}*{F39_PERFORMANCE_PROFICIENCY}))"
+		},
+		{
+			"uid": "c07e5975-b0f0-457f-9b95-8a4971e50c2b",
+			"name": "Perception",
+			"original": "({88bce7e5-f1ce-46cc-bf2e-61bc8023797d}+{a7196370-534b-439a-a60d-f34e0d148cec}*{78ab48f9-0a87-401f-8d65-c2a80899337d}+{a7196370-534b-439a-a60d-f34e0d148cec}*{6bfdbd8b-6d2f-4bf2-8d15-ffbb4d9667f0})+{49fd63b5-3831-4cea-bad5-e9cef1081fa3}",
+			"translated": "((({F16_WIS}+({F10_COMPETENZA}*{F40_PERCEPTION_PROFICIENCY}))+({F10_COMPETENZA}*{F104_MAESTRIA_IN_PERCEZIONE}))+{F110_RESURRECTION_MALUS})"
+		},
+		{
+			"uid": "4cc482d2-1371-483b-adf8-f9b5fc1f52a9",
+			"name": "Nature",
+			"original": "{26ba6012-97e3-4654-9bd2-d4f7580dcf16}+{a7196370-534b-439a-a60d-f34e0d148cec}*{800609fa-6058-4002-b291-54f075e0b40a}+{49fd63b5-3831-4cea-bad5-e9cef1081fa3}",
+			"translated": "(({F15_INT}+({F10_COMPETENZA}*{F41_NATURE_PROFICIENCY}))+{F110_RESURRECTION_MALUS})"
+		},
+		{
+			"uid": "d42c6eb2-86e2-4d83-ba41-314e6b7dd943",
+			"name": "Medicine",
+			"original": "{88bce7e5-f1ce-46cc-bf2e-61bc8023797d}+{a7196370-534b-439a-a60d-f34e0d148cec}*{1ff9375e-6e6c-4d15-b5d0-d39752990841}",
+			"translated": "({F16_WIS}+({F10_COMPETENZA}*{F42_MEDICINE_PROFICIENCY}))"
+		},
+		{
+			"uid": "5b4bdb72-a1fb-42f0-bcf4-7e52229ed9d6",
+			"name": "Investigation",
+			"original": "{26ba6012-97e3-4654-9bd2-d4f7580dcf16}+({a7196370-534b-439a-a60d-f34e0d148cec}*{3961de00-a5a2-40e0-b526-140c64368187})+{a7196370-534b-439a-a60d-f34e0d148cec}*{5ff50e67-37bf-4d92-a4ee-f92143c227d1}",
+			"translated": "(({F15_INT}+({F10_COMPETENZA}*{F43_INVESTIGATION_PROFICIENCY}))+({F10_COMPETENZA}*{F111_MAESTRIA_IN_INVESTIGARE}))"
+		},
+		{
+			"uid": "5c85f405-206a-499e-a677-a5cc4db6943a",
+			"name": "Intimidation",
+			"original": "{3608ffff-50a3-4dd3-9d95-018f7c1c24ff}+({a7196370-534b-439a-a60d-f34e0d148cec}*{c1dfcbcc-10be-4b02-b831-90f68f5dd10e})+{49fd63b5-3831-4cea-bad5-e9cef1081fa3}",
+			"translated": "(({F17_CHA}+({F10_COMPETENZA}*{F38_COMPETENZA_IN_PERSUASIONE}))+{F110_RESURRECTION_MALUS})"
+		},
+		{
+			"uid": "9b5670ad-78e1-4b8f-b64a-40f447e6cbe4",
+			"name": "Insight",
+			"original": "({88bce7e5-f1ce-46cc-bf2e-61bc8023797d}+{a7196370-534b-439a-a60d-f34e0d148cec}*{abbb7062-eaab-4d3c-b69d-32651aa8ee2c})+{49fd63b5-3831-4cea-bad5-e9cef1081fa3}",
+			"translated": "(({F16_WIS}+({F10_COMPETENZA}*{F45_INSIGHT_PROFICIENCY}))+{F110_RESURRECTION_MALUS})"
+		},
+		{
+			"uid": "01207d96-8d55-4f18-a807-3c9fafad10fc",
+			"name": "History",
+			"original": "{26ba6012-97e3-4654-9bd2-d4f7580dcf16}+{a7196370-534b-439a-a60d-f34e0d148cec}*{f0d21187-28f0-4eb4-b91e-0cd8a5c6bd2b}",
+			"translated": "({F15_INT}+({F10_COMPETENZA}*{F46_HISTORY_PROFICIENCY}))"
+		},
+		{
+			"uid": "fe141144-2258-4061-afa4-22e962ef95f2",
+			"name": "Deception",
+			"original": "{3608ffff-50a3-4dd3-9d95-018f7c1c24ff}+{a7196370-534b-439a-a60d-f34e0d148cec}*{6c088c26-0a25-4471-849c-41a6b9bec02d}",
+			"translated": "({F17_CHA}+({F10_COMPETENZA}*{F47_DECEPTION_PROFICIENCY}))"
+		},
+		{
+			"uid": "9de570c9-a2bb-47ca-8e19-77890c007b89",
+			"name": "Athletics",
+			"original": "{5cd191c8-6ab3-443d-bad8-a26c36694f0b}+{a7196370-534b-439a-a60d-f34e0d148cec}*{3369fb2c-b01f-4e51-90b4-0042cb7ec90e}+{49fd63b5-3831-4cea-bad5-e9cef1081fa3}",
+			"translated": "(({F12_STR}+({F10_COMPETENZA}*{F48_ATHLETICS_PROFICIENCY}))+{F110_RESURRECTION_MALUS})"
+		},
+		{
+			"uid": "fa191725-70fc-4dec-8301-67681c01a663",
+			"name": "Arcana",
+			"original": "{26ba6012-97e3-4654-9bd2-d4f7580dcf16}+{a7196370-534b-439a-a60d-f34e0d148cec}*{31b6aa26-28b0-48bf-9e85-2c49715c586a}",
+			"translated": "({F15_INT}+({F10_COMPETENZA}*{F49_ARCANA_PROFICIENCY}))"
+		},
+		{
+			"uid": "b4fe8605-4d0e-4bdc-9197-4f393e2f49df",
+			"name": "Animal Handling",
+			"original": "{88bce7e5-f1ce-46cc-bf2e-61bc8023797d}+{a7196370-534b-439a-a60d-f34e0d148cec}*{81be7b1b-896d-41e6-a743-4f2655cf15dd}+3+{49fd63b5-3831-4cea-bad5-e9cef1081fa3}",
+			"translated": "((({F16_WIS}+({F10_COMPETENZA}*{F50_ANIMAL_HANDLING_PROFICIENCY}))+3)+{F110_RESURRECTION_MALUS})"
+		},
+		{
+			"uid": "9bbe472c-d8fa-4685-96c6-748b687c6527",
+			"name": "Acrobatics",
+			"original": "{00f196c5-455c-4621-9c14-b964c986a877}+{a7196370-534b-439a-a60d-f34e0d148cec}*{439feb3f-348b-4a48-afb0-c2de2b418299}+{a7196370-534b-439a-a60d-f34e0d148cec}*{dd0e7d49-2c88-414e-bcf8-5d9ef63bba7a}+{49fd63b5-3831-4cea-bad5-e9cef1081fa3}",
+			"translated": "((({F13_DEX}+({F10_COMPETENZA}*{F33_ACROBATICS_PROFICIENCY}))+({F10_COMPETENZA}*{F106_MAESTRIA_IN_ACROBAZIA}))+{F110_RESURRECTION_MALUS})"
+		},
+		{
+			"uid": "1f823ed7-c93b-474d-b1ab-621f70f8a14c",
+			"name": "Speed",
+			"original": "30",
+			"translated": "30"
+		},
+		{
+			"uid": "f7966feb-0493-4e35-ae59-43789786bb64",
+			"name": "Weight",
+			"original": "0",
+			"translated": "0"
+		},
+		{
+			"uid": "10c2cd89-8c0d-4405-8521-e0ae128bffb6",
+			"name": "Max Weight",
+			"original": "{8f1aef16-415b-4379-968d-6bbd086e080d}*15",
+			"translated": "({F4_STRENGTH}*15)"
+		},
+		{
+			"uid": "23c2900a-4251-404b-b31a-0ebfae23bcb6",
+			"name": "PP",
+			"original": "0",
+			"translated": "0"
+		},
+		{
+			"uid": "9467f864-1c5c-4acb-8d77-4528158a6da7",
+			"name": "GP",
+			"original": "3592",
+			"translated": "3592"
+		},
+		{
+			"uid": "0741a087-486f-4bbe-800b-93a48e26e2d6",
+			"name": "SP",
+			"original": "0",
+			"translated": "0"
+		},
+		{
+			"uid": "388c93c3-910c-4aba-ae2a-7ba56681c884",
+			"name": "CP",
+			"original": "0",
+			"translated": "0"
+		},
+		{
+			"uid": "d8538653-4e04-4313-b5ad-3d1c7e79eacf",
+			"name": "Max Medium Armor AC Bonus",
+			"original": "2",
+			"translated": "2"
+		},
+		{
+			"uid": "3e160ceb-963b-4667-ba73-b64f19b2fbf1",
+			"name": "Temporary HP",
+			"original": "0",
+			"translated": "0"
+		},
+		{
+			"uid": "2e7ed393-f403-4688-97ed-147cfd9f4f86",
+			"name": "Hit Dice",
+			"original": "17",
+			"translated": "17"
+		},
+		{
+			"uid": "faa0f5dd-4846-4e12-ab1c-c94187b28f8b",
+			"name": "1st Level Spell Slots",
+			"original": "0",
+			"translated": "0"
+		},
+		{
+			"uid": "65114075-68d4-46cf-876f-781efdfaf93d",
+			"name": "Max 1st Level Spell Slots",
+			"original": "0",
+			"translated": "0"
+		},
+		{
+			"uid": "02971340-6e98-4375-9117-bd030bc3ec18",
+			"name": "2nd Level Spell Slots",
+			"original": "0",
+			"translated": "0"
+		},
+		{
+			"uid": "8e7ab497-075c-48f5-9dfa-665c234fdb46",
+			"name": "Max 2nd Level Spell Slots",
+			"original": "0",
+			"translated": "0"
+		},
+		{
+			"uid": "8a2c07a8-45c1-4fad-8ef4-655623230d8d",
+			"name": "3rd Level Spell Slots",
+			"original": "0",
+			"translated": "0"
+		},
+		{
+			"uid": "d9dce528-7613-4987-8aa9-aa036f36a223",
+			"name": "Max 3rd Level Spell Slots",
+			"original": "0",
+			"translated": "0"
+		},
+		{
+			"uid": "8825cfdc-f4ce-448c-834c-a3db4fb5f156",
+			"name": "4th Level Spell Slots",
+			"original": "0",
+			"translated": "0"
+		},
+		{
+			"uid": "b792d87f-44be-4531-8fcc-3cab55a469ab",
+			"name": "Max 4th Level Spell Slots",
+			"original": "0",
+			"translated": "0"
+		},
+		{
+			"uid": "d7df4c58-b3e9-4ade-9641-15a685d473ce",
+			"name": "5th Level Spell Slots",
+			"original": "0",
+			"translated": "0"
+		},
+		{
+			"uid": "261caf62-40b5-4576-a2ff-260a6c998845",
+			"name": "Max 5th Level Spell Slots",
+			"original": "0",
+			"translated": "0"
+		},
+		{
+			"uid": "2552e7a3-fa1a-4829-ba85-1cf9ed0ff86f",
+			"name": "6th Level Spell Slots",
+			"original": "0",
+			"translated": "0"
+		},
+		{
+			"uid": "6bb8608a-85d6-4038-b26d-9cc04e3acafb",
+			"name": "Max 6th Level Spell Slots",
+			"original": "0",
+			"translated": "0"
+		},
+		{
+			"uid": "615911e6-5d36-4377-92f3-8552c785e824",
+			"name": "7th Level Spell Slots",
+			"original": "0",
+			"translated": "0"
+		},
+		{
+			"uid": "133991fb-bb8a-44cb-9dcc-09b0780706c1",
+			"name": "Max 7th Level Spell Slots",
+			"original": "0",
+			"translated": "0"
+		},
+		{
+			"uid": "74ea9d89-ec5f-4a9b-86cf-b4860dbefef9",
+			"name": "8th Level Spell Slots",
+			"original": "0",
+			"translated": "0"
+		},
+		{
+			"uid": "ebd9ef8e-89e8-4d9c-a9f7-14ec420c209d",
+			"name": "Max 8th Level Spell Slots",
+			"original": "0",
+			"translated": "0"
+		},
+		{
+			"uid": "2ae6b5aa-f43f-4f00-90a3-587999f945a4",
+			"name": "9th Level Spell Slots",
+			"original": "0",
+			"translated": "0"
+		},
+		{
+			"uid": "434d8bb3-142b-4cf2-b65b-ad4afe1074a9",
+			"name": "Max 9th Level Spell Slots",
+			"original": "0",
+			"translated": "0"
+		},
+		{
+			"uid": "86fe0756-e3f0-442b-ac1d-5fbbb0b1d9a5",
+			"name": "Pact Spell Slots",
+			"original": "0",
+			"translated": "0"
+		},
+		{
+			"uid": "2fb54031-ab9a-4be8-b833-42193f0143bd",
+			"name": "Max Pact Spell Slots",
+			"original": "0",
+			"translated": "0"
+		},
+		{
+			"uid": "da4e8456-eae8-40b4-9d9b-8693b9803d52",
+			"name": "Pact Spells Level",
+			"original": "1",
+			"translated": "1"
+		},
+		{
+			"uid": "cdc35f55-c966-423c-a6ca-d5ee48f2d794",
+			"name": "Sneak Attack Dice",
+			"original": "(({764c8e2a-8194-49d1-a17e-a8c10056d370}+1)/2)d6",
+			"translated": "((({F1_LEVEL}+1)/2))d6"
+		},
+		{
+			"uid": "9b1574dd-8116-432d-adf2-922692dfa570",
+			"name": "Rolled HP",
+			"original": "126",
+			"translated": "126"
+		},
+		{
+			"uid": "d555e493-282c-44ed-8684-58f44194af7e",
+			"name": "Sneak Attack",
+			"original": "true",
+			"translated": "true"
+		},
+		{
+			"uid": "1a2d8f79-f72b-48df-80c0-bff7e9f326d0",
+			"name": "Maestria in Persuasione",
+			"original": "true",
+			"translated": "true"
+		},
+		{
+			"uid": "6bfdbd8b-6d2f-4bf2-8d15-ffbb4d9667f0",
+			"name": "Maestria in Percezione",
+			"original": "true",
+			"translated": "true"
+		},
+		{
+			"uid": "3b7330d3-6958-4d3c-9317-30b02ad337e3",
+			"name": "Maestria in Furtività",
+			"original": "true",
+			"translated": "true"
+		},
+		{
+			"uid": "dd0e7d49-2c88-414e-bcf8-5d9ef63bba7a",
+			"name": "Maestria in Acrobazia",
+			"original": "true",
+			"translated": "true"
+		},
+		{
+			"uid": "d5e0ec66-e1b5-4c0e-9f70-d4a58557f453",
+			"name": "Test",
+			"original": "-1",
+			"translated": "(-1)"
+		},
+		{
+			"uid": "b7207e7a-45e9-4bbc-8b01-1cbf615cdc93",
+			"name": "Sacred Knives Wielder",
+			"original": "4",
+			"translated": "4"
+		},
+		{
+			"uid": "ca705a56-e4d9-4e5a-9f93-5f392dbf0cca",
+			"name": "Punti Ispirazione",
+			"original": "0",
+			"translated": "0"
+		},
+		{
+			"uid": "49fd63b5-3831-4cea-bad5-e9cef1081fa3",
+			"name": "Resurrection Malus",
+			"original": "0",
+			"translated": "0"
+		},
+		{
+			"uid": "5ff50e67-37bf-4d92-a4ee-f92143c227d1",
+			"name": "Maestria In Investigare",
+			"original": "true",
+			"translated": "true"
+		},
+		{
+			"uid": "7fecb20d-ae3d-431b-b67b-2459684eb734",
+			"name": "Thrown",
+			"original": "false",
+			"translated": "false"
+		},
+		{
+			"uid": "134af0b3-5263-400e-95a1-512b3492b12a",
+			"name": "Attack",
+			"original": "{a7196370-534b-439a-a60d-f34e0d148cec}*{f942e233-195f-4678-a698-d9ad2a8504d6}+{00f196c5-455c-4621-9c14-b964c986a877}",
+			"translated": "(({F10_COMPETENZA}*{F121_PROFICIENT})+{F13_DEX})"
+		},
+		{
+			"uid": "3d9aa614-41fd-4ffc-b464-685b390029f9",
+			"name": "Damage",
+			"original": "{cd3f3948-be45-40f5-aff0-26a9332df031}+{00f196c5-455c-4621-9c14-b964c986a877}",
+			"translated": "({F116_DAMAGE_DICE}+{F13_DEX})"
+		},
+		{
+			"uid": "54d67519-3185-4829-86cc-a1b070d2be63",
+			"name": "Range",
+			"original": "30",
+			"translated": "30"
+		},
+		{
+			"uid": "cd3f3948-be45-40f5-aff0-26a9332df031",
+			"name": "Damage Dice",
+			"original": "d6",
+			"translated": "(1)d6"
+		},
+		{
+			"uid": "1607efd5-1ae9-4e5c-938c-6bc568c113d3",
+			"name": "Ammunition",
+			"original": "20",
+			"translated": "20"
+		},
+		{
+			"uid": "8ead4174-cdbb-4f80-bc71-1ffdb6e50854",
+			"name": "Ammunition Weight",
+			"original": "0",
+			"translated": "0"
+		},
+		{
+			"uid": "c5b19e87-b6d2-472f-a5a4-6b441a3d3eef",
+			"name": "Weight",
+			"original": "1",
+			"translated": "1"
+		},
+		{
+			"uid": "fe8d6bdc-0931-41b3-a23e-11a19da49d8a",
+			"name": "Max Ammunition",
+			"original": "20",
+			"translated": "20"
+		},
+		{
+			"uid": "f942e233-195f-4678-a698-d9ad2a8504d6",
+			"name": "Proficient",
+			"original": "false",
+			"translated": "false"
+		},
+		{
+			"uid": "9d020185-463e-4090-be3f-6b18a71e91c5",
+			"name": "Range Max",
+			"original": "120",
+			"translated": "120"
+		},
+		{
+			"uid": "5300ce69-4d4b-49ef-a9e0-16b6b83a754a",
+			"name": "Bonus to Weight",
+			"original": "{c5b19e87-b6d2-472f-a5a4-6b441a3d3eef}+{8ead4174-cdbb-4f80-bc71-1ffdb6e50854}*{1607efd5-1ae9-4e5c-938c-6bc568c113d3}",
+			"translated": "({F119_WEIGHT}+({F118_AMMUNITION_WEIGHT}*{F117_AMMUNITION}))"
+		},
+		{
+			"uid": "83915d97-d0d3-4915-859b-16c38b9bbc26",
+			"name": "Weight",
+			"original": "1",
+			"translated": "1"
+		},
+		{
+			"uid": "1f846a08-4ea1-4888-8163-53996b94471d",
+			"name": "Bonus to Weight",
+			"original": "{83915d97-d0d3-4915-859b-16c38b9bbc26}",
+			"translated": "{F124_WEIGHT}"
+		},
+		{
+			"uid": "d9d2c37c-7584-42a4-88b9-11c131a35bbd",
+			"name": "Light",
+			"original": "false",
+			"translated": "false"
+		},
+		{
+			"uid": "55a3f2db-cc05-4da2-a908-bc7c044db22e",
+			"name": "Medium",
+			"original": "false",
+			"translated": "false"
+		},
+		{
+			"uid": "4dd5c4dd-74fb-433d-bc49-880f9b56fd3f",
+			"name": "Heavy",
+			"original": "false",
+			"translated": "false"
+		},
+		{
+			"uid": "1b4d65ef-6347-4ce5-842d-fb94287465e5",
+			"name": "Final AC",
+			"original": "{bc6485fe-e239-4ff0-8556-84ba7372be9e}+(({00f196c5-455c-4621-9c14-b964c986a877}*{d9d2c37c-7584-42a4-88b9-11c131a35bbd})max(({00f196c5-455c-4621-9c14-b964c986a877}min{d8538653-4e04-4313-b5ad-3d1c7e79eacf})*{55a3f2db-cc05-4da2-a908-bc7c044db22e}))",
+			"translated": "({F130_BASE_AC}+max(({F13_DEX}*{F126_LIGHT}),(min({F13_DEX},{F76_MAX_MEDIUM_ARMOR_AC_BONUS})*{F127_MEDIUM})))"
+		},
+		{
+			"uid": "bc6485fe-e239-4ff0-8556-84ba7372be9e",
+			"name": "Base AC",
+			"original": "11",
+			"translated": "11"
+		},
+		{
+			"uid": "c74525b1-f3ff-4058-811d-36d3e1526035",
+			"name": "Worn",
+			"original": "false",
+			"translated": "false"
+		},
+		{
+			"uid": "8640786d-1674-4795-bf82-24a97041e924",
+			"name": "Weight",
+			"original": "1",
+			"translated": "1"
+		},
+		{
+			"uid": "cd1142d3-3ddd-44d3-bc10-c427ffeb326e",
+			"name": "Bonus to Weight",
+			"original": "{8640786d-1674-4795-bf82-24a97041e924}",
+			"translated": "{F132_WEIGHT}"
+		},
+		{
+			"uid": "13b9796c-3125-4054-a34a-ef3477e943fb",
+			"name": "Attack",
+			"original": "{a7196370-534b-439a-a60d-f34e0d148cec}*{4598776b-469a-47e2-baf7-68a91ed8fda3}+{5cd191c8-6ab3-443d-bad8-a26c36694f0b}*({17bfc338-ddf6-43f0-8ed4-a6ab0fa093e4}=false)+({5cd191c8-6ab3-443d-bad8-a26c36694f0b}max{00f196c5-455c-4621-9c14-b964c986a877})*{17bfc338-ddf6-43f0-8ed4-a6ab0fa093e4}",
+			"translated": "((({F10_COMPETENZA}*{F138_PROFICIENT})+({F12_STR}*({F136_FINESSE}==false)))+(max({F12_STR},{F13_DEX})*{F136_FINESSE}))"
+		},
+		{
+			"uid": "5edf4ed6-7e41-423c-88f0-86e3f3bd2e73",
+			"name": "Damage",
+			"original": "{63c67552-f386-4173-aa22-c37e87125b56}+{5cd191c8-6ab3-443d-bad8-a26c36694f0b}*({17bfc338-ddf6-43f0-8ed4-a6ab0fa093e4}=false)+({00f196c5-455c-4621-9c14-b964c986a877}max{5cd191c8-6ab3-443d-bad8-a26c36694f0b})*{17bfc338-ddf6-43f0-8ed4-a6ab0fa093e4}",
+			"translated": "(({F140_DAMAGE_DICE}+({F12_STR}*({F136_FINESSE}==false)))+(max({F13_DEX},{F12_STR})*{F136_FINESSE}))"
+		},
+		{
+			"uid": "17bfc338-ddf6-43f0-8ed4-a6ab0fa093e4",
+			"name": "Finesse",
+			"original": "false",
+			"translated": "false"
+		},
+		{
+			"uid": "5071df7a-206f-4930-8da1-5ebe7a75664c",
+			"name": "Weight",
+			"original": "1",
+			"translated": "1"
+		},
+		{
+			"uid": "4598776b-469a-47e2-baf7-68a91ed8fda3",
+			"name": "Proficient",
+			"original": "false",
+			"translated": "false"
+		},
+		{
+			"uid": "0ee56e1d-9290-4cb3-ad37-721f3cf5926d",
+			"name": "Thrown",
+			"original": "false",
+			"translated": "false"
+		},
+		{
+			"uid": "63c67552-f386-4173-aa22-c37e87125b56",
+			"name": "Damage Dice",
+			"original": "d6",
+			"translated": "(1)d6"
+		},
+		{
+			"uid": "0d9dcfe2-e5da-4009-80ae-5ccefb1541c3",
+			"name": "Bonus to Weight",
+			"original": "{5071df7a-206f-4930-8da1-5ebe7a75664c}",
+			"translated": "{F137_WEIGHT}"
+		},
+		{
+			"uid": "596fef1b-5dc0-4a44-8f41-0d3224d12965",
+			"name": "Damage",
+			"original": "0",
+			"translated": "0"
+		},
+		{
+			"uid": "f1e49b73-458e-40ad-8f4b-a8b027d6254a",
+			"name": "Audacia del Fanfarone",
+			"original": "true",
+			"translated": "true"
+		},
+		{
+			"uid": "3d575322-8016-450a-bf4b-cdf82dc2a8ca",
+			"name": "Misc Bonus",
+			"original": "2",
+			"translated": "2"
+		},
+		{
+			"uid": "da2f468e-4799-4df5-8037-c223dcca50e9",
+			"name": "Bonus Active",
+			"original": "false",
+			"translated": "false"
+		},
+		{
+			"uid": "31ac79e3-2d88-4983-8564-5bd52f89b373",
+			"name": "Arm. Cuoio Borchiato",
+			"original": "12",
+			"translated": "12"
+		},
+		{
+			"uid": "f5248b50-d7a5-4cef-ab02-c265bf9282eb",
+			"name": "Percezione Passiva",
+			"original": "10+{c07e5975-b0f0-457f-9b95-8a4971e50c2b}",
+			"translated": "(10+{F57_PERCEPTION})"
+		},
+		{
+			"uid": "06f0f16e-cc81-4491-ae24-61912005a392",
+			"name": "Scurovisione",
+			"original": "30",
+			"translated": "30"
+		},
+		{
+			"uid": "f31087d9-dab4-441a-8c3f-de34509b5444",
+			"name": "Vista cieca",
+			"original": "0",
+			"translated": "0"
+		},
+		{
+			"uid": "272c9a1f-1bc4-4bfe-b78a-6eda02bd89fb",
+			"name": "Abilità Impeccabile",
+			"original": "1",
+			"translated": "1"
+		},
+		{
+			"uid": "384c01d3-1069-413f-a8be-7d6e9cac98b0",
+			"name": "Thrown",
+			"original": "false",
+			"translated": "false"
+		},
+		{
+			"uid": "169bedc1-e2fb-4679-9929-5f29aa030678",
+			"name": "Attack",
+			"original": "{a7196370-534b-439a-a60d-f34e0d148cec}*{72e1b231-bee2-4d27-977d-b38800cfbbe9}+{00f196c5-455c-4621-9c14-b964c986a877}",
+			"translated": "(({F10_COMPETENZA}*{F160_PROFICIENT})+{F13_DEX})"
+		},
+		{
+			"uid": "464295c3-0bad-4b0f-88a6-507f6bdf8861",
+			"name": "Damage",
+			"original": "{16cc6862-5982-4054-a6ee-cd0c44b21450}+{00f196c5-455c-4621-9c14-b964c986a877}+{e6d63d2a-a16a-481e-b925-db0f70085c01}*{95b83baf-f9dc-4747-8f70-8f251e64dded}",
+			"translated": "(({F155_DAMAGE_DICE}+{F13_DEX})+({F164_SNEAK_ATTACK}*{F163_SNEAK_ATTACK_DICE}))"
+		},
+		{
+			"uid": "e05bbf16-80ea-4329-842b-23a3304dac31",
+			"name": "Range",
+			"original": "30",
+			"translated": "30"
+		},
+		{
+			"uid": "16cc6862-5982-4054-a6ee-cd0c44b21450",
+			"name": "Damage Dice",
+			"original": "d6",
+			"translated": "(1)d6"
+		},
+		{
+			"uid": "da117407-6a96-40b4-8f29-59c2f67c6bf1",
+			"name": "Ammunition",
+			"original": "18",
+			"translated": "18"
+		},
+		{
+			"uid": "17f3dbce-bc1b-4b5e-bd86-5d051868928f",
+			"name": "Ammunition Weight",
+			"original": "0",
+			"translated": "0"
+		},
+		{
+			"uid": "1a0b57d5-0860-4fa2-998a-3f03b4a022c0",
+			"name": "Weight",
+			"original": "1",
+			"translated": "1"
+		},
+		{
+			"uid": "912302a7-2f25-42a7-8162-9be7e94d69cf",
+			"name": "Max Ammunition",
+			"original": "20",
+			"translated": "20"
+		},
+		{
+			"uid": "72e1b231-bee2-4d27-977d-b38800cfbbe9",
+			"name": "Proficient",
+			"original": "false",
+			"translated": "false"
+		},
+		{
+			"uid": "7b70542a-b771-4cd9-a1e2-5856c2b54e55",
+			"name": "Range Max",
+			"original": "120",
+			"translated": "120"
+		},
+		{
+			"uid": "f406f407-cf60-4bda-bcfd-3297dd0751e6",
+			"name": "Bonus to Weight",
+			"original": "{1a0b57d5-0860-4fa2-998a-3f03b4a022c0}+{17f3dbce-bc1b-4b5e-bd86-5d051868928f}*{da117407-6a96-40b4-8f29-59c2f67c6bf1}",
+			"translated": "({F158_WEIGHT}+({F157_AMMUNITION_WEIGHT}*{F156_AMMUNITION}))"
+		},
+		{
+			"uid": "95b83baf-f9dc-4747-8f70-8f251e64dded",
+			"name": "Sneak Attack Dice",
+			"original": "(({764c8e2a-8194-49d1-a17e-a8c10056d370}+1)/2)d6",
+			"translated": "((({F1_LEVEL}+1)/2))d6"
+		},
+		{
+			"uid": "e6d63d2a-a16a-481e-b925-db0f70085c01",
+			"name": "Sneak Attack",
+			"original": "true",
+			"translated": "true"
+		},
+		{
+			"uid": "11a9b956-a42d-4883-b06b-4003f79e96fb",
+			"name": "Attack",
+			"original": "{a7196370-534b-439a-a60d-f34e0d148cec}*{6338163d-3591-4f12-956f-7b4cc6a61e55}+{5cd191c8-6ab3-443d-bad8-a26c36694f0b}*({8179401b-59c2-403b-b94b-e64c7b6ab940}=false)+({5cd191c8-6ab3-443d-bad8-a26c36694f0b}max{00f196c5-455c-4621-9c14-b964c986a877})*{8179401b-59c2-403b-b94b-e64c7b6ab940}+{b3a0723f-7acd-4ec9-bb97-47a716698911}",
+			"translated": "(((({F10_COMPETENZA}*{F179_PROFICIENT})+({F12_STR}*({F177_FINESSE}==false)))+(max({F12_STR},{F13_DEX})*{F177_FINESSE}))+{F169_TELEPORT_ATTACK_BONUS})"
+		},
+		{
+			"uid": "2e6b77d7-30bf-4975-abee-b7412e275004",
+			"name": "Sneak Attack",
+			"original": "true",
+			"translated": "true"
+		},
+		{
+			"uid": "47511ff0-dd93-4fcb-bfe3-55e622652ade",
+			"name": "Damage",
+			"original": "{395fdef3-4a6a-4ff2-9291-aff745a5343d}+{5cd191c8-6ab3-443d-bad8-a26c36694f0b}*({8179401b-59c2-403b-b94b-e64c7b6ab940}=false)+({00f196c5-455c-4621-9c14-b964c986a877}max{5cd191c8-6ab3-443d-bad8-a26c36694f0b})*{8179401b-59c2-403b-b94b-e64c7b6ab940}+({2e6b77d7-30bf-4975-abee-b7412e275004}*{cdc35f55-c966-423c-a6ca-d5ee48f2d794})+{5d970b14-f895-4cd0-9ada-71bc7c55d2db}+(({7d51a421-28d4-42bf-84a3-06d3208e808b}+{87241adb-1b86-4ff1-987a-121dbc4abe3f})*{afbe38b8-b48b-449f-8449-3c95765e9ebf})+4d8",
+			"translated": "(((((({F181_DAMAGE_DICE}+({F12_STR}*({F177_FINESSE}==false)))+(max({F13_DEX},{F12_STR})*{F177_FINESSE}))+({F166_SNEAK_ATTACK}*{F100_SNEAK_ATTACK_DICE}))+{F170_DAMAGE_BONUS})+(({F171_TELEPORT_DAMAGE_BONUS}+{F172_TELEPORT_PSYCHIC_DAMAGE})*{F168_TELEPORT_ATTACK}))+(4)d8)"
+		},
+		{
+			"uid": "afbe38b8-b48b-449f-8449-3c95765e9ebf",
+			"name": "Teleport attack",
+			"original": "true",
+			"translated": "true"
+		},
+		{
+			"uid": "b3a0723f-7acd-4ec9-bb97-47a716698911",
+			"name": "Teleport attack bonus",
+			"original": "3",
+			"translated": "3"
+		},
+		{
+			"uid": "5d970b14-f895-4cd0-9ada-71bc7c55d2db",
+			"name": "Damage bonus",
+			"original": "3",
+			"translated": "3"
+		},
+		{
+			"uid": "7d51a421-28d4-42bf-84a3-06d3208e808b",
+			"name": "Teleport damage bonus",
+			"original": "2d4",
+			"translated": "(2)d4"
+		},
+		{
+			"uid": "87241adb-1b86-4ff1-987a-121dbc4abe3f",
+			"name": "Teleport Psychic Damage",
+			"original": "d8*{286cd022-ad32-4e80-beec-2c0ae5a0d8bf}",
+			"translated": "((1)d8*{F175_ACTIVE_PSYCHIC_DAMAGE})"
+		},
+		{
+			"uid": "3e2ad3a5-0dd2-4993-a295-142e52708935",
+			"name": "Tp Attack Charges",
+			"original": "4",
+			"translated": "4"
+		},
+		{
+			"uid": "50a349dc-9268-40aa-8530-f1f79e9fa11b",
+			"name": "Tp Recharge",
+			"original": "d4 + 1",
+			"translated": "((1)d4+1)"
+		},
+		{
+			"uid": "286cd022-ad32-4e80-beec-2c0ae5a0d8bf",
+			"name": "Active Psychic Damage",
+			"original": "true",
+			"translated": "true"
+		},
+		{
+			"uid": "b3e0adb0-569c-4d1a-adee-bcd553528d7d",
+			"name": "Tp Max Charges",
+			"original": "6",
+			"translated": "6"
+		},
+		{
+			"uid": "8179401b-59c2-403b-b94b-e64c7b6ab940",
+			"name": "Finesse",
+			"original": "true",
+			"translated": "true"
+		},
+		{
+			"uid": "12c3727f-1dde-423a-9383-b23829b93e2e",
+			"name": "Weight",
+			"original": "1",
+			"translated": "1"
+		},
+		{
+			"uid": "6338163d-3591-4f12-956f-7b4cc6a61e55",
+			"name": "Proficient",
+			"original": "true",
+			"translated": "true"
+		},
+		{
+			"uid": "25f24d31-2d80-46d2-b6df-6930c3726db3",
+			"name": "Thrown",
+			"original": "false",
+			"translated": "false"
+		},
+		{
+			"uid": "395fdef3-4a6a-4ff2-9291-aff745a5343d",
+			"name": "Damage Dice",
+			"original": "d6",
+			"translated": "(1)d6"
+		},
+		{
+			"uid": "937b01d6-0643-4868-8d1e-bd90d29ef0e8",
+			"name": "Bonus to Weight",
+			"original": "{12c3727f-1dde-423a-9383-b23829b93e2e}",
+			"translated": "{F178_WEIGHT}"
+		},
+		{
+			"uid": "d310431e-07e4-40a6-9bb6-6a9ea62a8ba8",
+			"name": "Attack",
+			"original": "{a7196370-534b-439a-a60d-f34e0d148cec}*{52ae946f-28af-4b0a-86f0-b7a3d17c2b69}+{5cd191c8-6ab3-443d-bad8-a26c36694f0b}*({447bdd17-a834-47db-9175-1d5c8343c369}=false)+({5cd191c8-6ab3-443d-bad8-a26c36694f0b}max{00f196c5-455c-4621-9c14-b964c986a877})*{447bdd17-a834-47db-9175-1d5c8343c369}",
+			"translated": "((({F10_COMPETENZA}*{F187_PROFICIENT})+({F12_STR}*({F185_FINESSE}==false)))+(max({F12_STR},{F13_DEX})*{F185_FINESSE}))"
+		},
+		{
+			"uid": "278d5c65-2a46-40f4-b79c-8d20ff25cc61",
+			"name": "Damage",
+			"original": "{6263fdf0-6ed9-4263-8577-9fefe7e9692f}+{5cd191c8-6ab3-443d-bad8-a26c36694f0b}*({447bdd17-a834-47db-9175-1d5c8343c369}=false)+({00f196c5-455c-4621-9c14-b964c986a877}max{5cd191c8-6ab3-443d-bad8-a26c36694f0b})*{447bdd17-a834-47db-9175-1d5c8343c369}",
+			"translated": "(({F189_DAMAGE_DICE}+({F12_STR}*({F185_FINESSE}==false)))+(max({F13_DEX},{F12_STR})*{F185_FINESSE}))"
+		},
+		{
+			"uid": "447bdd17-a834-47db-9175-1d5c8343c369",
+			"name": "Finesse",
+			"original": "false",
+			"translated": "false"
+		},
+		{
+			"uid": "cc817f69-f590-4127-9c2d-4eda5a6c7ebd",
+			"name": "Weight",
+			"original": "1",
+			"translated": "1"
+		},
+		{
+			"uid": "52ae946f-28af-4b0a-86f0-b7a3d17c2b69",
+			"name": "Proficient",
+			"original": "false",
+			"translated": "false"
+		},
+		{
+			"uid": "34fa08cc-539f-4f1e-aa48-5c7b52f9e846",
+			"name": "Thrown",
+			"original": "false",
+			"translated": "false"
+		},
+		{
+			"uid": "6263fdf0-6ed9-4263-8577-9fefe7e9692f",
+			"name": "Damage Dice",
+			"original": "d6",
+			"translated": "(1)d6"
+		},
+		{
+			"uid": "686e69df-2b73-4c58-b44f-435182a81dfe",
+			"name": "Bonus to Weight",
+			"original": "{cc817f69-f590-4127-9c2d-4eda5a6c7ebd}",
+			"translated": "{F186_WEIGHT}"
+		},
+		{
+			"uid": "9e4750c7-f50d-4c70-881e-a6fbdc3d02a0",
+			"name": "Weight",
+			"original": "1",
+			"translated": "1"
+		},
+		{
+			"uid": "1122b417-f4fa-4860-850e-245177c0e619",
+			"name": "Bonus to Weight",
+			"original": "{9e4750c7-f50d-4c70-881e-a6fbdc3d02a0}",
+			"translated": "{F191_WEIGHT}"
+		},
+		{
+			"uid": "f78f7e57-9e27-46a8-900c-6f12985a068c",
+			"name": "Danno",
+			"original": "8d10",
+			"translated": "(8)d10"
+		},
+		{
+			"uid": "e8be7f0a-7639-4961-9bb5-1385fcd401c1",
+			"name": "Vita",
+			"original": "8d4 + 8",
+			"translated": "((8)d4+8)"
+		},
+		{
+			"uid": "51c08c46-7ffa-4aee-b312-2b93f8828ccc",
+			"name": "Vita",
+			"original": "4d4 + 4",
+			"translated": "((4)d4+4)"
+		},
+		{
+			"uid": "d288d343-caaf-437d-92a7-f1786cea1685",
+			"name": "Weight",
+			"original": "1",
+			"translated": "1"
+		},
+		{
+			"uid": "ff3a75d4-93d8-4e7b-b063-ad605d13b0ba",
+			"name": "Bonus to Weight",
+			"original": "{d288d343-caaf-437d-92a7-f1786cea1685}",
+			"translated": "{F196_WEIGHT}"
+		},
+		{
+			"uid": "e36fd978-dca3-43b7-9e56-bb8008ae1531",
+			"name": "Weight",
+			"original": "0",
+			"translated": "0"
+		},
+		{
+			"uid": "570f5ea1-d83c-4e5d-bd7d-2605914617fb",
+			"name": "Bonus to Weight",
+			"original": "{e36fd978-dca3-43b7-9e56-bb8008ae1531}",
+			"translated": "{F198_WEIGHT}"
+		},
+		{
+			"uid": "bfffc4c4-28c8-4642-b961-c797e9945446",
+			"name": "Rapidità di mano",
+			"original": "5",
+			"translated": "5"
+		},
+		{
+			"uid": "07ddc746-3ad5-44a3-ad97-35cd698ed09d",
+			"name": "Indossati",
+			"original": "false",
+			"translated": "false"
+		}
+	]
+}
