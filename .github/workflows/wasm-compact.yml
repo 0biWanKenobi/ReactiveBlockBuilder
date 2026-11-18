@@ -1,0 +1,71 @@
+name: Experimental WASM compact API comparison
+
+on:
+  push:
+    branches: [exp/compact-api]
+  workflow_dispatch:
+
+jobs:
+  browser-benchmark:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Install current ReactiveBlockBuilder dependencies
+        run: bun install --frozen-lockfile
+      - name: Checkout experimental dice-wasm 0.2.1
+        uses: actions/checkout@v4
+        with:
+          repository: 0biWanKenobi/dice-wasm
+          ref: exp/compact-api
+          path: .tmp-dice-wasm
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: .tmp-dice-wasm
+      - name: Install wasm-pack
+        run: cargo install wasm-pack --locked
+      - name: Build and package experimental 0.2.1
+        shell: bash
+        run: |
+          cd .tmp-dice-wasm
+          sh ./build.sh
+          node scripts/prepare-package.mjs
+          node scripts/check-package.mjs
+          package=$(cd dist && npm pack --pack-destination "$GITHUB_WORKSPACE" --silent)
+          echo "PACKAGE=$package" >> "$GITHUB_ENV"
+      - name: Install experimental package in benchmark workspace
+        run: bun add --no-save "./$PACKAGE"
+      - name: Check application types and build
+        run: |
+          bun run check
+          bun run build
+      - name: Install Chromium
+        run: bunx playwright install --with-deps chromium
+      - name: Compare full and compact APIs in Chromium
+        shell: bash
+        run: |
+          bun run dev -- --host 127.0.0.1 --port 5189 --strictPort > /tmp/wasm-compact-vite.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          for attempt in $(seq 1 60); do
+            if curl --fail --silent http://127.0.0.1:5189/wasm-bench > /dev/null; then break; fi
+            sleep 1
+          done
+          node scripts/experiments/wasm-compact/browser.mjs || {
+            cat /tmp/wasm-compact-vite.log
+            exit 1
+          }
+      - name: Upload browser timing samples
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: wasm-compact-browser-results
+          path: wasm-compact-results.json
+          if-no-files-found: warn
