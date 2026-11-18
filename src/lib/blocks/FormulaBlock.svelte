@@ -1,12 +1,13 @@
 <script lang="ts">
 	import { Dialog } from '#lib';
-	import { executeRoll, resolve, type Sheet, type RollOutcome } from '../formula/engine';
+	import { executeRoll, resolve, resolveCompact, type Sheet, type RollOutcome } from '../formula/engine';
 	type Attrs = { field: string; label: string; showLabel: boolean };
 
 	let { attrs, sheet }: { attrs: Attrs; sheet: Sheet } = $props();
 	let evaluated = $derived.by(() => {
 		try {
-			return { value: resolve(sheet, attrs.field), error: '' };
+			const compact = typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('compact');
+			return { value: (compact ? resolveCompact : resolve)(sheet, attrs.field), error: '' };
 		} catch (error) {
 			return { value: null, error: error instanceof Error ? error.message : String(error) };
 		}
