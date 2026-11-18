@@ -9,6 +9,9 @@ export type Resolution = {
 	rollable: boolean;
 	dependencies: string[];
 };
+export type CompactResolution = Omit<Resolution, 'expression' | 'dependencies'> & {
+	expression?: string;
+};
 export type RollOutcome = { total: number; dice: DiceResult[] };
 
 type WasmOutcome = { value: number | boolean; dice: DiceResult[] };
@@ -99,8 +102,8 @@ export function resolve(sheet: Sheet, id: string): Resolution {
  * resolve(), but avoids transferring dependencies and deterministic previews.
  * The full resolve() API remains available for dependency inspection.
  */
-export function resolveCompact(sheet: Sheet, id: string): Resolution {
-	const result = synchronize(sheet, id).resolve_compact(id) as Resolution;
+export function resolveCompact(sheet: Sheet, id: string): CompactResolution {
+	const result = synchronize(sheet, id).resolve_compact(id) as CompactResolution;
 	result.value ??= null;
 	return result;
 }
