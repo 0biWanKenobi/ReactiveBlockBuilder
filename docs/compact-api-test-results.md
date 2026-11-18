@@ -134,6 +134,6 @@ navigable formula inspection. For a production decision, repeat on a user
 machine with an end-to-end edit-to-paint measurement and consider larger
 dependency graphs before investing in the persistent incremental design.
 
-The larger proposal in [wasm-optimization.md](../wasm-optimization.md)
+The larger proposal in [wasm-optimization.md](./wasm-optimization.md)
 (incremental graph invalidation and batched changed-value propagation)
 remains **unimplemented** and is not covered by these measurements.
