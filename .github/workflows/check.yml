@@ -24,7 +24,7 @@ jobs:
           trap 'kill "$server_pid" 2>/dev/null || true' EXIT
           for attempt in $(seq 1 30); do
             if curl --fail --silent http://127.0.0.1:5173/ -o /tmp/rbb-page.html; then
-              grep -q "Reactive Block Builder" /tmp/rbb-page.html
+              grep -q "Character Sheet Designer" /tmp/rbb-page.html
               exit 0
             fi
             sleep 1
