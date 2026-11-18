@@ -94,6 +94,17 @@ export function resolve(sheet: Sheet, id: string): Resolution {
 	return result;
 }
 
+/**
+ * Experimental render-only resolution. Same synchronization and semantics as
+ * resolve(), but avoids transferring dependencies and deterministic previews.
+ * The full resolve() API remains available for dependency inspection.
+ */
+export function resolveCompact(sheet: Sheet, id: string): Resolution {
+	const result = synchronize(sheet, id).resolve_compact(id) as Resolution;
+	result.value ??= null;
+	return result;
+}
+
 export function executeRoll(sheet: Sheet, id: string): RollOutcome {
 	const output = synchronize(sheet, id).roll(id) as WasmOutcome;
 	if (typeof output.value !== 'number') {
