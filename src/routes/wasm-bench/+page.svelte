@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import smokeBall from '../../../examples/smoke-ball/sheet.json';
-	import { releaseSheet, resolve, resolveCompact, type Sheet } from '$lib/formula/engine';
+	import { releaseSheet, resolve, resolveCompact, type Sheet } from '#lib/formula/engine';
 
 	type Preview = { value: number | boolean | null; rollable: boolean; expression?: string };
 	type Result = { case: string; full: number[]; compact: number[]; fullMedianMs: number; compactMedianMs: number; speedup: number };
