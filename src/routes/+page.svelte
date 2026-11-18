@@ -29,11 +29,11 @@
 	import { SelectedTab, setSelectedTab } from '#lib/selectedTab.svelte';
 
 	let fields = $state<Sheet>(structuredClone(initialFields));
+	// svelte-ignore state_referenced_locally
+	// capturing initial value is intentional
 	let editor = $state<Editor>(
 		new Editor({
 			editable: true,
-			// svelte-ignore state_referenced_locally
-			// capturing initial value is intentional
 			extensions: createSheetExtensions(fields),
 			content: sampleDocument,
 			autofocus: false,
@@ -89,7 +89,7 @@
 		})();
 
 		return () => {
-			editor = null as any;
+			editor.destroy();
 		};
 	});
 
