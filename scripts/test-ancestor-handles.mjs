@@ -187,10 +187,13 @@ try {
     themeId: 'default',
     fields: { STR: { id: 'STR', formula: '16' } }
   };
+  await page.getByRole('group', { name: 'Tabs', exact: true })
+    .getByRole('button', { name: 'Definition' }).click();
   await source.click();
   await page.keyboard.press('ControlOrMeta+A');
   await page.keyboard.insertText(JSON.stringify(original));
   await page.locator('#apply-sheet-json').click();
+  await page.locator('.slide-up').getByRole('button', { name: 'Close', exact: true }).click();
   const rootTitle = page.locator('.sheet-content .sheet-title').first();
   const subtitle = page.locator('.sheet-content .sheet-subtitle').first();
   const headerElement = page.locator('.sheet-content .sheet-header').first();

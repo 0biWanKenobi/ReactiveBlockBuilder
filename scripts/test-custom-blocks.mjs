@@ -11,6 +11,10 @@ try {
   page.on('console', msg => { if(msg.type() !== 'log') console.error('BROWSER CONSOLE', msg.type(), msg.text()); });
   page.on('response', response => { if(response.status() >= 400) console.error('BROWSER RESPONSE', response.status(), response.url()); });
   await page.goto('http://127.0.0.1:5189/', { waitUntil: 'networkidle' });
+  const openDefinition = () => page.getByRole('group', { name: 'Tabs', exact: true })
+    .getByRole('button', { name: 'Definition' }).click();
+  const closeSources = () => page.locator('.slide-up')
+    .getByRole('button', { name: 'Close', exact: true }).click();
 
   await testTextSpans(page);
   await testContainerContextMenu(page);
@@ -79,6 +83,7 @@ try {
   assert.match(await title.innerText(), /!/);
 
   const source = page.locator('.source-panel').first().locator('.cm-content');
+  await openDefinition();
   await page.locator('#sync-sheet-json').click();
   await source.click();
   await page.keyboard.press('ControlOrMeta+A');
@@ -92,6 +97,7 @@ try {
   assert.equal(expanded.attrs.typeId, 'sheet-header');
   assert(expanded.content.length > 0, 'Instance children are serialized');
   assert.equal(expanded.attrs.values, undefined);
+  await closeSources();
 
   // Delete works in both tools, after selecting the instance root in Edit mode.
   for (const tool of ['Edit', 'Drag']) {
@@ -113,16 +119,19 @@ try {
     assert.equal(await instance.count(), 0, `${tool}: Delete removes the whole custom block instance`);
     assert.equal(await page.getByRole('button', { name: 'Edit Test Header', exact: true }).count(), 1,
       'Deleting an instance keeps its library definition');
+    await openDefinition();
     await source.click();
     await page.keyboard.press('ControlOrMeta+A');
     await page.keyboard.insertText(JSON.stringify(serialized));
     await page.locator('#apply-sheet-json').click();
+    await closeSources();
     await instance.waitFor({ state: 'visible' });
   }
 
   await page.reload({ waitUntil: 'networkidle' });
   await page.getByRole('button', { name: 'Edit Test Header' }).waitFor();
   const importSource = page.locator('.source-panel').first().locator('.cm-content');
+  await openDefinition();
   await importSource.click();
   await page.keyboard.press('ControlOrMeta+A');
   await page.keyboard.insertText(JSON.stringify(serialized));
@@ -151,12 +160,14 @@ try {
   await page.keyboard.press('ControlOrMeta+C');
   const afterInvalid = JSON.parse(await page.evaluate(() => navigator.clipboard.readText()));
   assert.deepEqual(afterInvalid.fields, serialized.fields, 'Rejected import must preserve fields');
+  await closeSources();
 
   // The JSON editor has an explicit Apply action. Save must not silently
   // discard unapplied JSON edits and keep the older preview tree.
   await page.getByRole('button', { name: 'Edit Test Header' }).click();
   const editModal = page.getByRole('dialog', { name: 'Custom block definition editor' });
   await editModal.waitFor();
+  await editModal.getByRole('button', { name: 'Structure', exact: true }).click();
   const structureSource = editModal.getByRole('textbox', { name: 'Custom block structure JSON', exact: true });
   await structureSource.click();
   await page.keyboard.press('ControlOrMeta+End');
@@ -164,6 +175,8 @@ try {
   await editModal.getByRole('button', { name: 'Save definition' }).click();
   assert.match(await editModal.getByRole('alert').innerText(), /Unapplied JSON changes/);
   await editModal.getByRole('button', { name: 'From preview' }).click();
+  await page.getByRole('dialog', { name: 'Replace your JSON draft?', exact: true })
+    .getByRole('button', { name: 'Replace JSON draft', exact: true }).click();
 
   // Unsaved CSS must not leak from the preview into the sheet behind the modal.
   const originalColor = await page.locator('.sheet-content [data-custom-block-type="sheet-header"] .sheet-title')
@@ -209,10 +222,12 @@ try {
     ] }
   };
   const nestedSource = page.locator('.source-panel').first().locator('.cm-content');
+  await openDefinition();
   await nestedSource.click();
   await page.keyboard.press('ControlOrMeta+A');
   await page.keyboard.insertText(JSON.stringify(nestedSheet));
   await page.locator('#apply-sheet-json').click();
+  await closeSources();
   assert.equal(await page.locator('.sheet-content .parent-root .child-label').first().innerText(), 'Global child default');
   // Dragging a nested component on the sheet must expose only the outer
   // custom-block handle, not the child definition's internal structure.
@@ -233,6 +248,7 @@ try {
   // while preserving existing instance values in the open sheet.
   await page.getByRole('button', { name: 'Edit Nested Parent' }).click();
   const evolutionModal = page.getByRole('dialog', { name: 'Custom block definition editor' });
+  await evolutionModal.getByRole('button', { name: 'Structure', exact: true }).click();
   const definitionJSON = evolutionModal.getByRole('textbox', { name: 'Custom block structure JSON', exact: true });
   await definitionJSON.click();
   await page.keyboard.press('ControlOrMeta+A');

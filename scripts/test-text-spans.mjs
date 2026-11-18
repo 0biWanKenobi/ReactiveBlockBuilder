@@ -19,12 +19,15 @@ export async function testTextSpans(page) {
 		assert.equal(await canvas.locator('p[data-sheet-text]').count(), 0);
 
 		// The row's layout comes from public sheet selectors in Theme CSS.
-		const theme = page.getByRole('textbox', { name: 'Theme CSS', exact: true });
+		await page.getByRole('group', { name: 'Tabs', exact: true })
+			.getByRole('button', { name: 'Style' }).click();
+		const theme = page.getByRole('textbox', { name: 'Theme', exact: true });
 		await theme.click();
 		await page.keyboard.press('ControlOrMeta+End');
 		await page.keyboard.insertText(
 			'\n.sheet-content .span-test-row { display: flex; align-items: center; gap: 8px; }'
 		);
+		await page.locator('.slide-up').getByRole('button', { name: 'Close', exact: true }).click();
 
 		const label = canvas.locator('span.stat-label');
 		await label.click();
@@ -89,10 +92,9 @@ export async function testTextSpans(page) {
 			(element, document) => element.editor.commands.setContent(document),
 			original
 		);
-		await page
-			.locator('.source-panel')
-			.nth(1)
-			.getByRole('button', { name: 'Discard', exact: true })
-			.click();
+		await page.getByRole('group', { name: 'Tabs', exact: true })
+			.getByRole('button', { name: 'Style' }).click();
+		await page.locator('.source-panel').getByTitle('Discard Changes').click();
+		await page.locator('.slide-up').getByRole('button', { name: 'Close', exact: true }).click();
 	}
 }

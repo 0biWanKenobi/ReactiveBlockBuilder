@@ -14,19 +14,23 @@ try {
   const sidebar = page.locator('#block-palette-pane aside');
   const inspector = page.locator('#inspector-pane aside');
   const tools = page.locator('.pane-title');
-  const sources = page.locator('.source-panels');
+  const sources = page.locator('.slide-up');
+  const editorMode = page.getByRole('group', { name: 'Editor mode', exact: true });
   const title = page.locator('.sheet-title').first();
 
   await title.waitFor({ state: 'visible' });
   const originalText = await title.innerText();
   const designWidth = (await canvas.boundingBox()).width;
   assert.equal(await sidebar.isVisible(), true);
-  assert.equal(await sources.isVisible(), true);
+  assert.equal(await sources.isVisible(), false, 'Source drawer starts closed');
+  await page.getByRole('group', { name: 'Tabs', exact: true })
+    .getByRole('button', { name: 'Definition' }).click();
+  await sources.waitFor({ state: 'visible' });
 
   await title.hover();
   assert.equal(await page.locator('.sheet-content [data-rbb-hovered]').count(), 0);
   assert.notEqual(await title.evaluate(el => getComputedStyle(el).outlineStyle), 'none');
-  await page.locator('.topbar .switch button').nth(1).click();
+  await editorMode.getByRole('button', { name: 'Play' }).click();
   await page.waitForTimeout(650);
   assert.equal(await header.isVisible(), true);
   assert.equal(await title.isVisible(), true);
@@ -43,7 +47,7 @@ try {
   assert.equal(await page.locator('.sheet-content [data-rbb-hovered]').count(), 0);
   assert.equal(await page.locator('.sheet-header').first().evaluate(el => getComputedStyle(el).outlineStyle), 'none');
 
-  await page.locator('.topbar .switch button').nth(0).click();
+  await editorMode.getByRole('button', { name: 'Design' }).click();
   await page.waitForTimeout(650);
   assert.equal(await sidebar.isVisible(), true);
   assert.equal(await inspector.isVisible(), true);

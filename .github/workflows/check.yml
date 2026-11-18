@@ -14,8 +14,8 @@ jobs:
       - uses: oven-sh/setup-bun@v2
       - run: bun install --frozen-lockfile
       - run: bun test scripts/custom-model.test.ts
-      - run: npm run check
-      - run: npm run build
+      - run: bun run check
+      - run: bun run build
       - name: Smoke test dev server
         shell: bash
         run: |
@@ -33,11 +33,10 @@ jobs:
           exit 1
       - name: Install browser test dependencies
         run: |
-          npm install --no-save playwright
-          npx playwright install --with-deps chromium
+          bun x playwright install --with-deps chromium
       - name: Browser test nested drag handles
         run: |
-          npm run dev -- --host 127.0.0.1 --port 5189 --strictPort > /tmp/rbb-browser.log 2>&1 &
+          bun run dev --host 127.0.0.1 --port 5189 --strictPort > /tmp/rbb-browser.log 2>&1 &
           server_pid=$!
           trap 'kill "$server_pid" 2>/dev/null || true' EXIT
           for attempt in $(seq 1 30); do
