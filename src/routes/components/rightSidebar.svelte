@@ -1,7 +1,6 @@
 <script lang="ts">
 	import '../../styles/shared.css';
-	import type { Editor } from '@tiptap/core';
-	import { allowedNodeTypes, type Sheet, type SheetNodeType } from '#lib';
+	import { allowedNodeTypes, type SheetNodeType } from '#lib';
 	import { selectedBlock, updateBlockAttribute } from '#lib/editor/selection';
 	import type { EditorMode } from './leftSidebar.svelte';
 	import type { StockBlockType } from '#lib/themes/styles';
@@ -9,16 +8,13 @@
 	import trashIcon from '#lib/icons/trash.svg';
 	import { isBlockDragMode } from '#lib/editor/blockInteraction';
 	import Checkbox from '#lib/components/Checkbox.svelte';
+	import { editor, sheet } from '#lib/editor/editor.svelte';
 
 	let {
 		mode,
-		editor,
-		sheet,
 		onEditThemeCSS
 	}: {
 		mode: EditorMode;
-		editor: Editor;
-		sheet: Sheet;
 		onEditThemeCSS: (type: StockBlockType) => void;
 	} = $props();
 

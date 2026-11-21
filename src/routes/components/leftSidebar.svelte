@@ -1,6 +1,6 @@
 <script lang="ts">
 	import '../../styles/shared.css';
-	import { validateId, type Sheet } from '#lib';
+	import { validateId } from '#lib';
 	import type { CustomBlockLibrary } from '#lib/custom-blocks/library.svelte.ts';
 	import { prepareDocument } from '#lib/custom-blocks/model.ts';
 	import type { CustomBlockRepository } from '#lib/custom-blocks/repository.ts';
@@ -9,7 +9,7 @@
 	import BlockPalette from '#lib/editor/BlockPalette.svelte';
 	import Dropdown from '#lib/components/Dropdown.svelte';
 	import type { OpResult } from '#lib/types/shared.ts';
-	import type { Editor } from '@tiptap/core';
+	import { editor, sheet } from '#lib/editor/editor.svelte';
 
 	export type EditorMode = 'design' | 'play';
 	export type SaveBehavior = 'ask' | 'replace' | 'keep';
@@ -19,8 +19,6 @@
 		saveBehavior = $bindable('ask'),
 		library,
 		repository,
-		sheet,
-		editor,
 		onDragPaletteBlock,
 		onBlockEdit,
 		onBlockDelete
@@ -29,8 +27,6 @@
 		saveBehavior: SaveBehavior;
 		library: CustomBlockLibrary;
 		repository: CustomBlockRepository;
-		sheet: Sheet;
-		editor: Editor;
 		onDragPaletteBlock: (res: OpResult) => void;
 		onBlockEdit: (block: CustomBlockDefinition) => void;
 		onBlockDelete: (res: OpResult) => Promise<void>;

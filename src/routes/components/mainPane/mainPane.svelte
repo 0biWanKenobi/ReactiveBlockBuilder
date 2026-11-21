@@ -1,8 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import '#lib/editor/blockInteraction.css';
-	import { Editor } from '@tiptap/core';
-	import type { Sheet } from '#lib';
 	import type { CustomBlockLibrary } from '#lib/custom-blocks/library.svelte';
 	import { setBlockDragMode } from '#lib/editor/blockInteraction';
 	import type { EditorMode } from '../leftSidebar.svelte';
@@ -11,11 +9,10 @@
 	import type { ThemeStylesheet } from '#lib/themes/styles';
 	import ContextMenu from './contextMenu.svelte';
 	import type { ThemeStyleStore } from '#lib/themes/store';
+	import { editor } from '#lib/editor/editor.svelte';
 
 	let {
 		mode,
-		editor,
-		fields = $bindable(),
 		library,
 		blockCSS,
 		themeStyles,
@@ -25,8 +22,6 @@
 		onViewProperties
 	}: {
 		mode: EditorMode;
-		editor: Editor;
-		fields: Sheet;
 		library: CustomBlockLibrary;
 		blockCSS: Record<string, string>;
 		themeStyles: ThemeStyleStore;
@@ -51,7 +46,6 @@
 		return () => {
 			element.remove();
 			styleElement = null;
-			editor.destroy();
 		};
 	});
 
@@ -110,8 +104,6 @@
 
 	<SourcePanels
 		{mode}
-		{editor}
-		bind:fields
 		{library}
 		{themeStyles}
 		bind:activeStylesheet

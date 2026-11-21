@@ -11,18 +11,17 @@
 	import CodeEditor from '../editor/CodeEditor.svelte';
 	import { prepareDocument, ensureNodeIds, resetLeafDefaults, validateDefinition } from './model';
 	import type { CustomBlockDefinition, BlockLibrary, PopulatedNode, TypedNode } from './types';
-	import type { Sheet } from '../formula/engine';
 	import Inspector, { type SelectedBlock } from './modal-editor/Inspector.svelte';
 	import Switch from '#lib/components/Switch.svelte';
 	import type { DialogMode } from './modal-editor/ConfirmDialog.svelte';
 	import ConfirmDialog from './modal-editor/ConfirmDialog.svelte';
+	import { sheet } from '#lib/editor/editor.svelte';
 
 	let {
 		initial,
 		initialCSS,
 		initialNeedsSync,
 		library,
-		fields,
 		onSave,
 		onClose,
 		onNavigate,
@@ -32,7 +31,6 @@
 		initialCSS: string;
 		initialNeedsSync: boolean;
 		library: BlockLibrary;
-		fields: Sheet;
 		onSave: (definition: CustomBlockDefinition, css: string, needsSync: boolean) => void;
 		onClose: () => void;
 		onNavigate?: (
@@ -88,7 +86,7 @@
 	// svelte-ignore state_referenced_locally
 	const editor = new Editor({
 		element: null,
-		extensions: createSheetExtensions(fields),
+		extensions: createSheetExtensions(sheet),
 		content: {
 			type: 'doc',
 			content: [prepareDocument($state.snapshot(initial.structure), library)]

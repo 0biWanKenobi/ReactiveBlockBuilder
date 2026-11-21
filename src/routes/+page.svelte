@@ -14,10 +14,8 @@
 	} from '../lib/custom-blocks/model';
 	import type { CustomBlockDefinition, PopulatedNode } from '../lib/custom-blocks/types';
 	import { synchronizeCustomNodes } from '../lib/editor/customNodes';
-	import { Editor, type JSONContent } from '@tiptap/core';
+	import { type JSONContent } from '@tiptap/core';
 	import type { Transaction } from '@tiptap/pm/state';
-	import { createSheetExtensions, initialFields, sampleDocument } from '../lib/index';
-	import type { Sheet } from '../lib/index';
 	import LeftSidebar from './components/leftSidebar.svelte';
 	import MainPane from './components/mainPane/mainPane.svelte';
 	import RightSidebar from './components/rightSidebar.svelte';
@@ -26,21 +24,8 @@
 	import { createThemeStyleStore } from '#lib/themes/store';
 	import { SelectedTab, setSelectedTab } from '#lib/selectedTab.svelte';
 	import Header from './components/header.svelte';
+	import { editor } from '#lib/editor/editor.svelte';
 
-	let fields = $state<Sheet>(structuredClone(initialFields));
-	// svelte-ignore state_referenced_locally
-	// capturing initial value is intentional
-	let editor = $state<Editor>(
-		new Editor({
-			editable: true,
-			extensions: createSheetExtensions(fields),
-			content: sampleDocument,
-			autofocus: false,
-			editorProps: {
-				attributes: { class: 'sheet-document', 'aria-label': 'Character sheet block editor' }
-			}
-		})
-	);
 	let mode = $state<'design' | 'play'>('design');
 	const selectedTab = setSelectedTab(new SelectedTab());
 	let leftCollapsed = $state(false);
@@ -259,9 +244,7 @@
 				{mode}
 				bind:saveBehavior
 				{library}
-				{editor}
 				{repository}
-				sheet={fields}
 				onDragPaletteBlock={({ success, message: msg }) => {
 					if (!success) message = msg;
 				}}
@@ -281,8 +264,6 @@
 
 		<MainPane
 			{mode}
-			{editor}
-			bind:fields
 			{library}
 			{blockCSS}
 			{themeStyles}
@@ -303,12 +284,7 @@
 			bind:collapsed={rightCollapsed}
 			bind:outsideDismissed={rightDismissed}
 		>
-			<RightSidebar
-				{mode}
-				{editor}
-				sheet={fields}
-				onEditThemeCSS={(type) => (activeStylesheet = type)}
-			/>
+			<RightSidebar {mode} onEditThemeCSS={(type) => (activeStylesheet = type)} />
 		</SidePane>
 	</div>
 </div>
@@ -320,7 +296,6 @@
 			initialCSS={editedCSS ?? blockCSS[editedBlock.typeId] ?? ''}
 			initialNeedsSync={editedNeedsSync}
 			{library}
-			{fields}
 			onSave={saveDefinition}
 			onNavigate={openNestedDefinition}
 			onClose={closeDefinition}

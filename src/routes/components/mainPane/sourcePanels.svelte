@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Editor, JSONContent } from '@tiptap/core';
+	import type { JSONContent } from '@tiptap/core';
 	import CodeEditor from '#lib/editor/CodeEditor.svelte';
 	import ThemeCSS from './themeCSS.svelte';
 	import type { ThemeStylesheet } from '#lib/themes/styles';
@@ -12,19 +12,16 @@
 	import SlideUp from '#lib/components/SlideUp.svelte';
 	import { getSelectedTab } from '#lib/selectedTab.svelte';
 	import type { ThemeStyleStore } from '#lib/themes/store';
+	import { editor, sheet } from '#lib/editor/editor.svelte';
 
 	let {
 		mode,
-		editor,
-		fields = $bindable(),
 		library,
 		themeStyles,
 		activeStylesheet = $bindable('base'),
 		onMessage
 	}: {
 		mode: EditorMode;
-		editor: Editor;
-		fields: Sheet;
 		library: CustomBlockLibrary;
 		themeStyles: ThemeStyleStore;
 		activeStylesheet: ThemeStylesheet;
@@ -65,7 +62,7 @@
 			version: 1,
 			themeId: DEFAULT_THEME,
 			document: editor.getJSON(),
-			fields: structuredClone($state.snapshot(fields))
+			fields: structuredClone($state.snapshot(sheet))
 		};
 		jsonSource = JSON.stringify(saved, null, 2);
 		onMessage('Current sheet serialized below');
@@ -113,9 +110,9 @@
 				}
 			}
 			// Preserve the reactive proxy: existing formula node views reference it.
-			for (const key of Object.keys(fields)) delete fields[key];
+			for (const key of Object.keys(sheet)) delete sheet[key];
 			for (const [key, value] of Object.entries(imported.fields)) {
-				fields[key] = { id: key, formula: value.formula };
+				sheet[key] = { id: key, formula: value.formula };
 			}
 			editor
 				.chain()
