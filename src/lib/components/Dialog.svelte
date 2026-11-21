@@ -53,12 +53,14 @@
 		}
 	}}
 >
-	<div class="dialog-body">
+	<div class="dialog-header">
 		<div class="dialog-icon" aria-hidden="true">?</div>
 		<div class="dialog-copy">
 			<h2 id={`${id}-title`}>{title}</h2>
 			<p id={`${id}-message`} class:hidden={!message}>{message}</p>
 		</div>
+	</div>
+	<div class="dialog-body">
 		{@render children?.()}
 	</div>
 	<div class="dialog-actions" class:hidden={!buttons.length}>
@@ -112,12 +114,24 @@
 	:global(body:has(dialog.confirmation-dialog[open])) {
 		overflow: hidden;
 	}
-	.dialog-body {
+	
+	.dialog-header {
 		display: flex;
-		align-items: flex-start;
+		padding: 16px 24px;
+		align-items: center;
 		gap: 16px;
-		padding: 28px 28px 24px;
+		border-bottom: 1px solid #e9dfd2;
+
+		h2 {
+			margin: 0;
+		}
 	}
+
+	.dialog-body {
+		padding: 32px 24px;
+	}
+
+
 	.dialog-icon {
 		display: grid;
 		flex: 0 0 40px;
@@ -207,7 +221,7 @@
 		}
 	}
 	@media (max-width: 480px) {
-		.dialog-body {
+		.dialog-header {
 			gap: 12px;
 			padding: 22px 20px;
 		}
