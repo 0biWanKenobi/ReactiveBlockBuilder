@@ -1,4 +1,4 @@
-<script lang="ts" generics="T, const V extends T[]">
+<script lang="ts" generics="T, V extends T[]">
 	import type { SvelteHTMLElements } from 'svelte/elements';
 
 	type ExtraProps = SvelteHTMLElements['div'];
