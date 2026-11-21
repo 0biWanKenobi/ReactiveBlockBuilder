@@ -57,7 +57,7 @@
 		}
 	}
 
-	function exportSheet() {
+	function readFromPreview() {
 		const saved: SavedSheet = {
 			version: 1,
 			themeId: DEFAULT_THEME,
@@ -88,7 +88,7 @@
 		}
 	}
 
-	function importSheet() {
+	function applyJsonToPreview() {
 		try {
 			const imported: SavedSheet = JSON.parse(jsonSource);
 			if (
@@ -143,8 +143,8 @@
 			<div class="source-heading">
 				<strong>Sheet Definition</strong>
 				<div class="source-actions">
-					<button id="apply-sheet-json" onclick={importSheet}>Apply to Preview</button>
-					<button id="sync-sheet-json" onclick={exportSheet}>Sync from Preview</button>
+					<button id="apply-sheet-json" onclick={applyJsonToPreview}>Apply to Preview</button>
+					<button id="sync-sheet-json" onclick={readFromPreview}>Sync from Preview</button>
 					<button title="Format Definition" aria-label="Format Definition" onclick={formatJSON}
 						>🪄</button
 					>
@@ -171,7 +171,6 @@
 		min-width: 0;
 		background: #fff;
 		border: 1px solid #e4ded5;
-		border-radius: 10px;
 		overflow: hidden;
 	}
 	.source-heading {
