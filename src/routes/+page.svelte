@@ -349,19 +349,19 @@
 	{/key}
 {/if}
 {#if conversionPrompt}
-	<div class="confirmation-backdrop">
-		<div class="confirmation" role="dialog" aria-modal="true" aria-label="Saved custom block">
-			<h2>Custom block saved</h2>
+	{#await import('#lib/components/Dialog.svelte') then { default: Dialog }}
+		<Dialog open title="Custom block saved"
+			buttons={[
+				{ text: 'Replace original', primary: true, action: () => conversionChoice(true) },
+				{ text: 'Keep original', action: () => conversionChoice(false) },
+			]}
+		>
 			<p>Replace the original container with an instance of the new custom block?</p>
 			<label
 				><input type="checkbox" bind:checked={rememberChoice} /> Remember for this session</label
 			>
-			<div class="confirmation-actions">
-				<button onclick={() => conversionChoice(false)}>Keep original</button>
-				<button class="primary" onclick={() => conversionChoice(true)}>Replace original</button>
-			</div>
-		</div>
-	</div>
+		</Dialog>
+	{/await}
 {/if}
 
 <style>
@@ -415,40 +415,6 @@
 		align-items: stretch;
 		min-height: 0;
 		transition: grid-template-columns 460ms cubic-bezier(0.2, 0.7, 0.2, 1);
-	}
-	.confirmation-backdrop {
-		position: fixed;
-		inset: 0;
-		z-index: 120;
-		background: #0008;
-		display: grid;
-		place-items: center;
-	}
-	.confirmation {
-		background: #fffaf3;
-		padding: 24px;
-		border-radius: 12px;
-		width: min(420px, 90vw);
-		box-shadow: 0 20px 50px #0004;
-	}
-	.confirmation h2 {
-		font-size: 1.1rem;
-	}
-	.confirmation label {
-		display: flex;
-		gap: 8px;
-		align-items: center;
-		font-size: 0.85rem;
-	}
-	.confirmation label input {
-		width: auto;
-		min-width: 0;
-	}
-	.confirmation-actions {
-		display: flex;
-		justify-content: flex-end;
-		gap: 10px;
-		margin-top: 20px;
 	}
 
 	/* Keep the live editor and CodeMirror mounted while the workspace recedes. */
