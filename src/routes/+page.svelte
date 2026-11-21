@@ -22,11 +22,10 @@
 	import MainPane from './components/mainPane/mainPane.svelte';
 	import RightSidebar from './components/rightSidebar.svelte';
 	import SidePane from './components/sidePane/sidePane.svelte';
-	import Switch from '#lib/components/Switch.svelte';
 	import type { ThemeStylesheet } from '#lib/themes/styles';
 	import { createThemeStyleStore } from '#lib/themes/store';
-	import type { Tab } from '#lib/types/shared.ts';
 	import { SelectedTab, setSelectedTab } from '#lib/selectedTab.svelte';
+	import Header from './components/header.svelte';
 
 	let fields = $state<Sheet>(structuredClone(initialFields));
 	// svelte-ignore state_referenced_locally
@@ -242,26 +241,7 @@
 </svelte:head>
 
 <div class="workspace" class:playing={mode === 'play'}>
-	<header class="topbar">
-		<div>
-			<h1>Character Sheet Designer</h1>
-			<p>Build a sheet with your own style and reactive properties.</p>
-		</div>
-		<div>
-			<Switch
-				values={['sheet', 'JSON', 'CSS'] satisfies Tab[]}
-				labels={['📝 Sheet', '{ } Definition', '🖌️ Style']}
-				bind:active={selectedTab.value}
-				aria-label="Tabs"
-			/>
-		</div>
-		<Switch
-			values={['design', 'play']}
-			labels={['✎ Design', '▶ Play']}
-			bind:active={mode}
-			aria-label="Editor mode"
-		/>
-	</header>
+	<Header bind:mode bind:selectedTab={selectedTab.value} />
 
 	<div
 		class="editor-layout"
@@ -350,10 +330,12 @@
 {/if}
 {#if conversionPrompt}
 	{#await import('#lib/components/Dialog.svelte') then { default: Dialog }}
-		<Dialog open title="Custom block saved"
+		<Dialog
+			open
+			title="Custom block saved"
 			buttons={[
 				{ text: 'Replace original', primary: true, action: () => conversionChoice(true) },
-				{ text: 'Keep original', action: () => conversionChoice(false) },
+				{ text: 'Keep original', action: () => conversionChoice(false) }
 			]}
 		>
 			<p>Replace the original container with an instance of the new custom block?</p>
@@ -387,25 +369,7 @@
 		flex-direction: column;
 		height: 100dvh;
 	}
-	.topbar {
-		display: flex;
-		flex-shrink: 0;
-		justify-content: space-between;
-		gap: 20px;
-		align-items: center;
-		padding: 24px 30px;
-		background: #23282c;
-		color: #faf8f5;
-	}
-	h1 {
-		margin: 5px 0 3px;
-		font-size: 1.7rem;
-	}
-	.topbar p {
-		margin: 0;
-		font-size: 0.87rem;
-		color: #bdbfc0;
-	}
+
 	.editor-layout {
 		--left-pane-width: 240px;
 		--right-pane-width: 230px;
@@ -450,10 +414,6 @@
 		.workspace {
 			height: auto;
 			min-height: 100dvh;
-		}
-		.topbar {
-			flex-direction: column;
-			align-items: flex-start;
 		}
 		.editor-layout {
 			display: flex;
