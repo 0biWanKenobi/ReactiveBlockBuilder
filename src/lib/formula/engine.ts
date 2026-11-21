@@ -88,18 +88,11 @@ export function releaseSheet(sheet: Sheet) {
 	contexts.delete(sheet);
 }
 
-export function resolve(sheet: Sheet, id: string): Resolution {
-	const result = synchronize(sheet, id).resolve(id) as Resolution;
-	result.value ??= null;
-	return result;
-}
-
 /**
- * Experimental render-only resolution. Same synchronization and semantics as
- * resolve(), but avoids transferring dependencies and deterministic previews.
+ * Avoids transferring dependencies and deterministic previews.
  * The full resolve() API remains available for dependency inspection.
  */
-export function resolveCompact(sheet: Sheet, id: string): Resolution {
+export function resolve(sheet: Sheet, id: string): Resolution {
 	const result = synchronize(sheet, id).resolve_compact(id) as Resolution;
 	result.value ??= null;
 	return result;

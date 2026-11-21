@@ -33,15 +33,15 @@
     "svelte": "^5.0.0"
   },
   "dependencies": {
-    "@0biwankenobi/dice-wasm": "https://github.com/0biWanKenobi/dice-wasm/releases/download/v0.2.0/dice-wasm-v0.2.0.tgz",
-    "@tiptap/core": "^3.0.0",
-    "@tiptap/pm": "^3.0.0",
-    "@tiptap/extension-document": "^3.0.0",
-    "@tiptap/extension-text": "^3.0.0",
-    "mathjs": "^15.1.0",
-    "codemirror": "^6.0.2",
+    "@0biwankenobi/dice-wasm": "https://github.com/0biWanKenobi/dice-wasm/releases/download/v0.2.1/dice-wasm-v0.2.1.tgz",
     "@codemirror/lang-css": "^6.3.1",
     "@codemirror/lang-json": "^6.0.2",
+    "@tiptap/core": "^3.0.0",
+    "@tiptap/extension-document": "^3.0.0",
+    "@tiptap/extension-text": "^3.0.0",
+    "@tiptap/pm": "^3.0.0",
+    "codemirror": "^6.0.2",
+    "mathjs": "^15.1.0",
     "prettier": "^3.8.3"
   },
   "devDependencies": {
