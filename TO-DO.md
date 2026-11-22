@@ -1,0 +1,2 @@
+- elementi espandibili (accordion)
+- visualizzazione con logica
