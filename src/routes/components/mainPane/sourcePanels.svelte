@@ -10,7 +10,7 @@
 	import { allowedNodeTypes, initialFields, sampleDocument, validateId, type Sheet } from '#lib';
 	import type { EditorMode } from '../leftSidebar.svelte';
 	import SlideUp from '#lib/components/SlideUp.svelte';
-	import { getSelectedTab } from '#lib/selectedTab.svelte';
+	import { getViewState } from '#lib/viewState.svelte.ts';
 	import type { ThemeStyleStore } from '#lib/themes/store';
 	import { editor, sheet } from '#lib/editor/editor.svelte';
 
@@ -27,13 +27,12 @@
 		activeStylesheet: ThemeStylesheet;
 		onMessage: (message: string) => void;
 	} = $props();
-	const selectedTab = getSelectedTab();
+	const viewState = getViewState();
 
 	type SavedSheet = {
 		version: 1;
 		document: JSONContent;
 		themeId: string;
-		fields: Sheet;
 	};
 
 	let jsonSource = $state(
@@ -41,31 +40,61 @@
 			{
 				version: 1,
 				themeId: DEFAULT_THEME,
-				document: sampleDocument,
-				fields: initialFields
+				document: sampleDocument
 			},
 			null,
 			2
 		)
 	);
-	function formatJSON() {
+
+	let formulaSource = $state(JSON.stringify(initialFields, null, 2));
+
+	type EditorProps = typeof editorProps;
+	const editorProps = $derived.by(() => {
+		switch (viewState.json) {
+			case null:
+				return null;
+			case 'Document':
+				return {
+					title: 'Sheet Definition',
+					value: jsonSource,
+					onchange: (v: string) => (jsonSource = v),
+					apply: applyDocumentToPreview,
+					read: readDocumentFromPreview
+				};
+			case 'Formulas':
+				return {
+					title: 'Formula Definitions',
+					value: formulaSource,
+					onchange: (v: string) => (formulaSource = v),
+					apply: applyFormulasToPreview,
+					read: readFormulasFromPreview
+				};
+		}
+	});
+
+	function formatJSON(editorProps: NonNullable<EditorProps>) {
 		try {
-			jsonSource = JSON.stringify(JSON.parse(jsonSource), null, 2) + '\n';
+			editorProps.onchange(JSON.stringify(JSON.parse(editorProps.value), null, 2) + '\n');
 			onMessage('JSON formatted');
 		} catch (error) {
 			onMessage(`Cannot format JSON: ${error instanceof Error ? error.message : String(error)}`);
 		}
 	}
 
-	function readFromPreview() {
+	function readDocumentFromPreview() {
 		const saved: SavedSheet = {
 			version: 1,
 			themeId: DEFAULT_THEME,
-			document: editor.getJSON(),
-			fields: structuredClone($state.snapshot(sheet))
+			document: editor.getJSON()
 		};
 		jsonSource = JSON.stringify(saved, null, 2);
 		onMessage('Current sheet serialized below');
+	}
+
+	function readFormulasFromPreview() {
+		formulaSource = JSON.stringify(structuredClone($state.snapshot(sheet)), null, 2);
+		onMessage('Current formulas serialized below');
 	}
 
 	function validateNode(node: JSONContent): void {
@@ -88,32 +117,21 @@
 		}
 	}
 
-	function applyJsonToPreview() {
+	/**
+	 * Applies the block definitions to the sheet preview
+	 */
+	function applyDocumentToPreview() {
 		try {
 			const imported: SavedSheet = JSON.parse(jsonSource);
 			if (
 				imported.version !== 1 ||
 				imported.document?.type !== 'doc' ||
-				imported.themeId !== DEFAULT_THEME ||
-				!imported.fields ||
-				typeof imported.fields !== 'object' ||
-				Array.isArray(imported.fields)
+				imported.themeId !== DEFAULT_THEME
 			) {
 				throw new Error('Expected version 1 sheet with document, fields and default themeId');
 			}
 			validateNode(imported.document);
 			const document = prepareDocument(imported.document, library);
-			// Fully validate before mutating the existing sheet or its reactive fields.
-			for (const [key, value] of Object.entries(imported.fields)) {
-				if (validateId(key) || !value || typeof value.formula !== 'string') {
-					throw new Error(`Invalid formula field ${key}`);
-				}
-			}
-			// Preserve the reactive proxy: existing formula node views reference it.
-			for (const key of Object.keys(sheet)) delete sheet[key];
-			for (const [key, value] of Object.entries(imported.fields)) {
-				sheet[key] = { id: key, formula: value.formula };
-			}
 			editor
 				.chain()
 				.command(({ tr }) => {
@@ -127,36 +145,71 @@
 			onMessage(`Import failed: ${error instanceof Error ? error.message : String(error)}`);
 		}
 	}
+
+	/**
+	 * Applies the formula definitions to the sheet preview
+	 */
+	function applyFormulasToPreview() {
+		try {
+			const imported: Sheet = JSON.parse(formulaSource);
+			if (typeof imported !== 'object' || Array.isArray(imported)) {
+				throw new Error('Expected version 1 sheet with document, fields and default themeId');
+			}
+
+			// Fully validate before mutating the existing sheet or its reactive fields.
+			for (const [key, value] of Object.entries(imported)) {
+				if (validateId(key) || !value || typeof value.formula !== 'string') {
+					throw new Error(`Invalid formula field ${key}`);
+				}
+			}
+			// Preserve the reactive proxy: existing formula node views reference it.
+			for (const key of Object.keys(sheet)) delete sheet[key];
+			for (const [key, value] of Object.entries(imported)) {
+				sheet[key] = { id: key, formula: value.formula };
+			}
+			onMessage('Formulas loaded');
+		} catch (error) {
+			onMessage(`Import failed: ${error instanceof Error ? error.message : String(error)}`);
+		}
+	}
+
+	const panelsCollaped = $derived(
+		viewState.tab === 'sheet' || mode === 'play' || viewState.json === null
+	);
 </script>
 
 <SlideUp
 	bind:collapsed={
-		() => selectedTab.value === 'sheet' || mode === 'play',
+		() => panelsCollaped,
 		(v) => {
-			if (v) selectedTab.value = 'sheet';
+			if (v) viewState.tab = 'sheet';
 		}
 	}
 	expandedHeight={500}
 >
 	<section class="source-panel">
-		{#if selectedTab.value === 'JSON'}
+		{#if viewState.tab === 'JSON' && editorProps}
 			<div class="source-heading">
-				<strong>Sheet Definition</strong>
+				<strong>{editorProps.title}</strong>
 				<div class="source-actions">
-					<button id="apply-sheet-json" onclick={applyJsonToPreview}>Apply to Preview</button>
-					<button id="sync-sheet-json" onclick={readFromPreview}>Sync from Preview</button>
-					<button title="Format Definition" aria-label="Format Definition" onclick={formatJSON}
-						>🪄</button
+					<button id="apply-sheet-json" onclick={editorProps.apply}>Apply to Preview</button>
+					<button id="sync-sheet-json" onclick={editorProps.read}>Sync from Preview</button>
+					<button
+						title="Format Definition"
+						aria-label="Format Definition"
+						onclick={() => formatJSON(editorProps)}
 					>
+						🪄
+					</button>
 				</div>
 			</div>
 			<CodeEditor
 				language="json"
 				label="Sheet Definition"
-				value={jsonSource}
-				onChange={(next) => (jsonSource = next)}
+				value={editorProps.value}
+				onChange={editorProps.onchange}
 			/>
-		{:else}
+		{:else if viewState.tab == 'CSS'}
 			<ThemeCSS {themeStyles} bind:activeStylesheet />
 		{/if}
 	</section>

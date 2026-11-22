@@ -22,12 +22,12 @@
 	import SidePane from './components/sidePane/sidePane.svelte';
 	import type { ThemeStylesheet } from '#lib/themes/styles';
 	import { createThemeStyleStore } from '#lib/themes/store';
-	import { SelectedTab, setSelectedTab } from '#lib/selectedTab.svelte';
+	import { ViewState, setViewState } from '#lib/viewState.svelte.ts';
 	import Header from './components/header.svelte';
 	import { editor } from '#lib/editor/editor.svelte';
 
 	let mode = $state<'design' | 'play'>('design');
-	const selectedTab = setSelectedTab(new SelectedTab());
+	setViewState(new ViewState());
 	let leftCollapsed = $state(false);
 	let rightCollapsed = $state(false);
 	let rightDismissed = $state(false);
@@ -226,7 +226,7 @@
 </svelte:head>
 
 <div class="workspace" class:playing={mode === 'play'}>
-	<Header bind:mode bind:selectedTab={selectedTab.value} />
+	<Header bind:mode />
 
 	<div
 		class="editor-layout"
@@ -314,9 +314,9 @@
 			]}
 		>
 			<p>Replace the original container with an instance of the new custom block?</p>
-			<label
-				><input type="checkbox" bind:checked={rememberChoice} /> Remember for this session</label
-			>
+			<label>
+				<input type="checkbox" bind:checked={rememberChoice} /> Remember for this session
+			</label>
 		</Dialog>
 	{/await}
 {/if}

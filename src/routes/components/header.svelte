@@ -1,12 +1,19 @@
 <script lang="ts">
 	import Button from '#lib/components/Button.svelte';
+	import PopoverMenu from '#lib/components/popover/PopoverMenu.svelte';
+	import PopoverMenuItem from '#lib/components/popover/PopoverMenuItem.svelte';
 	import Switch from '#lib/components/Switch.svelte';
 	import type { Tab } from '#lib/types/shared.ts';
+	import { getViewState } from '#lib/viewState.svelte.ts';
 
 	export type EditorMode = 'design' | 'play';
-	type HeaderProps = { mode: EditorMode; selectedTab: Tab };
+	type HeaderProps = { mode: EditorMode };
 
-	let { mode = $bindable('design'), selectedTab = $bindable('sheet') }: HeaderProps = $props();
+	let { mode = $bindable('design') }: HeaderProps = $props();
+
+	const viewState = getViewState();
+
+	let definitionMenu: HTMLDivElement;
 </script>
 
 <header class="topbar">
@@ -17,14 +24,48 @@
 	<div class="center-header-actions">
 		<Switch
 			values={['sheet', 'JSON', 'CSS'] satisfies Tab[]}
-			labels={['📝 Sheet', '{ } Definition', '🖌️ Style']}
-			bind:active={selectedTab}
+			labels={['📝 Editor', '{ } Definition', '🖌️ Style']}
+			bind:active={
+				() => viewState.tab,
+				(v) => {
+					viewState.tab = v;
+					if (v != 'JSON') {
+						return;
+					}
+					definitionMenu.showPopover();
+				}
+			}
 			aria-label="Tabs"
 		/>
 		<div>
 			<Button title="Save">💾</Button>
 			<Button title="Open">📂</Button>
 		</div>
+
+		<PopoverMenu
+			ariaLabel="View Definition Menu"
+			positionAnchor="--definition-kind-menu"
+			style="top: calc(anchor(bottom) + 12px);"
+			bind:to={definitionMenu}
+		>
+			<PopoverMenuItem
+				label="Sheet"
+				selected={viewState.json == 'Document'}
+				onclick={() => {
+					viewState.json = 'Document';
+					definitionMenu.hidePopover();
+				}}
+			/>
+			<hr />
+			<PopoverMenuItem
+				label="Formulas"
+				selected={viewState.json == 'Formulas'}
+				onclick={() => {
+					viewState.json = 'Formulas';
+					definitionMenu.hidePopover();
+				}}
+			/>
+		</PopoverMenu>
 	</div>
 	<Switch
 		values={['design', 'play']}
@@ -35,6 +76,13 @@
 </header>
 
 <style>
+	.center-header-actions {
+		:global(.switch button:nth-child(2)) {
+			/** open the sheet JSON or the formulas one*/
+			anchor-name: --definition-kind-menu;
+		}
+	}
+
 	.topbar {
 		display: flex;
 		flex-shrink: 0;

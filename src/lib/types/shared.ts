@@ -14,3 +14,4 @@ export type Listen = <K extends keyof HTMLElementEventMap>(
 
 
 export type Tab = 'sheet' | 'JSON' | 'CSS'
+export type JsonPanel = 'Document' | 'Formulas' | null
