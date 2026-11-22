@@ -174,7 +174,9 @@
 	}
 
 	const panelsCollaped = $derived(
-		viewState.tab === 'sheet' || mode === 'play' || viewState.json === null
+		viewState.tab === 'sheet' ||
+			mode === 'play' ||
+			(viewState.json === null && viewState.tab === 'JSON')
 	);
 </script>
 
