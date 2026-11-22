@@ -25,6 +25,10 @@ try {
   assert.equal(await sources.isVisible(), false, 'Source drawer starts closed');
   await page.getByRole('group', { name: 'Tabs', exact: true })
     .getByRole('button', { name: 'Definition' }).click();
+
+  await page.getByRole('menu', { name: 'View Definition Menu' })
+    .getByRole('menuitem', { name: 'Sheet' }).click();
+
   await sources.waitFor({ state: 'visible' });
 
   await title.hover();
