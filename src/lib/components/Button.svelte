@@ -1,9 +1,6 @@
 <script lang="ts" generics="Element extends HtmlTag = 'button'">
-	import type { HtmlTag } from '#lib/types/shared.ts';
+	import type { HtmlTag, NativeProps } from '#lib/types/shared.ts';
 	import type { Snippet } from 'svelte';
-	import type { SvelteHTMLElements } from 'svelte/elements';
-
-	type NativeProps<Tag extends HtmlTag> = SvelteHTMLElements[Tag];
 
 	type ButtonProps = {
 		type?: Element;

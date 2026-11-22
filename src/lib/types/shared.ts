@@ -4,6 +4,8 @@ export type OpResult = { success: true; message?: string } | { success: false; m
 
 export type HtmlTag = keyof SvelteHTMLElements;
 
+export type NativeProps<Tag extends HtmlTag> = SvelteHTMLElements[Tag];
+
 export type Listen = <K extends keyof HTMLElementEventMap>(
     type: K,
     listener: (event: HTMLElementEventMap[K]) => void,
