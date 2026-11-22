@@ -3,6 +3,8 @@
 	import { blockBoundary, pointerBlock, setContextBlockHover } from '#lib/editor/blockInteraction';
 	import type { Editor } from '@tiptap/core';
 	import type { EditorMode } from '../leftSidebar.svelte';
+	import PopoverMenu from '#lib/components/popover/PopoverMenu.svelte';
+	import PopoverMenuItem from '#lib/components/popover/PopoverMenuItem.svelte';
 
 	type ContextMenuProps = {
 		editor: Editor;
@@ -72,32 +74,27 @@
 	style:top={`${contextCoords.y}px`}
 	aria-hidden="true"
 ></span>
-<div
-	bind:this={contextPopover}
-	class="context-action"
-	popover="auto"
-	role="menu"
-	aria-label="Block actions"
+<PopoverMenu
+	bind:to={contextPopover}
+	ariaLabel="Block actions"
+	positionAnchor="--block-context"
 	onbeforetoggle={(event) => event.newState === 'closed' && clearSaveTarget()}
 >
-	<!-- svelte-ignore a11y_autofocus (Focus the first action when the popover opens.) -->
-	<button
-		type="button"
-		role="menuitem"
+	<PopoverMenuItem
+		label="View properties"
 		autofocus
 		onclick={(event) => {
 			// The opening click must not immediately dismiss the properties pane.
 			event.stopPropagation();
 			closeMenu();
 			onViewProperties();
-		}}>View properties</button
-	>
+		}}
+	/>
 	{#if contextContainer !== null}
 		{@const container = contextContainer}
 		<hr />
-		<button
-			type="button"
-			role="menuitem"
+		<PopoverMenuItem
+			label="Save as custom block"
 			class="save-custom-block"
 			onpointerenter={markSaveTarget}
 			onfocus={markSaveTarget}
@@ -110,10 +107,10 @@
 			onclick={() => {
 				closeMenu();
 				onSaveAsCustomBlock(container);
-			}}>Save as custom block</button
-		>
+			}}
+		/>
 	{/if}
-</div>
+</PopoverMenu>
 
 <style>
 	.context-anchor {
@@ -122,44 +119,5 @@
 		width: 0;
 		height: 0;
 		pointer-events: none;
-	}
-	.context-action {
-		position: fixed;
-		position-anchor: --block-context;
-		position-area: block-end span-inline-end;
-		position-try-fallbacks:
-			flip-block,
-			flip-inline,
-			flip-block flip-inline;
-		inset: auto;
-		margin: 4px;
-		width: 210px;
-		max-width: calc(100dvw - 16px);
-		padding: 4px;
-		background: #fffdf8;
-		border: 1px solid #d8c9b6;
-		border-radius: 8px;
-		box-shadow: 0 8px 24px #332c2426;
-		color: #4c4034;
-	}
-	.context-action button {
-		display: block;
-		width: 100%;
-		padding: 9px 10px;
-		border: 0;
-		border-radius: 4px;
-		background: transparent;
-		text-align: left;
-		white-space: nowrap;
-	}
-	.context-action button:hover,
-	.context-action button:focus-visible {
-		background: #eee1cc;
-		outline: none;
-	}
-	.context-action hr {
-		margin: 4px;
-		border: 0;
-		border-top: 1px solid #e8e2db;
 	}
 </style>
