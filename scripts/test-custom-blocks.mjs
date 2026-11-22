@@ -7,12 +7,23 @@ const browser = await chromium.launch({ headless: true });
 try {
   const context = await browser.newContext({ viewport: { width: 1440, height: 900 }, permissions: ['clipboard-read', 'clipboard-write'] });
   const page = await context.newPage();
-  page.on('pageerror', (error) => console.error('BROWSER ERROR:', error.stack ?? error.message));
-  page.on('console', msg => { if(msg.type() !== 'log') console.error('BROWSER CONSOLE', msg.type(), msg.text()); });
-  page.on('response', response => { if(response.status() >= 400) console.error('BROWSER RESPONSE', response.status(), response.url()); });
   await page.goto('http://127.0.0.1:5189/', { waitUntil: 'networkidle' });
-  const openDefinition = () => page.getByRole('group', { name: 'Tabs', exact: true })
-    .getByRole('button', { name: 'Definition' }).click();
+  const selectDefinition = async (kind) => {
+    await page.getByRole('group', { name: 'Tabs', exact: true })
+      .getByRole('button', { name: 'Definition' }).click();
+
+    await page.getByRole('menu', { name: 'View Definition Menu' })
+      .getByRole('menuitem', { name: kind, exact: true }).click();
+
+    await page.locator('.source-heading strong')
+      .getByText(
+        kind === 'Sheet' ? 'Sheet Definition' : 'Formula Definitions',
+        { exact: true }
+      ).waitFor();
+  };
+
+  const openDefinition = () => selectDefinition('Sheet');
+  const openFormulas = () => selectDefinition('Formulas');
   const closeSources = () => page.locator('.slide-up')
     .getByRole('button', { name: 'Close', exact: true }).click();
 
@@ -21,7 +32,10 @@ try {
 
   const header = page.locator('.sheet-content .sheet-header').first();
   await header.click({ button: 'right' });
-  const contextAction = page.locator('.context-action');
+  const contextAction = page.getByRole('menuitem', {
+    name: 'Save as custom block',
+    exact: true
+  });
   await contextAction.waitFor({ state: 'visible' });
   // Clicking elsewhere dismisses the menu without consuming the click.
   await page.locator('.topbar h1').click();
@@ -29,31 +43,12 @@ try {
   // Opening the menu again must still allow its own action to run.
   await header.click({ button: 'right' });
   await contextAction.waitFor({ state: 'visible' });
-  await page.evaluate(() => {
-    window.__trace = [];
-    document.addEventListener('click', (event) => {
-      window.__trace.push('capture:' + event.target?.outerHTML?.slice(0, 140));
-    }, true);
-    document.addEventListener('click', (event) => {
-      window.__trace.push('bubble:' + event.target?.outerHTML?.slice(0, 140));
-    });
-    window.addEventListener('beforeunload', () => console.log('BEFORE UNLOAD'), { once:true });
-  });
-  console.log('Menu before click', await page.getByRole('menuitem', { name: 'Save as custom block' }).evaluate(el => el.outerHTML));
   await page.getByRole('menuitem', { name: 'Save as custom block' }).click();
-  console.log('Trace', await page.evaluate(() => window.__trace));
-  console.log('URL', page.url());
-  console.log('Body status', (await page.locator('body').innerText()).slice(0,600));
   const modal = page.getByRole('dialog', { name: 'Custom block definition editor' });
-  console.log('After creation:', {
-    dialogs: await page.locator('[role="dialog"]').count(),
-    status: await page.locator('[role="status"]').allTextContents(),
-    contextActions: await page.getByRole('menuitem', { name: 'Save as custom block' }).count()
-  });
   await modal.waitFor({ timeout: 5000 });
   await modal.getByLabel('Custom block name').fill('Test Header');
   await modal.getByRole('button', { name: 'Save definition' }).click();
-  const confirm = page.getByRole('dialog', { name: 'Saved custom block' });
+  const confirm = page.getByRole('dialog', { name: 'Custom block saved', exact: true });
   await confirm.waitFor();
   await confirm.getByRole('button', { name: 'Replace original' }).click();
 
@@ -146,20 +141,82 @@ try {
   await page.locator('#apply-sheet-json').click();
   assert.match(await page.locator('[role="status"]').innerText(), /Import failed: Missing custom block definition: not-installed/);
   assert.equal(await page.locator('.sheet-content [data-custom-block-type="sheet-header"]').count(), 1);
-  // A rejected import must leave BOTH the sheet and reactive fields unchanged.
-  const invalid = structuredClone(serialized);
-  invalid.fields['NOT A VALID ID'] = { id: 'NOT A VALID ID', formula: '42' };
-  await importSource.click();
-  await page.keyboard.press('ControlOrMeta+A');
-  await page.keyboard.insertText(JSON.stringify(invalid));
-  await page.locator('#apply-sheet-json').click();
-  assert.match(await page.locator('[role="status"]').innerText(), /Import failed: Invalid formula field/);
+
+  // Snapshot the document before attempting an invalid formula import.
   await page.locator('#sync-sheet-json').click();
-  await importSource.click();
+  await source.click();
   await page.keyboard.press('ControlOrMeta+A');
   await page.keyboard.press('ControlOrMeta+C');
-  const afterInvalid = JSON.parse(await page.evaluate(() => navigator.clipboard.readText()));
-  assert.deepEqual(afterInvalid.fields, serialized.fields, 'Rejected import must preserve fields');
+
+  const documentBefore = JSON.parse(
+    await page.evaluate(() => navigator.clipboard.readText())
+  );
+
+  // Switch to the dedicated Formulas definition.
+  await openFormulas();
+
+  const formulaSource = page.locator('.source-panel .cm-content');
+
+  await page.locator('#sync-sheet-json').click();
+  await formulaSource.click();
+  await page.keyboard.press('ControlOrMeta+A');
+  await page.keyboard.press('ControlOrMeta+C');
+
+  const formulasBefore = JSON.parse(
+    await page.evaluate(() => navigator.clipboard.readText())
+  );
+
+  // Attempt to import a formula field with an invalid identifier.
+  const invalidFormulas = structuredClone(formulasBefore);
+  invalidFormulas['NOT A VALID ID'] = {
+    id: 'NOT A VALID ID',
+    formula: '42'
+  };
+
+  await formulaSource.click();
+  await page.keyboard.press('ControlOrMeta+A');
+  await page.keyboard.insertText(JSON.stringify(invalidFormulas));
+  await page.locator('#apply-sheet-json').click();
+
+  assert.match(
+    await page.locator('[role="status"]').innerText(),
+    /Import failed: Invalid formula field/
+  );
+
+  // Verify that the reactive formula state was not modified.
+  await page.locator('#sync-sheet-json').click();
+  await formulaSource.click();
+  await page.keyboard.press('ControlOrMeta+A');
+  await page.keyboard.press('ControlOrMeta+C');
+
+  const formulasAfter = JSON.parse(
+    await page.evaluate(() => navigator.clipboard.readText())
+  );
+
+  assert.deepEqual(
+    formulasAfter,
+    formulasBefore,
+    'Rejected formula import must preserve all existing fields'
+  );
+
+  // Verify that the document was not modified either.
+  await openDefinition();
+
+  await page.locator('#sync-sheet-json').click();
+  await source.click();
+  await page.keyboard.press('ControlOrMeta+A');
+  await page.keyboard.press('ControlOrMeta+C');
+
+  const documentAfter = JSON.parse(
+    await page.evaluate(() => navigator.clipboard.readText())
+  );
+
+  assert.deepEqual(
+    documentAfter,
+    documentBefore,
+    'Rejected formula import must preserve the sheet document'
+  );
+
   await closeSources();
 
   // The JSON editor has an explicit Apply action. Save must not silently
@@ -190,7 +247,6 @@ try {
     .first().evaluate(node => getComputedStyle(node).color);
   assert.equal(sheetColor, originalColor, 'Draft CSS must be scoped to modal preview');
   await editModal.getByRole('button', { name: 'Save definition' }).click();
-  console.log('After CSS save', { alerts: await editModal.locator('[role="alert"]').allTextContents(), status: await page.locator('[role="status"]').allTextContents(), visible: await editModal.isVisible() });
   await editModal.waitFor({ state: 'hidden', timeout: 2500 });
   console.log('Import atomicity, unapplied JSON protection, CSS draft containment passed');
 
@@ -215,8 +271,9 @@ try {
   }, [childDefinition, parentDefinition]);
   await page.reload({ waitUntil: 'networkidle' });
   const nestedSheet = {
-    version: 1, themeId: 'default', fields: serialized.fields,
-    document: { type: 'doc', content: [
+  version: 1,
+  themeId: 'default',
+  document: { type: 'doc', content: [
       { ...structuredClone(parentDefinition.structure), attrs: { ...parentDefinition.structure.attrs, customNode: true, typeId: 'test-nested-parent', instanceId: 'sheet-parent' } },
       { ...structuredClone(childDefinition.structure), attrs: { ...childDefinition.structure.attrs, customNode: true, typeId: 'test-nested-child', instanceId: 'sheet-child' } }
     ] }

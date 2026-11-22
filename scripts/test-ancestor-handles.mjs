@@ -4,8 +4,6 @@ import { chromium } from 'playwright';
 const browser = await chromium.launch({ headless: true });
 try {
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
-  page.on('pageerror', (error) => console.error('BROWSER ERROR:', error.stack ?? error.message));
-  page.on('console', (msg) => { if (msg.type() === 'error' || msg.type() === 'warning') console.error('CONSOLE:', msg.text()); });
   const response = await page.goto('http://127.0.0.1:5189/', { waitUntil: 'networkidle' });
   assert.equal(response?.status(), 200);
   assert.equal(await page.locator('.sheet-content .tiptap').count(), 1);
@@ -184,11 +182,14 @@ try {
         }]
       }]
     },
-    themeId: 'default',
-    fields: { STR: { id: 'STR', formula: '16' } }
+    themeId: 'default'
   };
   await page.getByRole('group', { name: 'Tabs', exact: true })
     .getByRole('button', { name: 'Definition' }).click();
+
+  await page.getByRole('menu', { name: 'View Definition Menu' })
+    .getByRole('menuitem', { name: 'Sheet', exact: true }).click();
+
   await source.click();
   await page.keyboard.press('ControlOrMeta+A');
   await page.keyboard.insertText(JSON.stringify(original));

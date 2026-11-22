@@ -43,9 +43,26 @@ jobs:
             if curl --fail --silent http://127.0.0.1:5189/ > /dev/null; then break; fi
             sleep 1
           done
-          node scripts/test-play-mode.mjs
-          node scripts/test-custom-blocks.mjs
-          node scripts/test-ancestor-handles.mjs || {
+
+          if ! curl --fail --silent http://127.0.0.1:5189/ > /dev/null; then
+            echo "::error::Browser test server failed to start"
             cat /tmp/rbb-browser.log
             exit 1
-          }
+          fi
+
+          for test in \
+            scripts/test-play-mode.mjs \
+            scripts/test-custom-blocks.mjs \
+            scripts/test-ancestor-handles.mjs
+          do
+            echo "::group::Browser test: $test"
+
+            if ! node "$test"; then
+              echo "::endgroup::"
+              echo "::error::Browser test failed: $test"
+              cat /tmp/rbb-browser.log
+              exit 1
+            fi
+
+            echo "::endgroup::"
+          done
